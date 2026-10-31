@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://ibato-byte.github.io/renjill-site/sitemap.xml
