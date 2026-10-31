@@ -131,6 +131,7 @@ body:not(.lang-en) .btn { font-family: var(--f-jp); font-weight: 900; }
 .sec-ttl { margin: 0; font: 900 clamp(30px, 4.6vw, 64px)/1.15 var(--f-jp); letter-spacing: -.02em; }
 body.lang-en .sec-ttl { font-family: var(--f-en); font-weight: 700; letter-spacing: -.01em; }
 .sec-ttl .ja, .sec-ttl .en { display: block; }
+body:not(.lang-en) :is(.sec-ttl, .hero-sub, .char-text, .day-ttl, .ep-ttl, .rel-ttl, .game-text, .pickup-t) { word-break: auto-phrase; overflow-wrap: anywhere; }
 .sec-lead { grid-column: 1 / -1; margin: 6px 0 0; max-width: 46em; color: var(--ink-2); font-size: 15.5px; }
 @media (max-width: 640px) { .sec-head { grid-template-columns: 1fr; gap: 6px; } }
 
@@ -277,7 +278,8 @@ body.lang-en .ep-ttl { font-family: var(--f-en); font-weight: 700; }
 @media (max-width: 860px) { .game-grid { grid-template-columns: 1fr; } .game-shot { transform: rotate(-1deg); } }
 
 /* ═══════ FOLLOW ═══════ */
-.sns-list { display: grid; margin: 0; padding: 0; list-style: none; border-top: var(--line); }
+.sns-list { display: grid; margin: 0; padding: 0; list-style: none; }
+#follow .sec-head { margin-bottom: 0; }
 .sns-row { position: relative; display: grid; grid-template-columns: 60px minmax(0, 1fr) auto 40px; align-items: center; gap: 20px; padding: 26px 8px; border-bottom: var(--line); overflow: hidden; isolation: isolate; transition: color .3s; }
 .sns-row::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--bg, var(--mustard)); transform: scaleX(0); transform-origin: left; transition: transform .5s var(--ease); }
 .sns-row:hover::before { transform: scaleX(1); }
@@ -771,7 +773,7 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-no">05</div>
-      <h2 class="sec-ttl"><span data-t="sns.ttl">フォローすると、週4回、ちょっと平和になります。</span></h2>
+      <h2 class="sec-ttl"><span data-t="sns.ttl">フォローすると、週4回、ちょっと平和に。</span></h2>
       <p class="sec-lead" data-t="sns.lead">新作は月・水・金・日。どのSNSでも同じエピソードを見られます。</p>
     </div>
     <ul class="sns-list rv">
@@ -1323,7 +1325,7 @@ const T = {
 "지금 플레이"
 ],
 "sns.ttl": [
-"フォローすると、週4回、ちょっと平和になります。",
+"フォローすると、週4回、ちょっと平和に。",
 "Follow along. Four slightly peaceful moments a week.",
 "追蹤之後，每週4次，世界會稍微和平一點。",
 "팔로우하면, 일주일에 4번, 조금 평화로워집니다."
