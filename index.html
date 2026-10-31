@@ -1802,7 +1802,7 @@ renderEpisodes(); langHooks.push(renderEpisodes);
     if (!mapped.length) return;
     // keep embedded episodes that the remote file doesn't know about
     const known = new Set(mapped.map((e) => e.ep));
-    const merged = [...mapped, ...EPS.filter((e) => !known.has(e.ep))];
+    const merged = [...mapped, ...EPS.filter((e) => !known.has(e.ep))].sort((a, b) => (b.date || "0000").localeCompare(a.date || "0000"));
     if (merged.map((e) => e.ep + e.yt).join() === EPS.map((e) => e.ep + e.yt).join()) return;
     EPS.length = 0; EPS.push(...merged); renderEpisodes();
   } catch (e) { /* offline or no file: keep the embedded list */ }
