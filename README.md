@@ -3,7 +3,7 @@
 うさぎの課長レンと、しっかり者の部下ジル（と新人のポム）のキャラクターブランドサイト。
 GitHub Pages で公開する、依存ライブラリなしの単一ファイル（`index.html`）です。
 
-- 公開URL：https://ibato-byte.github.io/renjill-site/
+- 公開URL：https://renjill.coana.co.jp/
 - 画像・動画は公開リポジトリ `ibato-byte/renjill-media` のファイルを jsDelivr 経由で読み込みます（`https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/...`）。
 - ゲーム「チモシーダッシュ（Hay Dash）」は https://renjill-hay-dash.pages.dev/ にリンク。
 
