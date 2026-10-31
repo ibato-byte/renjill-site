@@ -47,7 +47,6 @@ body {
   overflow-x: hidden; -webkit-font-smoothing: antialiased;
 }
 body.lang-en { font-family: var(--f-en); font-weight: 500; line-height: 1.7; }
-body.lang-en [lang="ja"], body.lang-ja [lang="en"] { display: none !important; }
 img, video, canvas, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -100,9 +99,17 @@ body::before {
 .pill.is-on { background: var(--mustard); }
 .pill.icon { width: 42px; padding: 0; justify-content: center; }
 .pill.icon svg { width: 18px; height: 18px; }
-.lang-sw span { opacity: .4; transition: opacity .2s; }
-.lang-sw span.on { opacity: 1; }
-.lang-sw i { font-style: normal; opacity: .35; }
+.lang-wrap { position: relative; }
+.lang-sw svg { width: 18px; height: 18px; }
+.lang-menu { position: absolute; right: 0; top: calc(100% + 10px); min-width: 150px; padding: 6px; border: var(--line); border-radius: 16px; background: var(--paper); box-shadow: 5px 5px 0 var(--ink); display: grid; gap: 2px; opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.98); transition: opacity .2s, transform .25s var(--ease), visibility 0s .25s; }
+.lang-menu.open { opacity: 1; visibility: visible; transform: none; transition: opacity .2s, transform .25s var(--ease); }
+.lang-menu button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: left; transition: background .15s; }
+.lang-menu button:hover { background: var(--cream); }
+.lang-menu button.on { background: var(--mustard); }
+.lang-menu button.on::after { content: "✓"; font-size: 12px; }
+body.lang-zh { --f-jp: "Noto Sans TC", "Zen Maru Gothic", sans-serif; }
+body.lang-ko { --f-jp: "Noto Sans KR", "Zen Maru Gothic", sans-serif; }
+body.lang-zh, body.lang-ko { font-family: var(--f-jp); font-weight: 700; line-height: 1.85; }
 .hdr-sns { display: flex; gap: 6px; }
 @media (max-width: 760px) { .hdr-sns { display: none; } .hdr { padding: 12px 14px; } }
 
@@ -115,7 +122,7 @@ body::before {
 .btn.lite { background: var(--paper); color: var(--ink); }
 .btn.lite::before { background: var(--sky); }
 .btn svg { width: 20px; height: 20px; }
-body.lang-ja .btn { font-family: var(--f-jp); font-weight: 900; }
+body:not(.lang-en) .btn { font-family: var(--f-jp); font-weight: 900; }
 
 /* ── section scaffolding ── */
 .sec { position: relative; padding-block: clamp(90px, 12vw, 180px); }
@@ -168,7 +175,7 @@ body.lang-en .sec-ttl { font-family: var(--f-en); font-weight: 700; letter-spaci
 .tape-track { display: flex; width: max-content; will-change: transform; }
 .tape-track span { display: flex; align-items: center; gap: 1.2em; padding-right: 1.2em; white-space: nowrap; font: 700 clamp(18px, 2.2vw, 30px)/1 var(--f-en); letter-spacing: .02em; }
 .tape-track span::after { content: ""; width: .45em; height: .45em; border-radius: 50%; background: var(--mustard); }
-body.lang-ja .tape-track span { font-family: var(--f-jp); font-weight: 900; }
+body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900; }
 
 /* ═══════ CHARACTERS ═══════ */
 .chars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); }
@@ -337,7 +344,7 @@ body.lang-en .ep-ttl { font-family: var(--f-en); font-weight: 700; }
 .totop svg { width: 40px; height: 40px; }
 .totop .ear { transform-origin: 50% 100%; transition: transform .4s var(--ease); }
 .totop:hover .ear { transform: rotate(-10deg); } .totop:hover .ear.r { transform: rotate(10deg); }
-body.lang-ja .totop { font-family: var(--f-jp); font-weight: 900; }
+body:not(.lang-en) .totop { font-family: var(--f-jp); font-weight: 900; }
 @media (min-width: 1180px) { .totop { right: 18px; } }
 
 /* ═══════ CHARACTER FLIP ═══════ */
@@ -361,7 +368,7 @@ body.lang-ja .totop { font-family: var(--f-jp); font-weight: 900; }
 .char-more:hover { background: var(--mustard); } .char-more:hover svg { transform: translateX(3px); }
 .char-more.back { border-color: var(--paper); background: transparent; color: var(--paper); margin-top: 14px; }
 .char-more.back:hover { background: rgba(255, 255, 255, .12); }
-body.lang-ja .char-more { font-family: var(--f-jp); font-weight: 900; }
+body:not(.lang-en) .char-more { font-family: var(--f-jp); font-weight: 900; }
 
 /* ═══════ RELATIONSHIP ═══════ */
 .rel { margin-top: clamp(60px, 8vw, 110px); padding: clamp(24px, 3vw, 44px); border: var(--line); border-radius: var(--r); background: var(--paper-2); box-shadow: 8px 8px 0 var(--ink); }
@@ -452,7 +459,15 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
       <a class="pill icon" href="https://www.facebook.com/profile.php?id=1358515160686321" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></a>
     </nav>
     <button class="pill icon" id="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="snd-wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg></button>
-    <button class="pill lang-sw" id="lang" aria-label="Language"><span class="on" data-l="ja">JA</span><i>/</i><span data-l="en">EN</span></button>
+    <div class="lang-wrap">
+      <button class="pill lang-sw" id="lang" aria-haspopup="true" aria-expanded="false" aria-label="Language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span id="langCur">JA</span></button>
+      <div class="lang-menu" id="langMenu" role="menu">
+        <button type="button" role="menuitem" data-l="ja" lang="ja">日本語</button>
+        <button type="button" role="menuitem" data-l="en" lang="en">English</button>
+        <button type="button" role="menuitem" data-l="zh" lang="zh-Hant">繁體中文</button>
+        <button type="button" role="menuitem" data-l="ko" lang="ko">한국어</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -665,10 +680,10 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
         <path class="rel-line" d="M392 352 C 340 326, 290 294, 236 250" marker-end="url(#ah)"/>
         <path class="rel-line" d="M508 352 C 560 326, 610 294, 664 250" marker-end="url(#ah)"/>
         <!-- labels -->
-        <g class="rel-lab" transform="translate(450 78)"><rect x="-120" y="-20" width="240" height="40" rx="20" fill="#FBF6EC" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="15" fill="#2B1D12"><tspan data-t="rel.1">手伝う（書類が崩れる）</tspan></text></g>
-        <g class="rel-lab" transform="translate(450 268)"><rect x="-130" y="-20" width="260" height="40" rx="20" fill="#FBF6EC" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="15" fill="#2B1D12"><tspan data-t="rel.2">「マグカップは頭の上です」</tspan></text></g>
-        <g class="rel-lab" transform="translate(290 318)"><rect x="-70" y="-18" width="140" height="36" rx="18" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="14" fill="#2B1D12"><tspan data-t="rel.3">やる気3倍</tspan></text></g>
-        <g class="rel-lab" transform="translate(610 318)"><rect x="-70" y="-18" width="140" height="36" rx="18" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="14" fill="#2B1D12"><tspan data-t="rel.4">教えてもらう</tspan></text></g>
+        <g class="rel-lab" transform="translate(450 78)"><rect x="-120" y="-20" width="240" height="40" rx="20" fill="#FBF6EC" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic, Noto Sans TC, Noto Sans KR, sans-serif" font-weight="900" font-size="15" fill="#2B1D12"><tspan data-t="rel.1">手伝う（書類が崩れる）</tspan></text></g>
+        <g class="rel-lab" transform="translate(450 268)"><rect x="-130" y="-20" width="260" height="40" rx="20" fill="#FBF6EC" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic, Noto Sans TC, Noto Sans KR, sans-serif" font-weight="900" font-size="15" fill="#2B1D12"><tspan data-t="rel.2">「マグカップは頭の上です」</tspan></text></g>
+        <g class="rel-lab" transform="translate(290 318)"><rect x="-70" y="-18" width="140" height="36" rx="18" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic, Noto Sans TC, Noto Sans KR, sans-serif" font-weight="900" font-size="14" fill="#2B1D12"><tspan data-t="rel.3">やる気3倍</tspan></text></g>
+        <g class="rel-lab" transform="translate(610 318)"><rect x="-70" y="-18" width="140" height="36" rx="18" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic, Noto Sans TC, Noto Sans KR, sans-serif" font-weight="900" font-size="14" fill="#2B1D12"><tspan data-t="rel.4">教えてもらう</tspan></text></g>
         <!-- nodes -->
         <g transform="translate(160 175)"><g class="rel-node"><path d="M-42 -50 C -78 -38, -86 18, -70 50 C -60 70, -36 62, -34 32 C -32 2, -30 -24, -42 -50 Z M42 -50 C 78 -38, 86 18, 70 50 C 60 70, 36 62, 34 32 C 32 2, 30 -24, 42 -50 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><circle cx="-22" cy="-6" r="7" fill="#2B1D12"/><circle cx="22" cy="-6" r="7" fill="#2B1D12"/><path d="M-6 14 h12 l-6 6Z" fill="#E8A4A0"/><path d="M0 20 v8 M-8 32 c4 4 12 4 16 0" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><path d="M0 48 l-7 16 h14 Z" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">REN</text></g></g>
         <g transform="translate(740 175)"><g class="rel-node"><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><path d="M-26 -50 C -34 -90, -16 -112, -8 -84 C -4 -70, -8 -56, -14 -44 Z M26 -50 C 34 -90, 16 -112, 8 -84 C 4 -70, 8 -56, 14 -44 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><g fill="none" stroke="#8C5A37" stroke-width="3.5"><circle cx="-22" cy="-4" r="18"/><circle cx="22" cy="-4" r="18"/><path d="M-4 -4h8"/></g><circle cx="-22" cy="-4" r="8" fill="#2B1D12"/><circle cx="22" cy="-4" r="8" fill="#2B1D12"/><path d="M-6 16 h12 l-6 6Z" fill="#E8A4A0"/><path d="M-7 30 h14" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">JILL</text></g></g>
@@ -814,86 +829,626 @@ const runScroll = () => onScrollFns.forEach((f) => f(scrollY));
 
 /* ───────── 1. i18n ───────── */
 const T = {
-  "cur.play": ["PLAY", "PLAY"],
-  "hero.kicker": ["うさぎのオフィスコメディ · セリフなし", "A rabbit office comedy · no dialogue"],
-  "hero.sub": ["うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。", "Ren, a rabbit boss with floppy ears. Jill, the assistant who actually runs the place. No words — just gestures and sounds from a slightly peaceful office."],
-  "hero.cta1": ["エピソードを見る", "Watch episodes"],
-  "hero.cta2": ["ゲームで遊ぶ", "Play the game"],
-  "hero.st1": ["NO DIALOGUE", "NO DIALOGUE"],
-  "hero.st2": ["新作 · 月水金日", "NEW · MON WED FRI SUN"],
-  "today.label": ["TODAY IS", "TODAY IS"],
-  "pickup.k": ["PICKUP!!", "PICKUP!!"],
-  "pickup.t": ["11月1日、新人のポムが入社します。", "On November 1, Pom the rookie joins the office."],
-  "rail": ["FOLLOW", "FOLLOW"],
-  "totop": ["上へ", "TOP"],
-  "ch.ttl": ["はたらく、うさぎたち。", "Meet the office."],
-  "ch.lead": ["目が、カーソルを追いかけます。カードにカーソルを当てると、それぞれのクセが出ます。", "Their eyes follow your cursor. Hover a card and each one shows a habit."],
-  "ch.more": ["押してみる？", "Tap for details"], "ch.close": ["もどる", "Back"], "ch.detail": ["DETAIL", "DETAIL"],
-  "ch.d.role": ["役職", "ROLE"], "ch.d.breed": ["種類", "BREED"], "ch.d.like": ["好きなもの", "LIKES"], "ch.d.debut": ["初登場", "DEBUT"],
-  "ch.ren.name": ["課長のレン", "Ren, the boss"],
-  "ch.ren.text": ["たれ耳の課長。やる気はある。手伝うほど、なぜか仕事が増える。承認印は鼻で押す。定時のチャイムが、いちばんの楽しみ。", "A floppy-eared manager with good intentions. The more he helps, the more work appears. Approves documents with his nose. Lives for the 6 pm chime."],
-  "ch.ren.t1": ["牧草ラバー", "Hay lover"], "ch.ren.t2": ["鼻ハンコ", "Nose stamp"], "ch.ren.t3": ["18:00 が好き", "Loves 6 pm"],
-  "ch.ren.role": ["課長 · うさぎのボス", "Manager · the boss"], "ch.ren.breed": ["ホーランドロップ（たれ耳）", "Holland Lop (floppy ears)"], "ch.ren.like": ["牧草、定時のチャイム", "Hay, the 6 pm chime"], "ch.ren.debut": ["EP.01「ハンコ」", "EP.01 “The stamp”"],
-  "ch.jill.name": ["部下のジル", "Jill, the assistant"],
-  "ch.jill.text": ["しっかり者の部下。メガネをかけるとスイッチが入る。課長のマグカップがどこにあるか、だいたい知っている。", "The one who gets things done. Glasses on, switch on. Usually knows where the boss's mug is (on his head)."],
-  "ch.jill.t1": ["メガネでON", "Glasses = ON"], "ch.jill.t2": ["段取り上手", "Organized"], "ch.jill.t3": ["ツッコミ担当", "Straight man"],
-  "ch.jill.role": ["部下 · アシスタント", "Assistant"], "ch.jill.breed": ["ネザーランドドワーフ", "Netherland Dwarf"], "ch.jill.like": ["段取り、メガネ", "Plans, glasses"], "ch.jill.debut": ["EP.01「ハンコ」", "EP.01 “The stamp”"],
-  "ch.pom.name": ["新人のポム", "Pom, the rookie"],
-  "ch.pom.text": ["11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。", "Joined on November 1. Stores everything in those cheeks. Three times the boss's energy. The headband is non-negotiable."],
-  "ch.pom.t1": ["ほっぺ収納", "Cheek storage"], "ch.pom.t2": ["元気", "Energetic"],
-  "ch.pom.role": ["新人", "Rookie"], "ch.pom.breed": ["ゴールデンハムスター", "Golden hamster"], "ch.pom.like": ["ほっぺに入れること", "Filling those cheeks"], "ch.pom.debut": ["11/1「新人のポム」", "11/1 “New hire: Pom”"],
-  "rel.k": ["RELATIONSHIP", "RELATIONSHIP"], "rel.ttl": ["みんなの関係", "How they get along"],
-  "rel.1": ["手伝う（書類が崩れる）", "Helps (papers collapse)"], "rel.2": ["「マグカップは頭の上です」", "“The mug is on your head.”"], "rel.3": ["やる気3倍", "3× the energy"], "rel.4": ["教えてもらう", "Learns the ropes"],
-  "day.ttl": ["オフィスの、ある一日。", "A day at the office."],
-  "day.lead": ["9:00 から 18:00 まで。スクロールすると、時計が進みます。", "From 9:00 to 18:00. Scroll, and the clock moves."],
-  "day.1.t": ["ジルの朝", "Jill's morning"], "day.1.d": ["メガネをかけたら、スイッチが入る。課長のスイッチは、まだ見つかっていない。", "Glasses on, switch on. The boss's switch has not been located."],
-  "day.2.t": ["会議の5分前", "5 minutes before the meeting"], "day.2.d": ["資料は、ある。たぶん。課長の耳が、いつもより低い。", "The slides exist. Probably. The boss's ears are lower than usual."],
-  "day.3.t": ["カメラオフ会議", "Camera-off meeting"], "day.3.d": ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?"],
-  "day.4.t": ["ハンコ", "The stamp"], "day.4.d": ["承認。鼻で。", "Approved. With his nose."],
-  "day.5.t": ["書類の山", "The paper mountain"], "day.5.d": ["整えるほど崩れる。課長、手伝わなくていいです。", "The more he helps, the worse it gets."],
-  "day.6.t": ["マグカップはどこ", "Where's the mug"], "day.6.d": ["課長、マグカップは頭の上です。", "Sir. The mug. It's on your head."],
-  "day.7.t": ["牧草の領収書", "Hay receipts"], "day.7.d": ["経費精算、ぜんぶ牧草。", "Expense report: 100% hay."],
-  "day.8.t": ["締め切りのカレンダー", "The deadline calendar"], "day.8.d": ["見なければ、締め切りは来ない（来ます）。", "If you don't look, the deadline doesn't exist. (It does.)"],
-  "day.9.t": ["定時のチャイム", "The 6 pm chime"], "day.9.d": ["よろこびが止まらない。今日もおつかれさまでした。", "Joy cannot be contained. Good work today."],
-  "ep.ttl": ["エピソード", "Episodes"],
-  "ep.lead": ["1本およそ30秒。カーソルを当てると動き出し、押すとそのまま見られます。", "About 30 seconds each. Hover to preview, click to watch."],
-  "ep.more": ["YouTube で全部見る", "See all on YouTube"],
-  "ep.soon": ["11/1 公開", "COMING 11/1"],
-  "game.ttl": ["遊べます。", "You can play it."],
-  "game.lead": ["ブラウザでそのまま。インストール不要、無料。", "Right in the browser. No install, free."],
-  "game.text": ["「チモシーダッシュ」。うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。牧草を集めて、神田から東京タワーまで。新人のポムも走れます。", "Hay Dash: a run game where Ren and Jill dash across Tokyo. Grab hay from Kanda to Tokyo Tower. Pom runs too."],
-  "game.hay": ["HAY · 押してつかむ", "HAY · TAP TO GRAB"],
-  "game.cta": ["今すぐ遊ぶ", "Play now"],
-  "sns.ttl": ["フォローすると、週4回、ちょっと平和になります。", "Follow along. Four slightly peaceful moments a week."],
-  "sns.lead": ["新作は月・水・金・日。どのSNSでも同じエピソードを見られます。", "New episodes Mon, Wed, Fri and Sun. Same episodes on every platform."],
-  "sns.yt": ["ショート · フルサイズで見るならここ", "Shorts · best place for full size"],
-  "sns.ig": ["リール · ストーリーズで裏側も", "Reels · behind the scenes in Stories"],
-  "sns.tt": ["いちばん早く、新作が出ます", "New episodes land here first"],
-  "sns.fb": ["ページをフォロー", "Follow the page"],
-  "sns.game": ["チモシーダッシュ · ブラウザで無料", "The game · free in your browser"],
-  "d.mon": ["月 · 新作", "new"], "d.tue": ["火", "—"], "d.wed": ["水 · 新作", "new"], "d.thu": ["木", "—"], "d.fri": ["金 · 新作", "new"], "d.sat": ["土", "—"], "d.sun": ["日 · 新作", "new"],
-  "ftr.note": ["レンとジルは COANA TOKYO合同会社のオリジナルキャラクターです。", "Ren & Jill are original characters by COANA TOKYO LLC."],
+"cur.play": [
+"PLAY",
+"PLAY",
+"PLAY",
+"PLAY"
+],
+"hero.kicker": [
+"うさぎのオフィスコメディ · セリフなし",
+"A rabbit office comedy · no dialogue",
+"兔子的辦公室喜劇 · 沒有台詞",
+"토끼들의 오피스 코미디 · 대사 없음"
+],
+"hero.sub": [
+"うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。",
+"Ren, a rabbit boss with floppy ears. Jill, the assistant who actually runs the place. No words — just gestures and sounds from a slightly peaceful office.",
+"垂耳兔課長 Ren，和可靠的部下 Jill。沒有台詞，只用動作和聲音，描繪一間稍微和平的辦公室的每一天。",
+"귀가 처진 토끼 과장 Ren과 야무진 부하 Jill. 대사는 없습니다. 몸짓과 소리만으로 그리는, 조금 평화로운 오피스의 하루하루."
+],
+"hero.cta1": [
+"エピソードを見る",
+"Watch episodes",
+"看影片",
+"에피소드 보기"
+],
+"hero.cta2": [
+"ゲームで遊ぶ",
+"Play the game",
+"玩遊戲",
+"게임하기"
+],
+"hero.st1": [
+"NO DIALOGUE",
+"NO DIALOGUE",
+"NO DIALOGUE",
+"NO DIALOGUE"
+],
+"hero.st2": [
+"新作 · 月水金日",
+"NEW · MON WED FRI SUN",
+"新片 · 一 三 五 日",
+"신작 · 월 수 금 일"
+],
+"today.label": [
+"TODAY IS",
+"TODAY IS",
+"TODAY IS",
+"TODAY IS"
+],
+"pickup.k": [
+"PICKUP!!",
+"PICKUP!!",
+"PICKUP!!",
+"PICKUP!!"
+],
+"pickup.t": [
+"11月1日、新人のポムが入社します。",
+"On November 1, Pom the rookie joins the office.",
+"11月1日，新人 Pom 入職。",
+"11월 1일, 신입 Pom이 입사합니다."
+],
+"rail": [
+"FOLLOW",
+"FOLLOW",
+"FOLLOW",
+"FOLLOW"
+],
+"totop": [
+"上へ",
+"TOP",
+"回頂端",
+"맨 위로"
+],
+"ch.ttl": [
+"はたらく、うさぎたち。",
+"Meet the office.",
+"上班的兔子們。",
+"일하는 토끼들."
+],
+"ch.lead": [
+"目が、カーソルを追いかけます。カードにカーソルを当てると、それぞれのクセが出ます。",
+"Their eyes follow your cursor. Hover a card and each one shows a habit.",
+"眼睛會跟著游標走。把游標移到卡片上，會看到各自的小習慣。",
+"눈이 커서를 따라옵니다. 카드에 커서를 올리면 각자의 버릇이 나와요."
+],
+"ch.more": [
+"押してみる？",
+"Tap for details",
+"點一下看看？",
+"눌러볼래요?"
+],
+"ch.close": [
+"もどる",
+"Back",
+"返回",
+"뒤로"
+],
+"ch.detail": [
+"DETAIL",
+"DETAIL",
+"DETAIL",
+"DETAIL"
+],
+"ch.d.role": [
+"役職",
+"ROLE",
+"職位",
+"직책"
+],
+"ch.d.breed": [
+"種類",
+"BREED",
+"品種",
+"품종"
+],
+"ch.d.like": [
+"好きなもの",
+"LIKES",
+"喜歡的東西",
+"좋아하는 것"
+],
+"ch.d.debut": [
+"初登場",
+"DEBUT",
+"初登場",
+"첫 등장"
+],
+"ch.ren.name": [
+"課長のレン",
+"Ren, the boss",
+"課長 Ren",
+"과장 Ren"
+],
+"ch.ren.text": [
+"たれ耳の課長。やる気はある。手伝うほど、なぜか仕事が増える。承認印は鼻で押す。定時のチャイムが、いちばんの楽しみ。",
+"A floppy-eared manager with good intentions. The more he helps, the more work appears. Approves documents with his nose. Lives for the 6 pm chime.",
+"垂耳的課長，很有幹勁。越幫忙，工作不知為何越多。蓋章用鼻子。最期待的是下班的鐘聲。",
+"귀가 처진 과장님. 의욕은 넘칩니다. 도와줄수록 왠지 일이 늘어나요. 결재 도장은 코로 찍습니다. 제일 기다리는 건 퇴근 종소리."
+],
+"ch.ren.t1": [
+"牧草ラバー",
+"Hay lover",
+"牧草控",
+"건초 러버"
+],
+"ch.ren.t2": [
+"鼻ハンコ",
+"Nose stamp",
+"鼻子蓋章",
+"코 도장"
+],
+"ch.ren.t3": [
+"18:00 が好き",
+"Loves 6 pm",
+"最愛 18:00",
+"18:00 애호가"
+],
+"ch.ren.role": [
+"課長 · うさぎのボス",
+"Manager · the boss",
+"課長 · 兔子老闆",
+"과장 · 토끼 보스"
+],
+"ch.ren.breed": [
+"ホーランドロップ（たれ耳）",
+"Holland Lop (floppy ears)",
+"荷蘭垂耳兔",
+"홀랜드 롭 (처진 귀)"
+],
+"ch.ren.like": [
+"牧草、定時のチャイム",
+"Hay, the 6 pm chime",
+"牧草、下班鐘聲",
+"건초, 퇴근 종소리"
+],
+"ch.ren.debut": [
+"EP.01「ハンコ」",
+"EP.01 “The stamp”",
+"EP.01「蓋章」",
+"EP.01 「도장」"
+],
+"ch.jill.name": [
+"部下のジル",
+"Jill, the assistant",
+"部下 Jill",
+"부하 Jill"
+],
+"ch.jill.text": [
+"しっかり者の部下。メガネをかけるとスイッチが入る。課長のマグカップがどこにあるか、だいたい知っている。",
+"The one who gets things done. Glasses on, switch on. Usually knows where the boss's mug is (on his head).",
+"可靠的部下。戴上眼鏡就開啟工作模式。大概知道課長的馬克杯在哪裡（在他頭上）。",
+"야무진 부하. 안경을 쓰면 스위치가 켜집니다. 과장님 머그컵이 어디 있는지 대체로 알고 있어요(머리 위)."
+],
+"ch.jill.t1": [
+"メガネでON",
+"Glasses = ON",
+"眼鏡＝ON",
+"안경 = ON"
+],
+"ch.jill.t2": [
+"段取り上手",
+"Organized",
+"很會安排",
+"계획형"
+],
+"ch.jill.t3": [
+"ツッコミ担当",
+"Straight man",
+"吐槽擔當",
+"츳코미 담당"
+],
+"ch.jill.role": [
+"部下 · アシスタント",
+"Assistant",
+"部下 · 助理",
+"부하 · 어시스턴트"
+],
+"ch.jill.breed": [
+"ネザーランドドワーフ",
+"Netherland Dwarf",
+"荷蘭侏儒兔",
+"네덜란드 드워프"
+],
+"ch.jill.like": [
+"段取り、メガネ",
+"Plans, glasses",
+"安排、眼鏡",
+"계획 세우기, 안경"
+],
+"ch.jill.debut": [
+"EP.01「ハンコ」",
+"EP.01 “The stamp”",
+"EP.01「蓋章」",
+"EP.01 「도장」"
+],
+"ch.pom.name": [
+"新人のポム",
+"Pom, the rookie",
+"新人 Pom",
+"신입 Pom"
+],
+"ch.pom.text": [
+"11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。",
+"Joined on November 1. Stores everything in those cheeks. Three times the boss's energy. The headband is non-negotiable.",
+"11月1日入職的新人。什麼都往臉頰裡塞。幹勁是課長的3倍。頭帶是本人的堅持。",
+"11월 1일 입사한 신입. 뭐든 볼주머니에 넣어 둡니다. 의욕은 과장님의 3배. 머리띠는 본인의 고집."
+],
+"ch.pom.t1": [
+"ほっぺ収納",
+"Cheek storage",
+"臉頰收納",
+"볼주머니 수납"
+],
+"ch.pom.t2": [
+"元気",
+"Energetic",
+"元氣",
+"활기참"
+],
+"ch.pom.role": [
+"新人",
+"Rookie",
+"新人",
+"신입"
+],
+"ch.pom.breed": [
+"ゴールデンハムスター",
+"Golden hamster",
+"黃金鼠",
+"골든 햄스터"
+],
+"ch.pom.like": [
+"ほっぺに入れること",
+"Filling those cheeks",
+"往臉頰裡塞東西",
+"볼주머니에 넣기"
+],
+"ch.pom.debut": [
+"11/1「新人のポム」",
+"11/1 “New hire: Pom”",
+"11/1「新人 Pom」",
+"11/1 「신입 Pom」"
+],
+"rel.k": [
+"RELATIONSHIP",
+"RELATIONSHIP",
+"RELATIONSHIP",
+"RELATIONSHIP"
+],
+"rel.ttl": [
+"みんなの関係",
+"How they get along",
+"大家的關係",
+"모두의 관계"
+],
+"rel.1": [
+"手伝う（書類が崩れる）",
+"Helps (papers collapse)",
+"幫忙（文件崩塌）",
+"도와줌 (서류가 무너짐)"
+],
+"rel.2": [
+"「マグカップは頭の上です」",
+"“The mug is on your head.”",
+"「馬克杯在你頭上。」",
+"“머그컵은 머리 위에 있어요.”"
+],
+"rel.3": [
+"やる気3倍",
+"3× the energy",
+"幹勁3倍",
+"의욕 3배"
+],
+"rel.4": [
+"教えてもらう",
+"Learns the ropes",
+"跟著學",
+"일을 배움"
+],
+"day.ttl": [
+"オフィスの、ある一日。",
+"A day at the office.",
+"辦公室的某一天。",
+"오피스의 어느 하루."
+],
+"day.lead": [
+"9:00 から 18:00 まで。スクロールすると、時計が進みます。",
+"From 9:00 to 18:00. Scroll, and the clock moves.",
+"從 9:00 到 18:00。往下捲動，時鐘就會走。",
+"9:00부터 18:00까지. 스크롤하면 시계가 갑니다."
+],
+"day.1.t": [
+"ジルの朝",
+"Jill's morning",
+"Jill 的早晨",
+"Jill의 아침"
+],
+"day.1.d": [
+"メガネをかけたら、スイッチが入る。課長のスイッチは、まだ見つかっていない。",
+"Glasses on, switch on. The boss's switch has not been located.",
+"戴上眼鏡就開啟工作模式。課長的開關還沒找到。",
+"안경을 쓰면 스위치 ON. 과장님의 스위치는 아직 못 찾았습니다."
+],
+"day.2.t": [
+"会議の5分前",
+"5 minutes before the meeting",
+"會議前5分鐘",
+"회의 5분 전"
+],
+"day.2.d": [
+"資料は、ある。たぶん。課長の耳が、いつもより低い。",
+"The slides exist. Probably. The boss's ears are lower than usual.",
+"資料，有。大概。課長的耳朵比平常更低。",
+"자료는 있어요. 아마도. 과장님 귀가 평소보다 낮습니다."
+],
+"day.3.t": [
+"カメラオフ会議",
+"Camera-off meeting",
+"關鏡頭會議",
+"카메라 끄고 회의"
+],
+"day.3.d": [
+"カメラを切れば、何をしても大丈夫。大丈夫？",
+"Camera off. Totally safe. Right?",
+"關掉鏡頭就什麼都沒問題。沒問題吧？",
+"카메라만 끄면 뭘 해도 괜찮아요. 괜찮죠?"
+],
+"day.4.t": [
+"ハンコ",
+"The stamp",
+"蓋章",
+"도장"
+],
+"day.4.d": [
+"承認。鼻で。",
+"Approved. With his nose.",
+"批准。用鼻子。",
+"승인. 코로."
+],
+"day.5.t": [
+"書類の山",
+"The paper mountain",
+"文件山",
+"서류 산"
+],
+"day.5.d": [
+"整えるほど崩れる。課長、手伝わなくていいです。",
+"The more he helps, the worse it gets.",
+"越整理越崩。課長，不用幫忙。",
+"정리할수록 무너집니다. 과장님, 안 도와주셔도 돼요."
+],
+"day.6.t": [
+"マグカップはどこ",
+"Where's the mug",
+"馬克杯在哪",
+"머그컵은 어디에"
+],
+"day.6.d": [
+"課長、マグカップは頭の上です。",
+"Sir. The mug. It's on your head.",
+"課長，馬克杯在你頭上。",
+"과장님, 머그컵은 머리 위에 있어요."
+],
+"day.7.t": [
+"牧草の領収書",
+"Hay receipts",
+"牧草收據",
+"건초 영수증"
+],
+"day.7.d": [
+"経費精算、ぜんぶ牧草。",
+"Expense report: 100% hay.",
+"報帳，全部是牧草。",
+"경비 정산, 전부 건초."
+],
+"day.8.t": [
+"締め切りのカレンダー",
+"The deadline calendar",
+"截止日月曆",
+"마감 달력"
+],
+"day.8.d": [
+"見なければ、締め切りは来ない（来ます）。",
+"If you don't look, the deadline doesn't exist. (It does.)",
+"不看就沒有截止日（有的）。",
+"안 보면 마감은 안 와요 (옵니다)."
+],
+"day.9.t": [
+"定時のチャイム",
+"The 6 pm chime",
+"下班的鐘聲",
+"퇴근 종소리"
+],
+"day.9.d": [
+"よろこびが止まらない。今日もおつかれさまでした。",
+"Joy cannot be contained. Good work today.",
+"喜悅停不下來。今天也辛苦了。",
+"기쁨이 멈추지 않아요. 오늘도 수고하셨습니다."
+],
+"ep.ttl": [
+"エピソード",
+"Episodes",
+"影片",
+"에피소드"
+],
+"ep.lead": [
+"1本およそ30秒。カーソルを当てると動き出し、押すとそのまま見られます。",
+"About 30 seconds each. Hover to preview, click to watch.",
+"每集約30秒。游標移上去會動，點一下就能直接看。",
+"한 편에 약 30초. 커서를 올리면 움직이고, 누르면 바로 볼 수 있어요."
+],
+"ep.more": [
+"YouTube で全部見る",
+"See all on YouTube",
+"在 YouTube 看全部",
+"YouTube에서 전부 보기"
+],
+"ep.soon": [
+"11/1 公開",
+"COMING 11/1",
+"11/1 公開",
+"11/1 공개"
+],
+"game.ttl": [
+"遊べます。",
+"You can play it.",
+"可以玩。",
+"플레이할 수 있어요."
+],
+"game.lead": [
+"ブラウザでそのまま。インストール不要、無料。",
+"Right in the browser. No install, free.",
+"直接在瀏覽器玩。免安裝、免費。",
+"브라우저에서 바로. 설치 없이, 무료."
+],
+"game.text": [
+"「チモシーダッシュ」。うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。牧草を集めて、神田から東京タワーまで。新人のポムも走れます。",
+"Hay Dash: a run game where Ren and Jill dash across Tokyo. Grab hay from Kanda to Tokyo Tower. Pom runs too.",
+"「Hay Dash」：兔子課長 Ren 和部下 Jill 奔跑穿越東京的跑酷遊戲。收集牧草，從神田跑到東京鐵塔。新人 Pom 也能跑。",
+"‘Hay Dash’: 토끼 과장 Ren과 부하 Jill이 도쿄를 달리는 런 게임. 건초를 모아 간다에서 도쿄타워까지. 신입 Pom도 달려요."
+],
+"game.hay": [
+"HAY · 押してつかむ",
+"HAY · TAP TO GRAB",
+"HAY · 點一下抓牧草",
+"HAY · 눌러서 잡기"
+],
+"game.cta": [
+"今すぐ遊ぶ",
+"Play now",
+"馬上玩",
+"지금 플레이"
+],
+"sns.ttl": [
+"フォローすると、週4回、ちょっと平和になります。",
+"Follow along. Four slightly peaceful moments a week.",
+"追蹤之後，每週4次，世界會稍微和平一點。",
+"팔로우하면, 일주일에 4번, 조금 평화로워집니다."
+],
+"sns.lead": [
+"新作は月・水・金・日。どのSNSでも同じエピソードを見られます。",
+"New episodes Mon, Wed, Fri and Sun. Same episodes on every platform.",
+"新片在一、三、五、日。每個平台都能看到同樣的影片。",
+"신작은 월·수·금·일. 어느 SNS에서든 같은 에피소드를 볼 수 있어요."
+],
+"sns.yt": [
+"ショート · フルサイズで見るならここ",
+"Shorts · best place for full size",
+"Shorts · 想看完整尺寸就來這裡",
+"쇼츠 · 풀사이즈로 보려면 여기"
+],
+"sns.ig": [
+"リール · ストーリーズで裏側も",
+"Reels · behind the scenes in Stories",
+"Reels · 限時動態有幕後",
+"릴스 · 스토리에서 비하인드도"
+],
+"sns.tt": [
+"いちばん早く、新作が出ます",
+"New episodes land here first",
+"新片最先在這裡",
+"신작이 가장 먼저 올라와요"
+],
+"sns.fb": [
+"ページをフォロー",
+"Follow the page",
+"追蹤粉絲專頁",
+"페이지 팔로우"
+],
+"sns.game": [
+"チモシーダッシュ · ブラウザで無料",
+"The game · free in your browser",
+"Hay Dash · 瀏覽器免費玩",
+"Hay Dash · 브라우저에서 무료"
+],
+"d.mon": [
+"月 · 新作",
+"new",
+"一 · 新片",
+"월 · 신작"
+],
+"d.tue": [
+"火",
+"—",
+"二",
+"화"
+],
+"d.wed": [
+"水 · 新作",
+"new",
+"三 · 新片",
+"수 · 신작"
+],
+"d.thu": [
+"木",
+"—",
+"四",
+"목"
+],
+"d.fri": [
+"金 · 新作",
+"new",
+"五 · 新片",
+"금 · 신작"
+],
+"d.sat": [
+"土",
+"—",
+"六",
+"토"
+],
+"d.sun": [
+"日 · 新作",
+"new",
+"日 · 新片",
+"일 · 신작"
+],
+"ftr.note": [
+"レンとジルは COANA TOKYO合同会社のオリジナルキャラクターです。",
+"Ren & Jill are original characters by COANA TOKYO LLC.",
+"Ren & Jill 是 COANA TOKYO LLC. 的原創角色。",
+"Ren & Jill은 COANA TOKYO LLC.의 오리지널 캐릭터입니다."
+]
 };
-const META = {
-  ja: { title: "レンとジル｜Ren & Jill — うさぎの課長と部下の、セリフのないオフィスコメディ", desc: "うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。新作は月・水・金・日。" },
-  en: { title: "Ren & Jill — a rabbit office comedy with no dialogue", desc: "Ren the boss, Jill the assistant. No words, just gestures and sounds from a slightly peaceful office. New episodes Mon, Wed, Fri, Sun." },
-};
+const META = {"ja": {"title": "レンとジル｜Ren & Jill — うさぎの課長と部下の、セリフのないオフィスコメディ", "desc": "うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。新作は月・水・金・日。"}, "en": {"title": "Ren & Jill — a rabbit office comedy with no dialogue", "desc": "Ren the boss, Jill the assistant. No words, just gestures and sounds from a slightly peaceful office. New episodes Mon, Wed, Fri, Sun."}, "zh": {"title": "Ren & Jill｜沒有台詞的兔子辦公室喜劇", "desc": "兔子課長 Ren 和可靠的部下 Jill。沒有台詞，只用動作和聲音描繪稍微和平的辦公室日常。新片在一、三、五、日。"}, "ko": {"title": "Ren & Jill — 대사 없는 토끼 오피스 코미디", "desc": "토끼 과장 Ren과 야무진 부하 Jill. 대사 없이 몸짓과 소리만으로 그리는 조금 평화로운 오피스의 일상. 신작은 월·수·금·일."}};
+/* languages: ja / en / zh (Traditional) / ko — chosen for where wordless kawaii comedy actually finds fans
+   (Japan, English-speaking world, Taiwan·Hong Kong, Korea). Kept to four so the switch stays simple. */
+const LANGS = ["ja", "en", "zh", "ko"];
+const LANG_META = { ja: { tag: "ja", label: "日本語", short: "JA" }, en: { tag: "en", label: "English", short: "EN" }, zh: { tag: "zh-Hant", label: "繁體中文", short: "繁" }, ko: { tag: "ko", label: "한국어", short: "KO" } };
 let lang = "ja";
-const t = (k) => (T[k] || [k, k])[lang === "en" ? 1 : 0];
+const li = () => LANGS.indexOf(lang);
+const t = (k) => { const v = T[k]; return v ? (v[li()] || v[0]) : k; };
 const langHooks = [];
+const fontLoaded = {};
+function ensureFont(l) {
+  const fam = l === "zh" ? "Noto+Sans+TC:wght@500;700;900" : l === "ko" ? "Noto+Sans+KR:wght@500;700;900" : null;
+  if (!fam || fontLoaded[l]) return; fontLoaded[l] = true;
+  const link = document.createElement("link"); link.rel = "stylesheet"; link.href = "https://fonts.googleapis.com/css2?family=" + fam + "&display=swap"; document.head.appendChild(link);
+}
 function setLang(l, save = true) {
-  lang = l === "en" ? "en" : "ja";
-  document.documentElement.lang = lang;
-  document.body.classList.toggle("lang-en", lang === "en");
-  document.body.classList.toggle("lang-ja", lang === "ja");
+  lang = LANGS.includes(l) ? l : "ja";
+  ensureFont(lang);
+  document.documentElement.lang = LANG_META[lang].tag;
+  LANGS.forEach((x) => document.body.classList.toggle("lang-" + x, x === lang));
   $$("[data-t]").forEach((el) => { if (T[el.dataset.t]) el.textContent = t(el.dataset.t); });
-  $$("#lang span").forEach((s) => s.classList.toggle("on", s.dataset.l === lang));
+  $("#langCur").textContent = LANG_META[lang].short;
+  $$("#langMenu button").forEach((b) => { const on = b.dataset.l === lang; b.classList.toggle("on", on); b.setAttribute("aria-current", on ? "true" : "false"); });
   document.title = META[lang].title;
   const d = $('meta[name="description"]'); if (d) d.content = META[lang].desc;
   if (save) { try { localStorage.setItem("rj-lang", lang); } catch (e) {} }
   langHooks.forEach((f) => f());
 }
-$("#lang").addEventListener("click", () => setLang(lang === "ja" ? "en" : "ja"));
+(() => {
+  const btn = $("#lang"), menu = $("#langMenu");
+  const open = (v) => { menu.classList.toggle("open", v); btn.setAttribute("aria-expanded", v); };
+  btn.addEventListener("click", (e) => { e.stopPropagation(); open(!menu.classList.contains("open")); });
+  $$("button", menu).forEach((b) => b.addEventListener("click", () => { setLang(b.dataset.l); open(false); }));
+  document.addEventListener("click", (e) => { if (!e.target.closest(".lang-wrap")) open(false); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape") open(false); });
+})();
+const detectLang = () => { const n = (navigator.language || "").toLowerCase(); if (n.startsWith("ja")) return "ja"; if (n.startsWith("zh")) return "zh"; if (n.startsWith("ko")) return "ko"; return "en"; };
 
 /* ───────── 2. today / office status (JST) ───────── */
 const jst = () => new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000);
@@ -901,18 +1456,27 @@ function today() {
   const n = jst(), y = n.getFullYear(), m = n.getMonth() + 1, d = n.getDate(), dow = n.getDay(), h = n.getHours() + n.getMinutes() / 60;
   $("#todayDate").textContent = `${y}.${String(m).padStart(2, "0")}.${String(d).padStart(2, "0")}`;
   const dot = $("#statusDot"), st = $("#statusText");
-  let s, off = false;
-  if (dow === 0 || dow === 6) { s = lang === "en" ? "Weekend · the office is quiet" : "おやすみ · オフィスは静か"; off = true; }
-  else if (h >= 9 && h < 18) { s = lang === "en" ? "At work · 9:00–18:00 JST" : "勤務中 · 9:00–18:00（日本時間）"; }
-  else if (h >= 18 && h < 19) { s = lang === "en" ? "6 pm! Chime time" : "定時！ チャイムが鳴りました"; off = true; }
-  else { s = lang === "en" ? "Off duty · back at 9:00 JST" : "定時後 · 9:00 に戻ります"; off = true; }
-  st.textContent = s; dot.classList.toggle("off", off);
+  const S = {
+    weekend: ["おやすみ · オフィスは静か", "Weekend · the office is quiet", "休息中 · 辦公室很安靜", "휴일 · 사무실은 조용해요"],
+    work: ["勤務中 · 9:00–18:00（日本時間）", "At work · 9:00–18:00 JST", "上班中 · 9:00–18:00（日本時間）", "근무 중 · 9:00–18:00 (일본 시간)"],
+    six: ["定時！ チャイムが鳴りました", "6 pm! Chime time", "下班了！鐘聲響了", "퇴근! 종이 울렸어요"],
+    off: ["定時後 · 9:00 に戻ります", "Off duty · back at 9:00 JST", "下班後 · 9:00 回來", "퇴근 후 · 9:00에 돌아옵니다"],
+    next: ["次の新作 ", "Next episode: ", "下一集 ", "다음 신작 "],
+    days: [["日", "月", "火", "水", "木", "金", "土"], ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"], ["日", "一", "二", "三", "四", "五", "六"], ["일", "월", "화", "수", "목", "금", "토"]],
+  };
+  const i = li();
+  let key, off = false;
+  if (dow === 0 || dow === 6) { key = "weekend"; off = true; }
+  else if (h >= 9 && h < 18) key = "work";
+  else if (h >= 18 && h < 19) { key = "six"; off = true; }
+  else { key = "off"; off = true; }
+  st.textContent = S[key][i]; dot.classList.toggle("off", off);
   // next episode day: Mon(1) Wed(3) Fri(5) Sun(0)
   const days = [1, 3, 5, 0]; let add = 1;
   for (; add <= 7; add++) if (days.includes((dow + add) % 7)) break;
   const nx = new Date(n); nx.setDate(d + add);
-  const names = lang === "en" ? ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] : ["日", "月", "火", "水", "木", "金", "土"];
-  $("#nextEp").textContent = (lang === "en" ? "Next episode: " : "次の新作 ") + `${nx.getMonth() + 1}/${nx.getDate()} ${lang === "en" ? names[nx.getDay()] : "（" + names[nx.getDay()] + "）"}`;
+  const dn = S.days[i][nx.getDay()];
+  $("#nextEp").textContent = S.next[i] + `${nx.getMonth() + 1}/${nx.getDate()} ` + (lang === "en" ? dn : lang === "ko" ? "(" + dn + ")" : "（" + dn + "）");
 }
 langHooks.push(today); setInterval(today, 60000);
 
@@ -933,7 +1497,7 @@ sndBtn.addEventListener("click", () => { soundOn = !soundOn; sndBtn.classList.to
 
 /* ───────── 3. loader + hero ───────── */
 let saved = null; try { saved = localStorage.getItem("rj-lang"); } catch (e) {}
-setLang(saved || ((navigator.language || "").toLowerCase().startsWith("en") ? "en" : "ja"), false);
+setLang(saved || detectLang(), false);
 $$(".hero-title .c").forEach((c, i) => { c.style.setProperty("--i", i); c.style.setProperty("--rot", rnd(-14, 14).toFixed(1) + "deg"); });
 const hero = $("#hero");
 Promise.all([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 650))]).then(() => {
@@ -949,8 +1513,8 @@ if (!reduce) $$(".hero-title .c").forEach((c) => c.addEventListener("pointerente
 }));
 // parallax while hero leaves
 if (!reduce) {
-  const art = $("#heroArt"), ttl = $(".hero-title");
-  onScroll((y) => { const p = clamp(y / innerHeight, 0, 1); art.style.transform = `translateY(${p * 18}%)`; ttl.style.transform = `translateY(${-p * 10}%)`; });
+  const art = $("#heroArt"), copy = $(".hero-copy");
+  onScroll((y) => { const p = clamp(y / innerHeight, 0, 1); art.style.transform = `translateY(${p * 18}%)`; copy.style.transform = `translateY(${-p * 6}%)`; });
 }
 // cover → video (desktop, visible, no data saver)
 (() => {
@@ -1005,10 +1569,10 @@ if (!reduce) {
 
 /* ───────── 5. nose stamp ───────── */
 (() => {
-  const svg = (ja) => `<svg viewBox="0 0 120 120"><g fill="none" stroke="#C8322B" stroke-width="5"><circle cx="60" cy="60" r="54"/><circle cx="60" cy="60" r="46" stroke-width="2.5"/></g><text x="60" y="${ja ? 52 : 56}" text-anchor="middle" font-family="${ja ? "Zen Maru Gothic" : "Fredoka"}" font-weight="900" font-size="${ja ? 30 : 20}" fill="#C8322B">${ja ? "承認" : "APPROVED"}</text><path d="M52 76 h16 l-8 9 Z" fill="#C8322B"/><text x="60" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" letter-spacing="2" fill="#C8322B">REN · NOSE</text></svg>`;
+  const svg = () => { const w = { ja: "承認", en: "APPROVED", zh: "批准", ko: "승인" }[lang]; const en = lang === "en"; return `<svg viewBox="0 0 120 120"><g fill="none" stroke="#C8322B" stroke-width="5"><circle cx="60" cy="60" r="54"/><circle cx="60" cy="60" r="46" stroke-width="2.5"/></g><text x="60" y="${en ? 56 : 52}" text-anchor="middle" font-family="${en ? "Fredoka" : "Zen Maru Gothic, Noto Sans TC, Noto Sans KR, sans-serif"}" font-weight="900" font-size="${en ? 20 : 30}" fill="#C8322B">${w}</text><path d="M52 76 h16 l-8 9 Z" fill="#C8322B"/><text x="60" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" letter-spacing="2" fill="#C8322B">REN · NOSE</text></svg>`; };
   hero.addEventListener("click", (e) => {
     if (e.target.closest("a, button") || reduce) return;
-    const el = document.createElement("div"); el.className = "stamp"; el.innerHTML = svg(lang === "ja");
+    const el = document.createElement("div"); el.className = "stamp"; el.innerHTML = svg();
     el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; document.body.appendChild(el);
     thump();
     const r0 = rnd(-20, 20);
@@ -1018,7 +1582,7 @@ if (!reduce) {
 
 /* ───────── 6. tape ───────── */
 (() => {
-  const words = { ja: ["セリフなし", "うさぎの課長レン", "しっかり者のジル", "新人のポム", "新作は月・水・金・日", "定時は 18:00", "牧草は経費"], en: ["NO DIALOGUE", "REN THE BOSS", "JILL THE ASSISTANT", "POM THE ROOKIE", "NEW · MON WED FRI SUN", "6 PM IS SACRED", "HAY IS AN EXPENSE"] };
+  const words = { ja: ["セリフなし", "うさぎの課長レン", "しっかり者のジル", "新人のポム", "新作は月・水・金・日", "定時は 18:00", "牧草は経費"], en: ["NO DIALOGUE", "REN THE BOSS", "JILL THE ASSISTANT", "POM THE ROOKIE", "NEW · MON WED FRI SUN", "6 PM IS SACRED", "HAY IS AN EXPENSE"], zh: ["沒有台詞", "兔子課長 REN", "可靠的 JILL", "新人 POM", "新片 一・三・五・日", "18:00 是神聖的", "牧草是經費"], ko: ["대사 없음", "토끼 과장 REN", "야무진 JILL", "신입 POM", "신작 월·수·금·일", "18:00은 신성하다", "건초는 경비"] };
   const track = $("#tape");
   const build = () => { const w = words[lang]; track.innerHTML = [...w, ...w].map((s) => `<span>${s}</span>`).join(""); };
   build(); langHooks.push(build);
@@ -1035,6 +1599,7 @@ if (!reduce) {
   if (reduce) {}
   else if (fine) addEventListener("pointermove", (e) => look(e.clientX, e.clientY), { passive: true });
   else setInterval(() => { const r = $("#characters").getBoundingClientRect(); look(r.left + Math.random() * r.width, r.top + Math.random() * r.height); }, 2600);
+  if (!fine) $$(".char-hint").forEach((h) => (h.textContent = "TAP"));
   $$("[data-char]").forEach((card) => {
     card.addEventListener("pointerenter", blip);
     $$("[data-flip]", card).forEach((b) => b.addEventListener("click", () => {
@@ -1084,22 +1649,23 @@ if (!reduce) {
 
 /* ───────── 9. episodes ───────── */
 const EPS = [
-  { ep: "pom_debut", ja: "新人のポム", en: "New hire: Pom", cja: "11月1日、ハムスターのポムが入社します。", cen: "On November 1, Pom the hamster joins the office.", cover: "20261101_pom_debut_cover.jpg", video: "20261101_pom_debut.mp4", soon: true, date: "2026.11.01" },
-  { ep: "deadline2", ja: "締め切りのカレンダー", en: "The deadline calendar", cja: "見なければ、締め切りは来ない（来ます）。", cen: "If you don't look, the deadline doesn't exist. (It does.)", cover: "20261030_deadline2_cover.jpg", video: "20261030_deadline2.mp4", yt: "rnYfUNddYQs", date: "2026.10.30" },
-  { ep: "receipts2", ja: "牧草の領収書", en: "Hay receipts", cja: "経費精算、ぜんぶ牧草。", cen: "Expense report: 100% hay.", cover: "20261028_receipts2_cover.jpg", video: "20261028_receipts2.mp4", yt: "Z4xjAF7jovo", date: "2026.10.28" },
-  { ep: "jil_morning2", ja: "ジルの朝", en: "Jill's morning", cja: "メガネをかけたらスイッチが入る。課長のスイッチはどこ？", cen: "Glasses on, switch on. Where's the boss's switch?", cover: "20261026_jil_morning2_cover.jpg", video: "20261026_jil_morning2.mp4", yt: "QvCS2uRpm8o", date: "2026.10.26" },
-  { ep: "chime2", ja: "定時のチャイム", en: "The 6 pm chime", cja: "定時のチャイム、よろこびが止まらない。", cen: "6pm chime. Joy cannot be contained.", cover: "20261025_chime2_cover.jpg", video: "20261025_chime2.mp4", yt: "ToguHMsoIaU", date: "2026.10.25" },
-  { ep: "mug2", ja: "マグカップはどこ", en: "Where's the mug", cja: "課長、マグカップは頭の上です。", cen: "Sir. The mug. It's on your head.", cover: "20261023_mug2_cover.jpg", video: "20261023_mug2.mp4", yt: "xIzVzowGgjw", date: "2026.10.23" },
-  { ep: "papers2", ja: "書類の山", en: "The paper mountain", cja: "整えるほど崩れる。課長、手伝わなくていいです。", cen: "The more he helps, the worse it gets.", yt: "tgxLKS_ontc", date: "2026.10.21" },
-  { ep: "cameraoff", ja: "カメラオフ会議", en: "Camera-off meeting", cja: "カメラを切れば、何をしても大丈夫。大丈夫？", cen: "Camera off. Totally safe. Right?", yt: "mtduSRvoJdk" },
-  { ep: "meeting5", ja: "会議の5分前", en: "5 minutes before the meeting", cja: "会議まで、あと5分。", cen: "5 minutes before the meeting.", yt: "3_wI617Sj5Y" },
-  { ep: "hanko", ja: "ハンコ", en: "The stamp", cja: "承認。鼻で。", cen: "Approved. With his nose.", yt: "NH1nbAYF6OY" },
+  { ep: "pom_debut", title: ["新人のポム", "New hire: Pom", "新人 Pom", "신입 Pom"], cap: ["11月1日、ハムスターのポムが入社します。", "On November 1, Pom the hamster joins the office.", "11月1日，倉鼠 Pom 入職。", "11월 1일, 햄스터 Pom이 입사합니다."], cover: "20261101_pom_debut_cover.jpg", video: "20261101_pom_debut.mp4", soon: true, date: "2026.11.01" },
+  { ep: "deadline2", title: ["締め切りのカレンダー", "The deadline calendar", "截止日月曆", "마감 달력"], cap: ["見なければ、締め切りは来ない（来ます）。", "If you don't look, the deadline doesn't exist. (It does.)", "不看就沒有截止日（有的）。", "안 보면 마감은 안 와요 (옵니다)."], cover: "20261030_deadline2_cover.jpg", video: "20261030_deadline2.mp4", yt: "rnYfUNddYQs", date: "2026.10.30" },
+  { ep: "receipts2", title: ["牧草の領収書", "Hay receipts", "牧草收據", "건초 영수증"], cap: ["経費精算、ぜんぶ牧草。", "Expense report: 100% hay.", "報帳，全部是牧草。", "경비 정산, 전부 건초."], cover: "20261028_receipts2_cover.jpg", video: "20261028_receipts2.mp4", yt: "Z4xjAF7jovo", date: "2026.10.28" },
+  { ep: "jil_morning2", title: ["ジルの朝", "Jill's morning", "Jill 的早晨", "Jill의 아침"], cap: ["メガネをかけたらスイッチが入る。課長のスイッチはどこ？", "Glasses on, switch on. Where's the boss's switch?", "戴上眼鏡就開啟工作模式。課長的開關在哪？", "안경을 쓰면 스위치 ON. 과장님의 스위치는 어디?"], cover: "20261026_jil_morning2_cover.jpg", video: "20261026_jil_morning2.mp4", yt: "QvCS2uRpm8o", date: "2026.10.26" },
+  { ep: "chime2", title: ["定時のチャイム", "The 6 pm chime", "下班的鐘聲", "퇴근 종소리"], cap: ["定時のチャイム、よろこびが止まらない。", "6pm chime. Joy cannot be contained.", "下班鐘聲一響，喜悅停不下來。", "퇴근 종소리. 기쁨이 멈추지 않아요."], cover: "20261025_chime2_cover.jpg", video: "20261025_chime2.mp4", yt: "ToguHMsoIaU", date: "2026.10.25" },
+  { ep: "mug2", title: ["マグカップはどこ", "Where's the mug", "馬克杯在哪", "머그컵은 어디에"], cap: ["課長、マグカップは頭の上です。", "Sir. The mug. It's on your head.", "課長，馬克杯在你頭上。", "과장님, 머그컵은 머리 위에 있어요."], cover: "20261023_mug2_cover.jpg", video: "20261023_mug2.mp4", yt: "xIzVzowGgjw", date: "2026.10.23" },
+  { ep: "papers2", title: ["書類の山", "The paper mountain", "文件山", "서류 산"], cap: ["整えるほど崩れる。課長、手伝わなくていいです。", "The more he helps, the worse it gets.", "越整理越崩。課長，不用幫忙。", "정리할수록 무너집니다. 과장님, 안 도와주셔도 돼요."], yt: "tgxLKS_ontc", date: "2026.10.21" },
+  { ep: "cameraoff", title: ["カメラオフ会議", "Camera-off meeting", "關鏡頭會議", "카메라 끄고 회의"], cap: ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?", "關掉鏡頭就什麼都沒問題。沒問題吧？", "카메라만 끄면 괜찮아요. 괜찮죠?"], yt: "mtduSRvoJdk" },
+  { ep: "meeting5", title: ["会議の5分前", "5 minutes before the meeting", "會議前5分鐘", "회의 5분 전"], cap: ["会議まで、あと5分。", "5 minutes before the meeting.", "距離會議，還有5分鐘。", "회의까지 앞으로 5분."], yt: "3_wI617Sj5Y" },
+  { ep: "hanko", title: ["ハンコ", "The stamp", "蓋章", "도장"], cap: ["承認。鼻で。", "Approved. With his nose.", "批准。用鼻子。", "승인. 코로."], yt: "NH1nbAYF6OY" },
 ];
 const epsEl = $("#eps");
 const revealIO = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
 function renderEpisodes() {
-  const en = lang === "en";
+  const L = li();
   epsEl.innerHTML = EPS.map((e, i) => {
+    const title = e.title[L] || e.title[0], cap = e.cap[L] || e.cap[0];
     const n = String(EPS.length - i).padStart(2, "0");
     const img = e.cover ? MEDIA + e.cover : `https://i.ytimg.com/vi/${e.yt}/oardefault.jpg`;
     const fb = e.yt ? `https://i.ytimg.com/vi/${e.yt}/hqdefault.jpg` : "";
@@ -1108,10 +1674,10 @@ function renderEpisodes() {
     return `<a class="ep rv${e.soon ? " soon" : ""}" style="--d:${(i % 4) * .08}s" href="${href}" target="_blank" rel="noopener" data-yt="${e.yt || ""}" data-cur="${e.yt ? "PLAY" : "OPEN"}">
       <div class="ep-media" data-soon="${t("ep.soon")}">
         <span class="ep-no">EP.${n}</span>
-        <img src="${img}" alt="${en ? e.en : e.ja}" loading="lazy" width="1080" height="1920"${fb ? ` onerror="this.onerror=null;this.src='${fb}'"` : ""}>${vid}
+        <img src="${img}" alt="${title}" loading="lazy" width="1080" height="1920"${fb ? ` onerror="this.onerror=null;this.src='${fb}'"` : ""}>${vid}
         <span class="ep-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></span>
       </div>
-      <div class="ep-body"><span class="ep-date">${e.date || "EP." + n}</span><h3 class="ep-ttl">${en ? e.en : e.ja}</h3><p class="ep-cap">${en ? e.cen : e.cja}</p></div>
+      <div class="ep-body"><span class="ep-date">${e.date || "EP." + n}</span><h3 class="ep-ttl">${title}</h3><p class="ep-cap">${cap}</p></div>
     </a>`;
   }).join("");
   $$(".ep", epsEl).forEach((card) => {

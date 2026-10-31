@@ -19,7 +19,9 @@ GitHub Pages で公開する、依存ライブラリなしの単一ファイル�
 7. 05 フォロー：YouTube / Instagram / TikTok / Facebook / ゲーム、新作の曜日
 8. フッター
 
-右端のレール（PC）と右下の「上へ」ボタン、ヘッダーの音（既定OFF）と JA/EN 切り替え（localStorage に保存。初回はブラウザの言語で判定）。
+右端のレール（PC）と右下の「上へ」ボタン、ヘッダーの音（既定OFF）と言語切り替え（日本語 / English / 繁體中文 / 한국어。localStorage に保存。初回はブラウザの言語で判定し、それ以外は英語）。
+
+言語は4つに絞っています（日本・英語圏・台湾／香港・韓国＝セリフのないかわいい系コメディのファンが実際に多く、SNS がすべて使える地域）。中国本土向けの簡体字は、YouTube / Instagram / TikTok が使えず SNS に誘導できないため入れていません。増やすときは `T` / `EPS` / `S`（勤務状況）/ `words`（帯）/ `META` / `LANG_META` の6か所に同じ順番で足します。
 
 ## 更新のしかた
 
@@ -27,15 +29,15 @@ GitHub Pages で公開する、依存ライブラリなしの単一ファイル�
 `index.html` の `const EPS = [...]` に1件足す（新しい順＝配列の先頭）。
 
 ```js
-{ ep: "xxxx", ja: "日本語タイトル", en: "English title", cja: "日本語の一言", cen: "English caption",
+{ ep: "xxxx", title: ["日本語タイトル", "English title", "繁體中文標題", "한국어 제목"], cap: ["日本語の一言", "English caption", "繁體中文一句", "한국어 한 줄"],
   cover: "20261103_xxxx_cover.jpg",  // renjill-media にあるカバー（無ければ省略→YouTube のサムネイル）
   video: "20261103_xxxx.mp4",        // renjill-media にある動画（無ければ省略→プレビューなし）
   yt: "YouTubeの動画ID",              // 無ければ省略（soon:true で「公開予定」）
   date: "2026.11.03" },
 ```
 
-### 文言（日本語／英語）
-`const T = {...}` に key ごとに `[日本語, 英語]`。HTML 側は `data-t="key"`。
+### 文言（4言語）
+`const T = {...}` に key ごとに `[日本語, 英語, 繁體中文, 한국어]`。HTML 側は `data-t="key"`。エピソードは `EPS` の `title` / `cap` も同じ順番の配列。
 
 ### 「オフィスのある一日」のカード
 `#dayTrack` の `.day-card`。時刻・題・一言・アイコン。
