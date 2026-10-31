@@ -432,6 +432,89 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
   .dot { animation: none; }
   .char-flip { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   BRAND SKIN — Ren & Jill's own look (sticker outlines, soft paper shadows, hanko numbers,
+   cover-style lettering). Replaces the ink-line / hard-offset-shadow look so the site
+   does not resemble the COANA TOKYO corporate site.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --stamp: #C8322B; --brown: #5C3A1E; --edge: #E3D2B8;
+  --shadow: 0 14px 28px -14px rgba(60, 36, 14, .45), 0 2px 0 rgba(60, 36, 14, .06);
+  --shadow-lg: 0 24px 44px -20px rgba(60, 36, 14, .5), 0 3px 0 rgba(60, 36, 14, .06);
+  --sticker: 4px solid #FFFFFF;
+  --r: 30px;
+}
+/* lettering like the episode covers: cream fill, brown outline, brown drop */
+.hero-title { color: var(--paper); -webkit-text-stroke: 3px var(--brown); paint-order: stroke fill; text-shadow: 7px 7px 0 var(--brown); }
+.hero-title .amp { color: var(--mustard); -webkit-text-stroke: 3px var(--brown); text-shadow: 6px 6px 0 var(--brown); }
+.ftr-big { color: var(--paper); -webkit-text-stroke: 3px var(--brown); paint-order: stroke fill; text-shadow: 6px 6px 0 var(--brown); }
+.ftr-big span { color: var(--mustard); -webkit-text-stroke: 3px var(--brown); }
+.game-big { color: var(--mustard); -webkit-text-stroke: 3px var(--brown); text-shadow: 6px 6px 0 var(--brown); }
+@media (max-width: 640px) { .hero-title, .ftr-big, .game-big { text-shadow: 4px 4px 0 var(--brown); -webkit-text-stroke-width: 2px; } }
+
+/* section numbers = Ren's approval stamp */
+.sec-no { display: grid; place-items: center; width: 1.55em; height: 1.55em; margin-bottom: 6px; border: .09em solid var(--stamp); border-radius: 50%; outline: .045em solid var(--stamp); outline-offset: .07em; color: var(--stamp); -webkit-text-stroke: 0; font-size: clamp(34px, 4.2vw, 60px); line-height: 1; letter-spacing: -.02em; transform: rotate(-9deg); opacity: .92; }
+.sec-head { gap: 10px 26px; border-bottom: 3px dotted var(--fur); padding-bottom: 20px; }
+.sec-head.rv .sec-no { transform: translateY(40%) rotate(-9deg); } .sec-head.rv.in .sec-no { transform: rotate(-9deg); }
+.day .sec-no, .game .sec-no { color: var(--mustard); border-color: var(--mustard); outline-color: var(--mustard); -webkit-text-stroke: 0; }
+.day .sec-head, .game .sec-head { border-bottom-color: rgba(255, 255, 255, .35); }
+
+/* header: name-tag brand, soft buttons */
+.brand { background: var(--navy); color: #fff; border: 3px solid #fff; border-radius: 14px; box-shadow: var(--shadow); font-weight: 700; letter-spacing: .08em; }
+.pill { border: 2px solid var(--edge); border-radius: 14px; box-shadow: var(--shadow); }
+.pill:hover { transform: translateY(2px); box-shadow: 0 6px 14px -10px rgba(60, 36, 14, .5); }
+.lang-menu { border: 3px solid #fff; border-radius: 18px; box-shadow: var(--shadow-lg); }
+
+/* buttons: chunky game-style press */
+.btn { border: 0; border-radius: 20px; background: var(--navy); color: #fff; box-shadow: 0 6px 0 var(--navy-d), var(--shadow); }
+.btn::before { display: none; }
+.btn:hover { transform: translateY(3px); box-shadow: 0 3px 0 var(--navy-d), 0 8px 16px -12px rgba(60, 36, 14, .5); color: #fff; }
+.btn.lite { background: var(--paper); color: var(--ink); box-shadow: 0 6px 0 var(--edge), var(--shadow); }
+.btn.lite:hover { box-shadow: 0 3px 0 var(--edge), 0 8px 16px -12px rgba(60, 36, 14, .5); color: var(--ink); }
+.char-more { border: 2px solid var(--edge); background: var(--paper); border-radius: 14px; box-shadow: 0 3px 0 var(--edge); }
+.char-more:hover { background: var(--mustard); border-color: var(--mustard); box-shadow: 0 3px 0 var(--mustard-d); }
+.char-more.back { border-color: rgba(255, 255, 255, .5); box-shadow: none; }
+
+/* stickers & cards: white outline + soft paper shadow */
+.hero-phone { border: var(--sticker); border-radius: 34px; box-shadow: var(--shadow-lg); }
+.hero-sticker { border: 3px solid #fff; border-radius: 14px; box-shadow: var(--shadow); }
+.pickup { border: 3px solid #fff; border-radius: 20px; box-shadow: var(--shadow); }
+.pickup:hover { transform: translateY(2px); box-shadow: 0 6px 14px -10px rgba(60, 36, 14, .5); }
+.char-front, .char-back { border: var(--sticker); border-radius: var(--r); box-shadow: var(--shadow-lg); }
+.char:not(.flipped):hover .char-front { transform: translateY(-6px) rotate(-.6deg); box-shadow: 0 30px 50px -22px rgba(60, 36, 14, .55), 0 3px 0 rgba(60, 36, 14, .06); }
+.char-face { border: 0; }
+.char-tags li { border: 2px solid var(--edge); background: var(--paper); }
+.rel { border: var(--sticker); box-shadow: var(--shadow-lg); background: var(--paper); }
+.rel-lab rect { stroke: var(--fur-d) !important; stroke-width: 2.5 !important; }
+.rel-line { stroke: var(--fur-d); }
+.day-card { border: 0; background: var(--paper); color: var(--ink); box-shadow: var(--shadow-lg); border-radius: 26px; }
+.day-card .day-text { color: var(--ink-2); opacity: 1; }
+.day-card svg * { stroke: var(--navy); }
+.day-card.big { background: var(--mustard); border: 0; }
+.day-card.big svg * { stroke: var(--ink); }
+.ep { border: var(--sticker); border-radius: 26px; box-shadow: var(--shadow); background: var(--paper); }
+.ep:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.ep-play { border: 0; box-shadow: 0 3px 0 var(--edge); }
+.ep-no { background: var(--navy); color: #fff; border-radius: 999px; }
+.ep.soon .ep-media::after { border-top: 0; }
+.game-shot { border: var(--sticker); box-shadow: var(--shadow-lg); }
+.hay-count small { color: var(--mustard); opacity: 1; }
+.game-chars li { border-color: rgba(255, 255, 255, .35); }
+.sns-row { border-bottom: 3px dotted var(--fur); }
+.sns-row .ic { border: 0; background: var(--paper-2); border-radius: 14px; }
+.sched li { border: 0; background: var(--paper); box-shadow: 0 3px 0 var(--edge); }
+.sched li.on { background: var(--mustard); box-shadow: 0 3px 0 var(--mustard-d); }
+.rail-btn { border: 2px solid var(--edge); box-shadow: var(--shadow); }
+.rail-btn:hover { transform: translateY(-3px); background: var(--mustard); border-color: var(--mustard); }
+.rail-btn.game { border-color: var(--navy); }
+.totop { border: 3px solid #fff; box-shadow: var(--shadow-lg); }
+.lb-in { border: 4px solid #fff; box-shadow: var(--shadow-lg); }
+.ftr { border-top: 3px dotted var(--fur); }
+/* ticker: a straight strip of paper, not a tilted black band */
+.tape-wrap { margin-top: 0; padding-block: 0; }
+.tape { margin: 0; padding-block: 16px; background: var(--paper); color: var(--fur-d); border-block: 3px dotted var(--fur); transform: none; }
+.tape-track span::after { width: .42em; height: .42em; border-radius: 2px; background: var(--blush); transform: rotate(45deg); }
 </style>
 </head>
 <body class="lang-ja">
