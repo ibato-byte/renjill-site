@@ -36,6 +36,22 @@ GitHub Pages で公開する、依存ライブラリなしの単一ファイル�
   date: "2026.11.03" },
 ```
 
+### 自動更新（任意）：`renjill-media/episodes.json`
+サイトは読み込み時に `https://raw.githubusercontent.com/ibato-byte/renjill-media/main/episodes.json` を取りに行き、あれば埋め込みの一覧より優先します（無ければ埋め込みのまま。失敗しても何も起きません）。投稿パイプライン（renjill-auto）がこのファイルを書けば、サイトを触らずに新作が並びます。
+
+```json
+[
+  { "ep": "pom_debut", "date": "2026-11-01",
+    "title":   { "ja": "新人のポム", "en": "New hire: Pom", "zh": "新人 Pom", "ko": "신입 Pom" },
+    "caption": { "ja": "11月1日、…", "en": "On November 1, …" },
+    "cover": "20261101_pom_debut_cover.jpg", "video": "20261101_pom_debut.mp4",
+    "youtube_id": "xxxxxxxxxxx" }
+]
+```
+- 旧形式 `{ ep, date, title, caption_ja, caption_en, youtube_id }` もそのまま読めます。
+- zh / ko が無ければ英語→日本語の順で代用。`youtube_id` が無く日付が未来なら「公開予定」。
+- 新しい順に並べ替えて表示。埋め込みにしか無い回はそのまま残ります。
+
 ### 文言（4言語）
 `const T = {...}` に key ごとに `[日本語, 英語, 繁體中文, 한국어]`。HTML 側は `data-t="key"`。エピソードは `EPS` の `title` / `cap` も同じ順番の配列。
 

@@ -1691,6 +1691,36 @@ function renderEpisodes() {
   });
 }
 renderEpisodes(); langHooks.push(renderEpisodes);
+/* optional: renjill-media/episodes.json (written by the posting pipeline) overrides the embedded list,
+   so new episodes appear without editing this file. Either schema works:
+   { ep, date, title:{ja,en,zh,ko}, caption:{ja,en,zh,ko}, cover, video, youtube_id }  or the older
+   { ep, date, title, caption_ja, caption_en, youtube_id }. Missing languages fall back to EN, then JA. */
+(async () => {
+  try {
+    const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 5000);
+    const r = await fetch("https://raw.githubusercontent.com/ibato-byte/renjill-media/main/episodes.json", { signal: ctrl.signal, cache: "no-cache" });
+    if (!r.ok) return;
+    const data = await r.json(); const list = Array.isArray(data) ? data : (data && Array.isArray(data.episodes) ? data.episodes : null);
+    if (!list || !list.length) return;
+    const byEp = Object.fromEntries(EPS.map((e) => [e.ep, e]));
+    const pick = (v, k, old, fb) => { if (v && typeof v === "object") return [v.ja || fb[0], v.en || v.ja || fb[1], v.zh || v["zh-Hant"] || v.en || fb[2], v.ko || v.en || fb[3]]; if (typeof v === "string") return [v, old[1] || v, old[2] || v, old[3] || v]; return old; };
+    const today = jst().toISOString().slice(0, 10);
+    const mapped = list.map((x) => {
+      const old = byEp[x.ep] || {};
+      const date = (x.date || "").slice(0, 10);
+      const title = pick(x.title, "title", old.title || ["", "", "", ""], old.title || ["", "", "", ""]);
+      const cap = x.caption && typeof x.caption === "object" ? pick(x.caption, "cap", old.cap || title, old.cap || title) : [x.caption_ja || (old.cap || [""])[0] || "", x.caption_en || (old.cap || ["", ""])[1] || x.caption_ja || "", (old.cap || ["", "", ""])[2] || x.caption_en || x.caption_ja || "", (old.cap || ["", "", "", ""])[3] || x.caption_en || x.caption_ja || ""];
+      const yt = x.youtube_id || x.yt || old.yt || "";
+      return { ep: x.ep, title, cap, cover: x.cover || old.cover, video: x.video || old.video, yt, date: date ? date.replace(/-/g, ".") : old.date, soon: !yt && (!date || date > today) };
+    }).filter((e) => e.ep && e.title[0]).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    if (!mapped.length) return;
+    // keep embedded episodes that the remote file doesn't know about
+    const known = new Set(mapped.map((e) => e.ep));
+    const merged = [...mapped, ...EPS.filter((e) => !known.has(e.ep))];
+    if (merged.map((e) => e.ep + e.yt).join() === EPS.map((e) => e.ep + e.yt).join()) return;
+    EPS.length = 0; EPS.push(...merged); renderEpisodes();
+  } catch (e) { /* offline or no file: keep the embedded list */ }
+})();
 const lb = $("#lb"), lbFrame = $("#lbFrame"); let lbLast = null;
 function openLb(id) { lbLast = document.activeElement; lbFrame.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1`; lb.classList.add("open"); document.body.style.overflow = "hidden"; $("#lbX").focus(); }
 function closeLb() { lb.classList.remove("open"); setTimeout(() => (lbFrame.src = ""), 350); document.body.style.overflow = ""; if (lbLast) lbLast.focus(); }
