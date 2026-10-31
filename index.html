@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>レンとジル｜Ren & Jill — うさぎの課長と部下の、セリフのないオフィスコメディ</title>
+<meta name="description" content="うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。新作は月・水・金・日。YouTube・Instagram・TikTok・Facebook で公開中。ゲーム「Hay Dash」も遊べます。">
+<meta name="theme-color" content="#F4EAD8">
+<link rel="icon" href="https://renjill-hay-dash.pages.dev/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="レンとジル｜Ren & Jill">
+<meta property="og:description" content="うさぎの課長レンと、しっかり者の部下ジル。セリフのないオフィスコメディ。新作は月・水・金・日。">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261025_chime2_cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Zen+Maru+Gothic:wght@700;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"レンとジル Ren & Jill","url":"https://ibato-byte.github.io/renjill-site/","logo":"https://renjill-hay-dash.pages.dev/icon-192.png","sameAs":["https://www.youtube.com/@renjill_office","https://www.instagram.com/renjill_office/","https://www.tiktok.com/@renjill_office","https://www.facebook.com/profile.php?id=1358515160686321","https://renjill-hay-dash.pages.dev/"],"parentOrganization":{"@type":"Organization","name":"COANA TOKYO LLC.","url":"https://coana.co.jp/"}}
+</script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   REN & JILL — brand site
+   Palette: cream paper, rabbit fur, ink brown, badge navy, tie mustard
+   Motion: transform / opacity only. Canvas for particles. Lenis + GSAP.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --cream: #F4EAD8; --paper: #FBF6EC; --paper-2: #EFE2CC;
+  --fur: #C99A67; --fur-l: #E6C9A4; --fur-d: #8C5A37;
+  --ink: #2B1D12; --ink-2: #5A4433;
+  --navy: #1E3A5F; --navy-d: #142A47;
+  --mustard: #D9A520; --mustard-d: #B88612;
+  --blush: #E8A4A0; --sky: #CFE3F2; --green: #6F9A5C;
+  --f-en: "Fredoka", "Zen Maru Gothic", sans-serif;
+  --f-jp: "Zen Maru Gothic", "Fredoka", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --line: 3px solid var(--ink);
+  --r: 28px;
+  --gutter: clamp(20px, 4vw, 64px);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font-family: var(--f-jp); font-size: 16px; line-height: 1.9; font-weight: 700;
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+body.lang-en { font-family: var(--f-en); font-weight: 500; line-height: 1.7; }
+body.lang-en [lang="ja"], body.lang-ja [lang="en"] { display: none !important; }
+img, video, canvas, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.wrap { width: min(1440px, 100% - var(--gutter) * 2); margin-inline: auto; }
+.mono { font-family: var(--f-mono); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; font-size: 12px; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+::selection { background: var(--mustard); color: var(--ink); }
+
+/* ── paper grain over everything ── */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 200; pointer-events: none; opacity: .18;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .2 0 0 0 0 .1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* ── cursor (desktop, fine pointer) ── */
+.cur { position: fixed; left: 0; top: 0; z-index: 300; pointer-events: none; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--ink); transition: transform .25s var(--ease), background .25s; will-change: transform; display: none; }
+.cur-ring { position: fixed; left: 0; top: 0; z-index: 299; pointer-events: none; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 2px solid var(--ink); opacity: .35; transition: transform .35s var(--ease), opacity .3s; will-change: transform; display: none; }
+.cur-txt { position: fixed; left: 0; top: 0; z-index: 301; pointer-events: none; display: none; }
+.cur-label { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); font: 700 10px/1 var(--f-en); letter-spacing: .1em; color: var(--ink); opacity: 0; white-space: nowrap; transition: opacity .2s; }
+@media (hover: hover) and (pointer: fine) {
+  .cur, .cur-ring, .cur-txt { display: block; }
+  body.has-cursor, body.has-cursor a, body.has-cursor button { cursor: none; }
+  body.cur-hover .cur { transform: scale(5); background: var(--mustard); }
+  body.cur-hover .cur-ring { transform: scale(1.4); opacity: 0; }
+  body.cur-hover .cur-label { opacity: 1; }
+  body.cur-video .cur { transform: scale(5.6); background: var(--navy); }
+  body.cur-video .cur-label { color: var(--paper); }
+}
+
+/* ── loader ── */
+.loader { position: fixed; inset: 0; z-index: 400; background: var(--cream); display: grid; place-items: center; transition: opacity .6s var(--ease), visibility 0s .6s; }
+.loader.done { opacity: 0; visibility: hidden; }
+.loader-in { text-align: center; }
+.loader-ears { width: 120px; height: 120px; margin: 0 auto 10px; }
+.loader-ears .ear { transform-origin: 50% 100%; animation: ear-wiggle 1.2s ease-in-out infinite; }
+.loader-ears .ear.r { animation-delay: .15s; }
+@keyframes ear-wiggle { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+.loader-txt { font-family: var(--f-mono); font-size: 12px; letter-spacing: .3em; }
+
+/* ── header ── */
+.hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 14px var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 16px; pointer-events: none; transition: transform .5s var(--ease); }
+.hdr > * { pointer-events: auto; }
+.hdr.hide { transform: translateY(-120%); }
+.brand { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px 8px 10px; background: var(--paper); border: var(--line); border-radius: 999px; box-shadow: 4px 4px 0 var(--ink); font: 700 15px/1 var(--f-en); letter-spacing: .04em; }
+.brand svg { width: 28px; height: 28px; }
+.hdr-r { display: flex; align-items: center; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; background: var(--paper); border: var(--line); border-radius: 999px; box-shadow: 4px 4px 0 var(--ink); font: 700 13px/1 var(--f-en); letter-spacing: .06em; transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .2s; white-space: nowrap; }
+.pill:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+.pill.is-on { background: var(--mustard); }
+.pill.icon { width: 42px; padding: 0; justify-content: center; }
+.pill.icon svg { width: 18px; height: 18px; }
+.lang-sw span { opacity: .4; transition: opacity .2s; }
+.lang-sw span.on { opacity: 1; }
+.lang-sw i { font-style: normal; opacity: .35; }
+.hdr-sns { display: flex; gap: 6px; }
+@media (max-width: 760px) { .hdr-sns { display: none; } .hdr { padding: 12px 14px; } }
+
+/* ── buttons ── */
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 64px; padding: 0 34px; border: var(--line); border-radius: 999px; background: var(--ink); color: var(--paper); font: 700 17px/1 var(--f-en); letter-spacing: .04em; box-shadow: 6px 6px 0 var(--ink); overflow: hidden; transition: transform .25s var(--ease), box-shadow .25s var(--ease), color .25s; }
+.btn::before { content: ""; position: absolute; inset: 0; background: var(--mustard); transform: translateY(101%); transition: transform .45s var(--ease); z-index: 0; }
+.btn > * { position: relative; z-index: 1; }
+.btn:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--ink); color: var(--ink); }
+.btn:hover::before { transform: translateY(0); }
+.btn.lite { background: var(--paper); color: var(--ink); }
+.btn.lite::before { background: var(--sky); }
+.btn svg { width: 20px; height: 20px; }
+body.lang-ja .btn { font-family: var(--f-jp); font-weight: 900; }
+
+/* ── section scaffolding ── */
+.sec { position: relative; padding-block: clamp(90px, 12vw, 180px); }
+.sec-head { display: grid; grid-template-columns: auto 1fr; gap: 10px 28px; align-items: end; border-bottom: var(--line); padding-bottom: 22px; margin-bottom: clamp(36px, 5vw, 72px); }
+.sec-no { font: 700 clamp(64px, 9vw, 140px)/.8 var(--f-en); letter-spacing: -.04em; color: var(--mustard); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; }
+.sec-ttl { margin: 0; font: 900 clamp(30px, 4.6vw, 64px)/1.15 var(--f-jp); letter-spacing: -.02em; }
+body.lang-en .sec-ttl { font-family: var(--f-en); font-weight: 700; letter-spacing: -.01em; }
+.sec-ttl .ja, .sec-ttl .en { display: block; }
+.sec-lead { grid-column: 1 / -1; margin: 6px 0 0; max-width: 46em; color: var(--ink-2); font-size: 15.5px; }
+@media (max-width: 640px) { .sec-head { grid-template-columns: 1fr; gap: 6px; } }
+
+/* ═══════ HERO ═══════ */
+.hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; padding: calc(92px + env(safe-area-inset-top)) 0 0; overflow: hidden; }
+.hero-canvas { position: absolute; inset: 0; z-index: 0; }
+.hero-in { position: relative; z-index: 2; flex: 1; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .9fr); gap: clamp(20px, 4vw, 64px); align-items: center; padding: 10px 0 clamp(28px, 4vw, 56px); }
+@media (min-width: 1180px) { .hero-in { padding-right: 76px; } }
+.hero-kicker { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 0 0 18px; }
+.badge { display: inline-flex; align-items: center; height: 30px; padding: 0 14px; border-radius: 999px; background: var(--navy); color: #fff; font: 700 12px/1 var(--f-en); letter-spacing: .14em; box-shadow: 3px 3px 0 var(--ink); }
+.hero-title { margin: 0; font: 700 clamp(60px, 12vw, 196px)/.9 var(--f-en); letter-spacing: -.045em; color: var(--ink); }
+.hero-title .w { display: block; white-space: nowrap; }
+.hero-title .c { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
+.hero-title .amp { color: var(--mustard); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; font-size: .78em; vertical-align: .06em; }
+.hero-sub { margin: 22px 0 0; max-width: 34em; font-size: clamp(15px, 1.35vw, 19px); line-height: 1.95; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.hero-art { position: relative; justify-self: end; width: min(100%, 400px); aspect-ratio: 9 / 16; max-height: 64svh; }
+.hero-phone { position: absolute; inset: 0; border: var(--line); border-radius: 36px; overflow: hidden; background: var(--fur-l); box-shadow: 12px 12px 0 var(--ink); transform: rotate(3deg); will-change: transform; }
+.hero-phone img, .hero-phone video { width: 100%; height: 100%; object-fit: cover; }
+.hero-phone video { position: absolute; inset: 0; opacity: 0; transition: opacity .6s; }
+.hero-phone.playing video { opacity: 1; }
+.hero-sticker { position: absolute; z-index: 3; padding: 10px 16px; border: var(--line); border-radius: 14px; background: var(--paper); box-shadow: 5px 5px 0 var(--ink); font: 700 13px/1.3 var(--f-en); letter-spacing: .04em; will-change: transform; }
+.hero-sticker.a { left: -28px; top: 10%; transform: rotate(-8deg); }
+.hero-sticker.b { right: -22px; top: 30%; transform: rotate(6deg); background: var(--mustard); }
+.hero-clock { position: absolute; z-index: 3; left: -22px; bottom: -18px; width: 104px; height: 104px; }
+.hero-scroll { position: absolute; left: 50%; bottom: 12px; z-index: 3; transform: translateX(-50%); font-family: var(--f-mono); font-size: 11px; letter-spacing: .3em; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: .7; }
+.hero-scroll i { width: 1px; height: 26px; background: var(--ink); transform-origin: top; animation: scroll-line 1.6s var(--ease) infinite; }
+@keyframes scroll-line { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(0); transform-origin: bottom; } }
+.stamp { position: fixed; z-index: 150; pointer-events: none; width: 120px; height: 120px; margin: -60px 0 0 -60px; will-change: transform, opacity; }
+@media (max-width: 900px) {
+  .hero-in { grid-template-columns: 1fr; padding-bottom: 40px; }
+  .hero-scroll { display: none; }
+  .hero-title { font-size: clamp(60px, 19vw, 120px); }
+  .hero-art { justify-self: center; width: min(64%, 270px); max-height: none; margin-top: 14px; }
+  .hero-sticker.a { left: -16px; } .hero-sticker.b { right: -14px; }
+  .hero-clock { left: -10px; bottom: -14px; width: 84px; height: 84px; }
+}
+
+/* ═══════ TAPE ═══════ */
+.tape-wrap { position: relative; z-index: 3; margin-top: -24px; padding-block: 14px; overflow-x: clip; }
+.tape { margin: 0 -24px; padding-block: 18px; background: var(--ink); color: var(--cream); border-block: var(--line); transform: rotate(-1.6deg); overflow: hidden; }
+.tape-track { display: flex; width: max-content; will-change: transform; }
+.tape-track span { display: flex; align-items: center; gap: 1.2em; padding-right: 1.2em; white-space: nowrap; font: 700 clamp(18px, 2.2vw, 30px)/1 var(--f-en); letter-spacing: .02em; }
+.tape-track span::after { content: ""; width: .45em; height: .45em; border-radius: 50%; background: var(--mustard); }
+body.lang-ja .tape-track span { font-family: var(--f-jp); font-weight: 900; }
+
+/* ═══════ CHARACTERS ═══════ */
+.chars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 32px); }
+.char { position: relative; border: var(--line); border-radius: var(--r); background: var(--paper); box-shadow: 8px 8px 0 var(--ink); padding: clamp(20px, 2.4vw, 32px); display: grid; gap: 14px; transition: transform .35s var(--ease), box-shadow .35s var(--ease); will-change: transform; }
+.char:hover { transform: translate(-4px, -6px) rotate(-.6deg); box-shadow: 14px 14px 0 var(--ink); }
+.char-face { position: relative; width: 100%; aspect-ratio: 1; border-radius: 22px; overflow: hidden; border: var(--line); }
+.char-face svg { width: 100%; height: 100%; }
+.char.ren .char-face { background: linear-gradient(180deg, var(--sky) 0%, var(--paper-2) 70%); }
+.char.jill .char-face { background: linear-gradient(180deg, #F6E3D6 0%, var(--paper-2) 70%); }
+.char.pom .char-face { background: linear-gradient(180deg, #FBE9C7 0%, var(--paper-2) 70%); }
+.char-no { position: absolute; left: 14px; top: 10px; font: 700 42px/1 var(--f-en); color: var(--mustard); -webkit-text-stroke: 2.5px var(--ink); paint-order: stroke fill; }
+.char-role { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--navy); }
+.char-name { margin: 0; font: 700 clamp(30px, 3.4vw, 44px)/1 var(--f-en); letter-spacing: -.02em; }
+.char-name small { display: block; margin-top: 6px; font: 900 15px/1.4 var(--f-jp); letter-spacing: .02em; }
+.char-text { margin: 0; font-size: 14.5px; line-height: 1.85; color: var(--ink-2); }
+.char-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.char-tags li { padding: 5px 11px; border: 2px solid var(--ink); border-radius: 999px; font: 700 12px/1 var(--f-en); letter-spacing: .04em; background: var(--cream); }
+.eye { transition: transform .12s linear; }
+.ear-l, .ear-r { transform-origin: 50% 100%; transition: transform .5s var(--ease); }
+.char.ren .ear-l, .char.ren .ear-r { transform-origin: 50% 0; }
+.char.ren:hover .ear-l { transform: rotate(16deg); }
+.char.ren:hover .ear-r { transform: rotate(-16deg); }
+.char.jill:hover .glint { animation: glint .7s var(--ease) both; }
+@keyframes glint { 0% { transform: translateX(-30px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(30px); opacity: 0; } }
+.char.pom:hover .cheek { animation: puff .6s var(--ease) both; transform-origin: center; }
+@keyframes puff { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+.char-hint { position: absolute; right: 16px; top: 16px; font-family: var(--f-mono); font-size: 10px; letter-spacing: .2em; opacity: .5; }
+@media (max-width: 860px) { .chars { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; } }
+
+/* ═══════ A DAY (horizontal) ═══════ */
+.day { background: var(--navy); color: var(--paper); overflow-x: hidden; }
+@supports (overflow: clip) { .day { overflow-x: clip; overflow-y: visible; } }
+.day .sec-no { color: var(--mustard); -webkit-text-stroke-color: var(--paper); }
+.day .sec-head { border-bottom-color: rgba(255, 255, 255, .5); }
+.day .sec-lead { color: rgba(255, 255, 255, .75); }
+.day-pin { position: relative; }
+.day-track { display: flex; gap: clamp(16px, 2vw, 32px); width: max-content; padding-right: 20vw; will-change: transform; align-items: stretch; }
+.day-card { position: relative; width: clamp(260px, 30vw, 380px); flex: none; border: 3px solid var(--paper); border-radius: 24px; background: var(--navy-d); padding: 22px 22px 24px; display: grid; gap: 12px; grid-template-rows: auto 1fr auto; }
+.day-card.big { width: clamp(300px, 34vw, 440px); background: var(--mustard); color: var(--ink); border-color: var(--ink); }
+.day-time { font: 700 clamp(40px, 4.6vw, 64px)/1 var(--f-en); letter-spacing: -.03em; }
+.day-card.big .day-time { font-size: clamp(56px, 6.5vw, 96px); }
+.day-ttl { margin: 0; font: 900 clamp(18px, 1.7vw, 23px)/1.4 var(--f-jp); }
+body.lang-en .day-ttl { font-family: var(--f-en); font-weight: 700; }
+.day-text { margin: 0; font-size: 14px; line-height: 1.8; opacity: .85; }
+.day-ico { width: 56px; height: 56px; }
+.day-ico svg { width: 100%; height: 100%; }
+.day-head { position: relative; padding-right: 100px; }
+.day-clock { position: absolute; right: 0; bottom: 26px; width: 80px; height: 80px; z-index: 2; }
+.day-progress { height: 4px; background: rgba(255, 255, 255, .2); border-radius: 999px; margin-top: 36px; overflow: hidden; }
+.day-progress i { display: block; height: 100%; width: 100%; background: var(--mustard); transform: scaleX(0); transform-origin: left; }
+@media (max-width: 760px) { .day-track { flex-direction: column; width: auto; padding-right: 0; } .day-card, .day-card.big { width: 100%; } .day-clock { display: none; } .day-progress { display: none; } .day-head { padding-right: 0; } .day-pin { padding-block: clamp(90px, 12vw, 180px); } }
+
+/* ═══════ EPISODES ═══════ */
+.eps { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: clamp(14px, 2vw, 28px); }
+@media (max-width: 640px) { .eps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .ep-body { padding: 10px 12px 12px; } .ep-ttl { font-size: 14px; } .ep-cap { font-size: 12px; } .ep-no { left: 8px; top: 8px; font-size: 10px; padding: 5px 7px; } .ep-play { width: 36px; height: 36px; right: 8px; bottom: 8px; } .ep { box-shadow: 4px 4px 0 var(--ink); } }
+.ep { position: relative; display: block; border: var(--line); border-radius: 22px; overflow: hidden; background: var(--paper-2); box-shadow: 6px 6px 0 var(--ink); transition: transform .35s var(--ease), box-shadow .35s var(--ease); will-change: transform; }
+.ep:hover { transform: translate(-3px, -5px); box-shadow: 11px 11px 0 var(--ink); }
+.ep-media { position: relative; aspect-ratio: 9 / 16; background: var(--fur-l); overflow: hidden; }
+.ep-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.ep:hover .ep-media img { transform: scale(1.05); }
+.ep-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s; pointer-events: none; }
+.ep.playing .ep-media video { opacity: 1; }
+.ep-no { position: absolute; left: 12px; top: 10px; z-index: 2; padding: 6px 10px; border-radius: 10px; background: var(--ink); color: var(--mustard); font: 700 12px/1 var(--f-en); letter-spacing: .1em; }
+.ep-play { position: absolute; right: 12px; bottom: 12px; z-index: 2; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); border: var(--line); display: grid; place-items: center; transition: transform .3s var(--ease), background .3s; }
+.ep-play svg { width: 16px; height: 16px; margin-left: 2px; }
+.ep:hover .ep-play { background: var(--mustard); transform: scale(1.1); }
+.ep-body { padding: 14px 16px 16px; display: grid; gap: 4px; }
+.ep-date { font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; color: var(--ink-2); }
+.ep-ttl { margin: 0; font: 900 16px/1.5 var(--f-jp); }
+body.lang-en .ep-ttl { font-family: var(--f-en); font-weight: 700; }
+.ep-cap { margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink-2); }
+.ep.soon .ep-media::after { content: attr(data-soon); position: absolute; inset: auto 0 0; padding: 10px; background: var(--mustard); color: var(--ink); font: 700 12px/1 var(--f-en); letter-spacing: .16em; text-align: center; border-top: var(--line); }
+.eps-more { margin-top: 40px; display: flex; justify-content: center; }
+
+/* lightbox */
+.lb { position: fixed; inset: 0; z-index: 500; background: rgba(43, 29, 18, .88); display: grid; place-items: center; padding: 20px; opacity: 0; visibility: hidden; transition: opacity .35s, visibility 0s .35s; }
+.lb.open { opacity: 1; visibility: visible; transition: opacity .35s; }
+.lb-in { position: relative; width: min(92vw, calc(88svh * 9 / 16)); aspect-ratio: 9 / 16; border: var(--line); border-radius: 28px; overflow: hidden; background: #000; box-shadow: 12px 12px 0 var(--mustard); transform: scale(.92) translateY(20px); transition: transform .45s var(--ease); }
+.lb.open .lb-in { transform: none; }
+.lb-in iframe { width: 100%; height: 100%; border: 0; }
+.lb-x { position: absolute; right: 18px; top: 18px; }
+
+/* ═══════ GAME ═══════ */
+.game { background: var(--ink); color: var(--cream); overflow-x: clip; }
+.game .sec-no { color: var(--mustard); -webkit-text-stroke-color: var(--cream); }
+.game .sec-head { border-bottom-color: rgba(255, 255, 255, .4); }
+.game .sec-lead { color: rgba(255, 255, 255, .7); }
+.game-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 72px); align-items: center; }
+.game-shot { position: relative; border: 3px solid var(--cream); border-radius: 26px; overflow: hidden; background: var(--navy); box-shadow: 12px 12px 0 var(--mustard); transform: rotate(-2deg); will-change: transform; }
+.game-shot img { width: 100%; height: auto; }
+.game-big { font: 700 clamp(56px, 8vw, 120px)/.9 var(--f-en); letter-spacing: -.04em; margin: 0 0 10px; color: var(--mustard); -webkit-text-stroke: 3px var(--cream); paint-order: stroke fill; }
+.game-text { font-size: 15.5px; line-height: 1.9; opacity: .9; margin: 0 0 24px; max-width: 34em; }
+.hay-count { display: inline-flex; align-items: baseline; gap: 10px; margin: 0 0 26px; font: 700 clamp(30px, 3.4vw, 48px)/1 var(--f-en); color: var(--cream); }
+.hay-count small { font: 500 12px/1 var(--f-mono); letter-spacing: .2em; opacity: .7; }
+.game-chars { display: flex; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; flex-wrap: wrap; }
+.game-chars li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 2px solid var(--cream); border-radius: 999px; font: 700 13px/1 var(--f-en); letter-spacing: .04em; }
+.game-chars i { width: 10px; height: 10px; border-radius: 50%; background: var(--mustard); }
+@media (max-width: 860px) { .game-grid { grid-template-columns: 1fr; } .game-shot { transform: rotate(-1deg); } }
+
+/* ═══════ FOLLOW ═══════ */
+.sns-list { display: grid; margin: 0; padding: 0; list-style: none; border-top: var(--line); }
+.sns-row { position: relative; display: grid; grid-template-columns: 60px minmax(0, 1fr) auto 40px; align-items: center; gap: 20px; padding: 26px 8px; border-bottom: var(--line); overflow: hidden; isolation: isolate; transition: color .3s; }
+.sns-row::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--bg, var(--mustard)); transform: scaleX(0); transform-origin: left; transition: transform .5s var(--ease); }
+.sns-row:hover::before { transform: scaleX(1); }
+.sns-row:hover { color: var(--fg, var(--ink)); }
+.sns-row .ic { width: 44px; height: 44px; border: var(--line); border-radius: 12px; display: grid; place-items: center; background: var(--paper); }
+.sns-row .ic svg { width: 22px; height: 22px; }
+.sns-name { font: 700 clamp(26px, 3.6vw, 48px)/1 var(--f-en); letter-spacing: -.02em; }
+.sns-name small { display: block; margin-top: 6px; font: 500 12px/1 var(--f-mono); letter-spacing: .14em; text-transform: none; }
+.sns-handle { font-family: var(--f-mono); font-size: 13px; letter-spacing: .06em; }
+.sns-row .arr { width: 40px; height: 40px; transition: transform .4s var(--ease); }
+.sns-row:hover .arr { transform: translateX(8px) rotate(-45deg); }
+.sched { margin-top: 48px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.sched li { list-style: none; text-align: center; padding: 14px 0 12px; border: var(--line); border-radius: 16px; background: var(--paper); font: 700 14px/1 var(--f-en); display: grid; gap: 8px; }
+.sched li.on { background: var(--mustard); }
+.sched li em { font: 900 11px/1 var(--f-jp); font-style: normal; opacity: .75; }
+.sched li.on em { opacity: 1; }
+@media (max-width: 640px) { .sns-row { grid-template-columns: 44px 1fr 28px; } .sns-handle { display: none; } .sns-row .arr { width: 28px; height: 28px; } .sched { gap: 5px; } .sched li { padding: 10px 0 8px; font-size: 12px; } }
+
+/* ═══════ FOOTER ═══════ */
+.ftr { padding: 60px 0 calc(40px + env(safe-area-inset-bottom)); border-top: var(--line); background: var(--paper-2); }
+.ftr-in { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
+.ftr-big { font: 700 clamp(40px, 7vw, 110px)/1 var(--f-en); letter-spacing: -.04em; margin: 0 0 30px; color: var(--ink); }
+.ftr-big span { color: var(--mustard); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; }
+.ftr small { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; }
+.ftr a.u { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ── reveal helpers (GSAP sets final state; this is the pre-state) ── */
+.rv { opacity: 0; transform: translateY(28px); }
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .hero-phone { transform: rotate(3deg) !important; }
+}
+
+/* ═══════ TODAY / PICKUP (hero foot) ═══════ */
+.hero-foot { position: relative; z-index: 2; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; padding-bottom: 78px; }
+.today { display: grid; gap: 4px; }
+.today-date { font: 700 clamp(30px, 3.4vw, 44px)/1 var(--f-en); letter-spacing: -.02em; }
+.status { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.status li { display: inline-flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); border: 2px solid var(--ink); box-shadow: 0 0 0 0 rgba(111, 154, 92, .6); animation: pulse 2s infinite; }
+.dot.off { background: var(--blush); animation: none; }
+.dot.next { background: var(--mustard); animation: none; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(111, 154, 92, .55); } 70% { box-shadow: 0 0 0 8px rgba(111, 154, 92, 0); } 100% { box-shadow: 0 0 0 0 rgba(111, 154, 92, 0); } }
+.pickup { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; max-width: 420px; padding: 14px 18px; border: var(--line); border-radius: 18px; background: var(--paper); box-shadow: 6px 6px 0 var(--ink); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.pickup:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--ink); }
+.pickup-k { display: grid; gap: 4px; font: 700 13px/1 var(--f-en); letter-spacing: .08em; color: #C8322B; }
+.pickup-k b { width: fit-content; padding: 3px 7px; border-radius: 6px; background: var(--mustard); color: var(--ink); font-size: 10px; letter-spacing: .14em; }
+.pickup-t { font-size: 13.5px; line-height: 1.6; }
+.pickup-a { font: 700 20px/1 var(--f-en); }
+@media (max-width: 900px) { .hero-foot { padding-bottom: 56px; } .pickup { max-width: none; width: 100%; } }
+
+/* ═══════ RAIL + TOTOP ═══════ */
+.rail { position: fixed; right: 18px; top: 50%; z-index: 90; transform: translateY(-50%); display: none; flex-direction: column; align-items: center; gap: 8px; }
+.rail-label { writing-mode: vertical-rl; font: 700 11px/1 var(--f-en); letter-spacing: .3em; margin-bottom: 6px; opacity: .7; }
+.rail-btn { width: 44px; height: 44px; display: grid; place-items: center; border: var(--line); border-radius: 50%; background: var(--paper); box-shadow: 3px 3px 0 var(--ink); transition: transform .25s var(--ease), background .25s; }
+.rail-btn svg { width: 18px; height: 18px; }
+.rail-btn:hover { transform: translate(-3px, -3px) rotate(-8deg); background: var(--mustard); }
+.rail-btn.game { background: var(--navy); color: #fff; }
+.rail-prog { width: 2px; height: 90px; margin-top: 8px; background: rgba(43, 29, 18, .18); border-radius: 2px; overflow: hidden; }
+.rail-prog i { display: block; width: 100%; height: 100%; background: var(--ink); transform: scaleY(0); transform-origin: top; }
+@media (min-width: 1180px) { .rail { display: flex; } }
+.totop { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 90; display: grid; justify-items: center; gap: 2px; width: 64px; padding: 6px 0 8px; border: var(--line); border-radius: 20px; background: var(--paper); box-shadow: 5px 5px 0 var(--ink); font: 700 10px/1 var(--f-en); letter-spacing: .1em; opacity: 0; transform: translateY(20px) scale(.9); pointer-events: none; transition: opacity .3s, transform .4s var(--ease); }
+.totop.show { opacity: 1; transform: none; pointer-events: auto; }
+.totop svg { width: 40px; height: 40px; }
+.totop .ear { transform-origin: 50% 100%; transition: transform .4s var(--ease); }
+.totop:hover .ear { transform: rotate(-10deg); } .totop:hover .ear.r { transform: rotate(10deg); }
+body.lang-ja .totop { font-family: var(--f-jp); font-weight: 900; }
+@media (min-width: 1180px) { .totop { right: 18px; } }
+
+/* ═══════ CHARACTER FLIP ═══════ */
+.char { padding: 0; background: transparent; border: 0; box-shadow: none; perspective: 1400px; }
+.char:hover { transform: none; box-shadow: none; }
+.char-flip { position: relative; transform-style: preserve-3d; transition: transform .8s var(--ease); will-change: transform; }
+.char.flipped .char-flip { transform: rotateY(180deg); }
+.char-front, .char-back { border: var(--line); border-radius: var(--r); background: var(--paper); box-shadow: 8px 8px 0 var(--ink); padding: clamp(20px, 2.4vw, 32px); display: grid; gap: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: transform .35s var(--ease), box-shadow .35s var(--ease); }
+.char-front { position: relative; }
+.char-back { position: absolute; inset: 0; transform: rotateY(180deg); background: var(--navy); color: var(--paper); align-content: center; overflow: hidden; }
+.char-back::after { content: attr(data-big); position: absolute; right: -6px; bottom: -22px; font: 700 150px/1 var(--f-en); letter-spacing: -.05em; color: rgba(255, 255, 255, .07); pointer-events: none; }
+.char-back .char-role { color: var(--mustard); }
+.char-back .char-name { color: var(--paper); }
+.char:not(.flipped):hover .char-front { transform: translate(-4px, -6px); box-shadow: 14px 14px 0 var(--ink); }
+.char-dl { margin: 0; display: grid; gap: 0; }
+.char-row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 12px 0; border-bottom: 2px solid rgba(255, 255, 255, .25); }
+.char-row dt { font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; color: var(--mustard); padding-top: 4px; }
+.char-row dd { margin: 0; font-size: 15px; line-height: 1.6; }
+.char-more { display: inline-flex; align-items: center; gap: 8px; justify-self: start; margin-top: 4px; padding: 10px 16px; border: 2px solid var(--ink); border-radius: 999px; background: var(--cream); font: 700 13px/1 var(--f-en); letter-spacing: .04em; transition: background .25s, transform .25s var(--ease); }
+.char-more svg { width: 16px; height: 16px; transition: transform .3s var(--ease); }
+.char-more:hover { background: var(--mustard); } .char-more:hover svg { transform: translateX(3px); }
+.char-more.back { border-color: var(--paper); background: transparent; color: var(--paper); margin-top: 14px; }
+.char-more.back:hover { background: rgba(255, 255, 255, .12); }
+body.lang-ja .char-more { font-family: var(--f-jp); font-weight: 900; }
+
+/* ═══════ RELATIONSHIP ═══════ */
+.rel { margin-top: clamp(60px, 8vw, 110px); padding: clamp(24px, 3vw, 44px); border: var(--line); border-radius: var(--r); background: var(--paper-2); box-shadow: 8px 8px 0 var(--ink); }
+.rel-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; margin-bottom: 10px; }
+.rel-ttl { margin: 0; font: 900 clamp(22px, 2.6vw, 34px)/1.2 var(--f-jp); }
+body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
+.rel-svg { width: 100%; height: auto; max-width: 900px; margin: 0 auto; }
+.rel-line { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-dasharray: 8 8; }
+.rel.in .rel-line { animation: dash 18s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -320; } }
+.rel-node { transform-box: fill-box; transform-origin: center; }
+.rel.in .rel-node { animation: bob 3.4s ease-in-out infinite; }
+.rel-svg > g:nth-of-type(6) .rel-node { animation-delay: -1.1s; } .rel-svg > g:nth-of-type(7) .rel-node { animation-delay: -2.2s; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.rel-lab { transform-box: fill-box; transform-origin: center; }
+
+/* ═══════ DAY: sticky space ═══════ */
+.day-space { position: relative; }
+.day-pin { position: sticky; top: 0; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: clamp(60px, 8vw, 100px) 40px; }
+.day .sec { padding-block: 0; }
+.sec.day { padding-block: 0; }
+@media (max-width: 760px) { .day-space { height: auto !important; } .day-pin { position: static; min-height: 0; padding-block: 0; } }
+
+/* ═══════ HERO INTRO (CSS-driven, no library) ═══════ */
+.hero-title .c { opacity: 0; transform: translateY(-130%) rotate(var(--rot, 0deg)); }
+.hero.go .hero-title .c { animation: drop 1.15s cubic-bezier(.34, 1.56, .64, 1) forwards; animation-delay: calc(.1s + var(--i) * .07s); }
+@supports (animation-timing-function: linear(0, 1)) {
+  .hero.go .hero-title .c { animation-timing-function: linear(0, 0.1, 0.33, 0.6, 0.85, 1.03, 1.12, 1.14, 1.1, 1.04, 1, 0.97, 0.97, 0.98, 1, 1.01, 1.01, 1, 1); }
+}
+@keyframes drop { to { opacity: 1; transform: translateY(0) rotate(0deg); } }
+.hero-sticker, #heroClock { opacity: 0; transform: scale(0) rotate(-30deg); }
+.hero.go .hero-sticker { animation: pop .8s cubic-bezier(.34, 1.56, .64, 1) 1.1s forwards; }
+.hero.go .hero-sticker.b { animation-delay: 1.25s; }
+.hero.go #heroClock { animation: pop .7s cubic-bezier(.34, 1.56, .64, 1) 1.35s forwards; }
+@keyframes pop { to { opacity: 1; transform: scale(1) rotate(var(--r0, 0deg)); } }
+.hero-sticker.a { --r0: -8deg; transform: scale(0) rotate(-30deg); } .hero-sticker.b { --r0: 6deg; }
+.hero.go .hero-copy .rv, .hero.go .hero-art.rv, .hero.go .hero-foot .rv { opacity: 1; transform: none; transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.hero.go .hero-sub { transition-delay: .55s; } .hero.go .hero-cta { transition-delay: .7s; } .hero.go .hero-art { transition-delay: .7s; } .hero.go .today { transition-delay: .9s; } .hero.go .pickup { transition-delay: 1.05s; }
+
+/* ── generic reveals ── */
+.rv { transition: opacity 1s var(--ease), transform 1s var(--ease); transition-delay: var(--d, 0s); }
+.rv.in { opacity: 1; transform: none; }
+.sec-no { display: inline-block; }
+.sec-head.rv .sec-no { transform: translateY(40%); opacity: 0; transition: transform 1.1s cubic-bezier(.16, 1, .3, 1), opacity .8s; }
+.sec-head.rv.in .sec-no { transform: none; opacity: 1; }
+.char.rv { transform: translateY(28px) rotate(-3deg); } .char.rv:nth-child(2) { transform: translateY(28px) rotate(3deg); }
+.char.rv.in { transform: none; }
+.ep.rv { transform: translateY(28px); }
+.tape-track { animation: tape 30s linear infinite; }
+.tape-track.paused { animation-play-state: paused; }
+@keyframes tape { to { transform: translateX(-50%); } }
+@media (max-width: 760px) { .tape-track { animation-duration: 22s; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-title .c, .hero-sticker, #heroClock { opacity: 1; transform: none; animation: none !important; }
+  .hero-sticker.a { transform: rotate(-8deg); } .hero-sticker.b { transform: rotate(6deg); }
+  .tape-track { animation: none; }
+  .rel.in .rel-line, .rel.in .rel-node { animation: none; }
+  .dot { animation: none; }
+  .char-flip { transition: none; }
+}
+</style>
+</head>
+<body class="lang-ja">
+<div class="cur" aria-hidden="true"></div>
+<div class="cur-ring" aria-hidden="true"></div>
+<div class="cur-txt" aria-hidden="true"><span class="cur-label">PLAY</span></div>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-in">
+    <svg class="loader-ears" viewBox="0 0 120 120" aria-hidden="true">
+      <g class="ear l"><path d="M38 110 C 22 70, 30 28, 46 24 C 58 22, 60 60, 54 110 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><path d="M42 100 C 34 72, 38 42, 47 38 C 52 38, 52 68, 50 100 Z" fill="#E8A4A0"/></g>
+      <g class="ear r"><path d="M82 110 C 98 70, 90 28, 74 24 C 62 22, 60 60, 66 110 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><path d="M78 100 C 86 72, 82 42, 73 38 C 68 38, 68 68, 70 100 Z" fill="#E8A4A0"/></g>
+    </svg>
+    <div class="loader-txt">REN &amp; JILL</div>
+  </div>
+</div>
+
+<header class="hdr" id="hdr">
+  <a class="brand" href="#top" aria-label="Ren & Jill">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="22" r="14" fill="#C99A67" stroke="#2B1D12" stroke-width="3"/><path d="M12 12 C 6 2, 16 0, 17 10 Z M28 12 C 34 2, 24 0, 23 10 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="3" stroke-linejoin="round"/><circle cx="15" cy="21" r="2" fill="#2B1D12"/><circle cx="25" cy="21" r="2" fill="#2B1D12"/><path d="M18 26 h4" stroke="#2B1D12" stroke-width="2" stroke-linecap="round"/></svg>
+    REN &amp; JILL
+  </a>
+  <div class="hdr-r">
+    <nav class="hdr-sns" aria-label="SNS">
+      <a class="pill icon" href="https://www.youtube.com/@renjill_office" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-3.2.5-4.8s-.1-3.2-.5-4.8ZM9.8 15.3V8.7l6 3.3-6 3.3Z"/></svg></a>
+      <a class="pill icon" href="https://www.instagram.com/renjill_office/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+      <a class="pill icon" href="https://www.tiktok.com/@renjill_office" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2h-3.2v13.2a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.1a6.2 6.2 0 1 0 5.2 6.1V8.6a7.4 7.4 0 0 0 4.3 1.4V6.8A4.3 4.3 0 0 1 16.5 2Z"/></svg></a>
+      <a class="pill icon" href="https://www.facebook.com/profile.php?id=1358515160686321" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></a>
+    </nav>
+    <button class="pill icon" id="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="snd-wave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg></button>
+    <button class="pill lang-sw" id="lang" aria-label="Language"><span class="on" data-l="ja">JA</span><i>/</i><span data-l="en">EN</span></button>
+  </div>
+</header>
+
+<aside class="rail" aria-label="Follow">
+  <span class="rail-label" data-t="rail">FOLLOW</span>
+  <a class="rail-btn" href="https://www.youtube.com/@renjill_office" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-3.2.5-4.8s-.1-3.2-.5-4.8ZM9.8 15.3V8.7l6 3.3-6 3.3Z"/></svg></a>
+  <a class="rail-btn" href="https://www.instagram.com/renjill_office/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+  <a class="rail-btn" href="https://www.tiktok.com/@renjill_office" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2h-3.2v13.2a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.1a6.2 6.2 0 1 0 5.2 6.1V8.6a7.4 7.4 0 0 0 4.3 1.4V6.8A4.3 4.3 0 0 1 16.5 2Z"/></svg></a>
+  <a class="rail-btn" href="https://www.facebook.com/profile.php?id=1358515160686321" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></a>
+  <a class="rail-btn game" href="https://renjill-hay-dash.pages.dev/" target="_blank" rel="noopener" aria-label="Hay Dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 12h4M9 10v4M15 11h.01M18 13h.01"/></svg></a>
+  <span class="rail-prog" aria-hidden="true"><i id="prog"></i></span>
+</aside>
+<button class="totop" id="totop" aria-label="Back to top">
+  <svg viewBox="0 0 60 60" aria-hidden="true"><path class="ear" d="M18 44 C 10 24, 14 8, 24 8 C 32 8, 30 30, 28 44 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="3" stroke-linejoin="round"/><path class="ear r" d="M42 44 C 50 24, 46 8, 36 8 C 28 8, 30 30, 32 44 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="3" stroke-linejoin="round"/><circle cx="30" cy="48" r="14" fill="#C99A67" stroke="#2B1D12" stroke-width="3"/><circle cx="25" cy="46" r="2" fill="#2B1D12"/><circle cx="35" cy="46" r="2" fill="#2B1D12"/></svg>
+  <span data-t="totop">上へ</span>
+</button>
+<main id="top">
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="hero">
+  <canvas class="hero-canvas" id="hay" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <div class="hero-kicker rv">
+        <span class="badge">REN &amp; JILL</span>
+        <span class="mono" data-t="hero.kicker">うさぎのオフィスコメディ</span>
+      </div>
+      <h1 class="hero-title" aria-label="Ren & Jill">
+        <span class="w"><span class="c">R</span><span class="c">E</span><span class="c">N</span><span class="c amp">&amp;</span></span>
+        <span class="w"><span class="c">J</span><span class="c">I</span><span class="c">L</span><span class="c">L</span></span>
+      </h1>
+      <p class="hero-sub rv" data-t="hero.sub">うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。</p>
+      <div class="hero-cta rv">
+        <a class="btn" href="#episodes"><span data-t="hero.cta1">エピソードを見る</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn lite" href="https://renjill-hay-dash.pages.dev/" target="_blank" rel="noopener"><span data-t="hero.cta2">ゲームで遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </div>
+    </div>
+    <div class="hero-art rv" id="heroArt">
+      <div class="hero-phone" id="heroPhone">
+        <img src="https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261025_chime2_cover.jpg" alt="定時のチャイムによろこぶ課長レン" width="1080" height="1920" fetchpriority="high">
+        <video muted loop playsinline preload="none" src="https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261025_chime2.mp4" aria-hidden="true"></video>
+      </div>
+      <div class="hero-sticker a" data-t="hero.st1">NO DIALOGUE</div>
+      <div class="hero-sticker b" data-t="hero.st2">NEW · MON WED FRI SUN</div>
+      <svg class="hero-clock" id="heroClock" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="#FBF6EC" stroke="#2B1D12" stroke-width="4"/>
+        <g stroke="#2B1D12" stroke-width="3" stroke-linecap="round"><path d="M50 10v6M90 50h-6M50 90v-6M10 50h6"/></g>
+        <line id="hHand" x1="50" y1="50" x2="50" y2="28" stroke="#2B1D12" stroke-width="5" stroke-linecap="round" transform="rotate(270 50 50)"/>
+        <line id="mHand" x1="50" y1="50" x2="50" y2="20" stroke="#D9A520" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="4" fill="#2B1D12"/>
+      </svg>
+    </div>
+  </div>
+  <div class="wrap hero-foot">
+    <div class="today rv">
+      <span class="mono" data-t="today.label">TODAY IS</span>
+      <div class="today-date" id="todayDate">2026.10.31</div>
+      <ul class="status">
+        <li><i class="dot" id="statusDot"></i><span id="statusText">勤務中</span></li>
+        <li><i class="dot next"></i><span id="nextEp">次の新作 —</span></li>
+      </ul>
+    </div>
+    <a class="pickup rv" href="#episodes" id="pickup">
+      <span class="pickup-k"><span data-t="pickup.k">PICKUP!!</span><b>NEW</b></span>
+      <span class="pickup-t" data-t="pickup.t">11月1日、新人のポムが入社します。</span>
+      <span class="pickup-a">→</span>
+    </a>
+  </div>
+</section>
+
+<div class="tape-wrap" aria-hidden="true">
+  <div class="tape"><div class="tape-track" id="tape"></div></div>
+</div>
+
+<!-- ═══════ 01 CHARACTERS ═══════ -->
+<section class="sec" id="characters">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-no">01</div>
+      <h2 class="sec-ttl"><span data-t="ch.ttl">はたらく、うさぎたち。</span></h2>
+      <p class="sec-lead" data-t="ch.lead">目が、カーソルを追いかけます。カードにカーソルを当てると、それぞれのクセが出ます。</p>
+    </div>
+    <div class="chars">
+      <article class="char ren rv" data-char>
+        <div class="char-flip">
+          <div class="char-front">
+        <div class="char-face">
+          <span class="char-no">01</span>
+          <svg viewBox="0 0 300 300" aria-hidden="true">
+            <g class="ear-l"><path d="M104 98 C 62 108, 46 172, 62 216 C 72 244, 108 238, 112 200 C 116 164, 122 128, 104 98 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="5" stroke-linejoin="round"/><path d="M98 118 C 74 130, 66 178, 76 208 C 82 224, 100 220, 102 196 C 104 170, 106 140, 98 118 Z" fill="#E8A4A0"/></g>
+            <g class="ear-r"><path d="M196 98 C 238 108, 254 172, 238 216 C 228 244, 192 238, 188 200 C 184 164, 178 128, 196 98 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="5" stroke-linejoin="round"/><path d="M202 118 C 226 130, 234 178, 224 208 C 218 224, 200 220, 198 196 C 196 170, 194 140, 202 118 Z" fill="#E8A4A0"/></g>
+            <ellipse cx="150" cy="250" rx="98" ry="64" fill="#C99A67" stroke="#2B1D12" stroke-width="5"/>
+            <ellipse cx="150" cy="262" rx="52" ry="34" fill="#F4EAD8"/>
+            <path d="M150 220 l-10 26 h20 Z" fill="#D9A520" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M150 246 l-8 28 l8 10 l8 -10 Z" fill="#D9A520" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/>
+            <circle cx="150" cy="150" r="78" fill="#C99A67" stroke="#2B1D12" stroke-width="5"/>
+            <path d="M90 128 C 110 90, 190 90, 210 128 C 196 118, 104 118, 90 128 Z" fill="#8C5A37"/>
+            <ellipse cx="150" cy="178" rx="34" ry="24" fill="#F4EAD8"/>
+            <g class="eye" data-eye><circle cx="122" cy="146" r="11" fill="#2B1D12"/><circle cx="126" cy="142" r="3.5" fill="#fff"/></g>
+            <g class="eye" data-eye><circle cx="178" cy="146" r="11" fill="#2B1D12"/><circle cx="182" cy="142" r="3.5" fill="#fff"/></g>
+            <path d="M108 128 c6 -6 14 -6 20 0 M172 128 c6 -6 14 -6 20 0" fill="none" stroke="#2B1D12" stroke-width="4" stroke-linecap="round"/>
+            <path d="M144 170 h12 l-6 7 Z" fill="#E8A4A0" stroke="#2B1D12" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M150 177 v8 M142 188 c4 4 12 4 16 0" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/>
+            <g stroke="#2B1D12" stroke-width="2.5" stroke-linecap="round" opacity=".7"><path d="M60 170 l40 6 M60 186 l40 -2 M240 170 l-40 6 M240 186 l-40 -2"/></g>
+            <circle cx="104" cy="170" r="8" fill="#E8A4A0" opacity=".7"/><circle cx="196" cy="170" r="8" fill="#E8A4A0" opacity=".7"/>
+          </svg>
+          <span class="char-hint">HOVER</span>
+        </div>
+        <div class="char-role">BOSS · HOLLAND LOP</div>
+        <h3 class="char-name">REN<small data-t="ch.ren.name">課長のレン</small></h3>
+        <p class="char-text" data-t="ch.ren.text">たれ耳の課長。やる気はある。手伝うほど、なぜか仕事が増える。承認印は鼻で押す。定時のチャイムが、いちばんの楽しみ。</p>
+        <ul class="char-tags"><li data-t="ch.ren.t1">牧草ラバー</li><li data-t="ch.ren.t2">鼻ハンコ</li><li data-t="ch.ren.t3">18:00 が好き</li></ul>
+      
+            <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <div class="char-back" aria-hidden="true" data-big="01">
+            <div class="char-role" data-t="ch.detail">DETAIL</div>
+            <h3 class="char-name">REN</h3>
+            <dl class="char-dl"><div class="char-row"><dt data-t="ch.d.role">役職</dt><dd data-t="ch.ren.role">課長 · うさぎのボス</dd></div><div class="char-row"><dt data-t="ch.d.breed">種類</dt><dd data-t="ch.ren.breed">ホーランドロップ（たれ耳）</dd></div><div class="char-row"><dt data-t="ch.d.like">好きなもの</dt><dd data-t="ch.ren.like">牧草、定時のチャイム</dd></div><div class="char-row"><dt data-t="ch.d.debut">初登場</dt><dd data-t="ch.ren.debut">EP.01「ハンコ」</dd></div></dl>
+            <button class="char-more back" type="button" data-flip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span data-t="ch.close">もどる</span></button>
+          </div>
+        </div>
+      </article>
+      <article class="char jill rv" data-char>
+        <div class="char-flip">
+          <div class="char-front">
+        <div class="char-face">
+          <span class="char-no">02</span>
+          <svg viewBox="0 0 300 300" aria-hidden="true">
+            <g class="ear-l"><path d="M112 140 C 96 100, 100 44, 120 36 C 138 30, 140 100, 136 140 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="5" stroke-linejoin="round"/><path d="M118 130 C 108 100, 112 56, 122 50 C 130 48, 130 100, 128 130 Z" fill="#E8A4A0"/></g>
+            <g class="ear-r"><path d="M188 140 C 204 100, 200 44, 180 36 C 162 30, 160 100, 164 140 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="5" stroke-linejoin="round"/><path d="M182 130 C 192 100, 188 56, 178 50 C 170 48, 170 100, 172 130 Z" fill="#E8A4A0"/></g>
+            <ellipse cx="150" cy="252" rx="92" ry="60" fill="#C99A67" stroke="#2B1D12" stroke-width="5"/>
+            <ellipse cx="150" cy="262" rx="48" ry="32" fill="#F4EAD8"/>
+            <path d="M126 214 c10 30 38 30 48 0" fill="none" stroke="#1E3A5F" stroke-width="3"/>
+            <rect x="139" y="236" width="22" height="28" rx="4" fill="#FBF6EC" stroke="#1E3A5F" stroke-width="3"/><rect x="144" y="241" width="12" height="8" rx="2" fill="#D9A520"/>
+            <circle cx="150" cy="152" r="74" fill="#C99A67" stroke="#2B1D12" stroke-width="5"/>
+            <ellipse cx="150" cy="178" rx="32" ry="22" fill="#F4EAD8"/>
+            <g class="eye" data-eye><circle cx="124" cy="148" r="13" fill="#2B1D12"/><circle cx="129" cy="143" r="4" fill="#fff"/></g>
+            <g class="eye" data-eye><circle cx="176" cy="148" r="13" fill="#2B1D12"/><circle cx="181" cy="143" r="4" fill="#fff"/></g>
+            <g fill="none" stroke="#8C5A37" stroke-width="4"><circle cx="124" cy="148" r="22"/><circle cx="176" cy="148" r="22"/><path d="M146 148 h8 M102 146 l-12 -6 M198 146 l12 -6"/></g>
+            <g clip-path="url(#gl)"><rect class="glint" x="100" y="126" width="14" height="46" fill="#fff" opacity="0" transform="skewX(-20)"/></g>
+            <clipPath id="gl"><circle cx="124" cy="148" r="22"/><circle cx="176" cy="148" r="22"/></clipPath>
+            <path d="M144 170 h12 l-6 7 Z" fill="#E8A4A0" stroke="#2B1D12" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M150 177 v8 M143 189 h14" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/>
+            <g stroke="#2B1D12" stroke-width="2.5" stroke-linecap="round" opacity=".7"><path d="M64 172 l38 4 M64 186 l38 -2 M236 172 l-38 4 M236 186 l-38 -2"/></g>
+          </svg>
+          <span class="char-hint">HOVER</span>
+        </div>
+        <div class="char-role">ASSISTANT · NETHERLAND DWARF</div>
+        <h3 class="char-name">JILL<small data-t="ch.jill.name">部下のジル</small></h3>
+        <p class="char-text" data-t="ch.jill.text">しっかり者の部下。メガネをかけるとスイッチが入る。課長のマグカップがどこにあるか、だいたい知っている。</p>
+        <ul class="char-tags"><li data-t="ch.jill.t1">メガネでON</li><li data-t="ch.jill.t2">段取り上手</li><li data-t="ch.jill.t3">ツッコミ担当</li></ul>
+      
+            <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <div class="char-back" aria-hidden="true" data-big="02">
+            <div class="char-role" data-t="ch.detail">DETAIL</div>
+            <h3 class="char-name">JILL</h3>
+            <dl class="char-dl"><div class="char-row"><dt data-t="ch.d.role">役職</dt><dd data-t="ch.jill.role">部下 · アシスタント</dd></div><div class="char-row"><dt data-t="ch.d.breed">種類</dt><dd data-t="ch.jill.breed">ネザーランドドワーフ</dd></div><div class="char-row"><dt data-t="ch.d.like">好きなもの</dt><dd data-t="ch.jill.like">段取り、メガネ</dd></div><div class="char-row"><dt data-t="ch.d.debut">初登場</dt><dd data-t="ch.jill.debut">EP.01「ハンコ」</dd></div></dl>
+            <button class="char-more back" type="button" data-flip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span data-t="ch.close">もどる</span></button>
+          </div>
+        </div>
+      </article>
+      <article class="char pom rv" data-char>
+        <div class="char-flip">
+          <div class="char-front">
+        <div class="char-face">
+          <span class="char-no">03</span>
+          <svg viewBox="0 0 300 300" aria-hidden="true">
+            <ellipse cx="150" cy="248" rx="90" ry="60" fill="#E6C9A4" stroke="#2B1D12" stroke-width="5"/>
+            <ellipse cx="150" cy="258" rx="46" ry="30" fill="#FBF6EC"/>
+            <circle cx="96" cy="112" r="20" fill="#E6C9A4" stroke="#2B1D12" stroke-width="5"/><circle cx="96" cy="112" r="9" fill="#E8A4A0"/>
+            <circle cx="204" cy="112" r="20" fill="#E6C9A4" stroke="#2B1D12" stroke-width="5"/><circle cx="204" cy="112" r="9" fill="#E8A4A0"/>
+            <circle cx="150" cy="156" r="78" fill="#E6C9A4" stroke="#2B1D12" stroke-width="5"/>
+            <path d="M78 136 C 100 118, 200 118, 222 136 l-4 14 C 196 138, 104 138, 82 150 Z" fill="#E05A4E" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/>
+            <circle class="cheek" cx="104" cy="186" r="24" fill="#F6D7A8" stroke="#2B1D12" stroke-width="4"/>
+            <circle class="cheek" cx="196" cy="186" r="24" fill="#F6D7A8" stroke="#2B1D12" stroke-width="4"/>
+            <g class="eye" data-eye><circle cx="128" cy="160" r="9" fill="#2B1D12"/><circle cx="131" cy="157" r="3" fill="#fff"/></g>
+            <g class="eye" data-eye><circle cx="172" cy="160" r="9" fill="#2B1D12"/><circle cx="175" cy="157" r="3" fill="#fff"/></g>
+            <path d="M145 182 h10 l-5 6 Z" fill="#E8A4A0" stroke="#2B1D12" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M150 188 v6 M142 198 c4 4 12 4 16 0" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/>
+            <path d="M132 218 c10 -8 26 -8 36 0" fill="none" stroke="#6F9A5C" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+          <span class="char-hint">HOVER</span>
+        </div>
+        <div class="char-role">ROOKIE · GOLDEN HAMSTER</div>
+        <h3 class="char-name">POM<small data-t="ch.pom.name">新人のポム</small></h3>
+        <p class="char-text" data-t="ch.pom.text">11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。</p>
+        <ul class="char-tags"><li data-t="ch.pom.t1">ほっぺ収納</li><li data-t="ch.pom.t2">元気</li><li>NEW 11/1</li></ul>
+      
+            <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <div class="char-back" aria-hidden="true" data-big="03">
+            <div class="char-role" data-t="ch.detail">DETAIL</div>
+            <h3 class="char-name">POM</h3>
+            <dl class="char-dl"><div class="char-row"><dt data-t="ch.d.role">役職</dt><dd data-t="ch.pom.role">新人</dd></div><div class="char-row"><dt data-t="ch.d.breed">種類</dt><dd data-t="ch.pom.breed">ゴールデンハムスター</dd></div><div class="char-row"><dt data-t="ch.d.like">好きなもの</dt><dd data-t="ch.pom.like">ほっぺに入れること</dd></div><div class="char-row"><dt data-t="ch.d.debut">初登場</dt><dd data-t="ch.pom.debut">11/1「新人のポム」</dd></div></dl>
+            <button class="char-more back" type="button" data-flip><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span data-t="ch.close">もどる</span></button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="rel rv" id="rel">
+      <div class="rel-head"><span class="mono" data-t="rel.k">RELATIONSHIP</span><h3 class="rel-ttl" data-t="rel.ttl">みんなの関係</h3></div>
+      <svg class="rel-svg" viewBox="0 0 900 470" aria-labelledby="relTitle" role="img">
+        <title id="relTitle">Ren, Jill and Pom</title>
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10Z" fill="#2B1D12"/></marker></defs>
+        <!-- arrows -->
+        <path class="rel-line" d="M250 140 C 330 70, 570 70, 650 140" marker-end="url(#ah)"/>
+        <path class="rel-line" d="M650 212 C 570 282, 330 282, 250 212" marker-end="url(#ah)"/>
+        <path class="rel-line" d="M392 352 C 340 326, 290 294, 236 250" marker-end="url(#ah)"/>
+        <path class="rel-line" d="M508 352 C 560 326, 610 294, 664 250" marker-end="url(#ah)"/>
+        <!-- labels -->
+        <g class="rel-lab" transform="translate(450 78)"><rect x="-120" y="-20" width="240" height="40" rx="20" fill="#FBF6EC" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="15" fill="#2B1D12"><tspan data-t="rel.1">手伝う（書類が崩れる）</tspan></text></g>
+        <g class="rel-lab" transform="translate(450 268)"><rect x="-130" y="-20" width="260" height="40" rx="20" fill="#FBF6EC" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="15" fill="#2B1D12"><tspan data-t="rel.2">「マグカップは頭の上です」</tspan></text></g>
+        <g class="rel-lab" transform="translate(290 318)"><rect x="-70" y="-18" width="140" height="36" rx="18" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="14" fill="#2B1D12"><tspan data-t="rel.3">やる気3倍</tspan></text></g>
+        <g class="rel-lab" transform="translate(610 318)"><rect x="-70" y="-18" width="140" height="36" rx="18" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text text-anchor="middle" y="6" font-family="Zen Maru Gothic" font-weight="900" font-size="14" fill="#2B1D12"><tspan data-t="rel.4">教えてもらう</tspan></text></g>
+        <!-- nodes -->
+        <g transform="translate(160 175)"><g class="rel-node"><path d="M-42 -50 C -78 -38, -86 18, -70 50 C -60 70, -36 62, -34 32 C -32 2, -30 -24, -42 -50 Z M42 -50 C 78 -38, 86 18, 70 50 C 60 70, 36 62, 34 32 C 32 2, 30 -24, 42 -50 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><circle cx="-22" cy="-6" r="7" fill="#2B1D12"/><circle cx="22" cy="-6" r="7" fill="#2B1D12"/><path d="M-6 14 h12 l-6 6Z" fill="#E8A4A0"/><path d="M0 20 v8 M-8 32 c4 4 12 4 16 0" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><path d="M0 48 l-7 16 h14 Z" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">REN</text></g></g>
+        <g transform="translate(740 175)"><g class="rel-node"><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><path d="M-26 -50 C -34 -90, -16 -112, -8 -84 C -4 -70, -8 -56, -14 -44 Z M26 -50 C 34 -90, 16 -112, 8 -84 C 4 -70, 8 -56, 14 -44 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><g fill="none" stroke="#8C5A37" stroke-width="3.5"><circle cx="-22" cy="-4" r="18"/><circle cx="22" cy="-4" r="18"/><path d="M-4 -4h8"/></g><circle cx="-22" cy="-4" r="8" fill="#2B1D12"/><circle cx="22" cy="-4" r="8" fill="#2B1D12"/><path d="M-6 16 h12 l-6 6Z" fill="#E8A4A0"/><path d="M-7 30 h14" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">JILL</text></g></g>
+        <g transform="translate(450 392)"><g class="rel-node"><circle r="54" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="-38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><path d="M-48 -18 C -30 -30, 30 -30, 48 -18 l-3 10 C 28 -20, -28 -20, -45 -8 Z" fill="#E05A4E" stroke="#2B1D12" stroke-width="3"/><circle cx="-18" cy="0" r="6" fill="#2B1D12"/><circle cx="18" cy="0" r="6" fill="#2B1D12"/><circle cx="-30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><circle cx="30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><path d="M-4 14 h8 l-4 5Z" fill="#E8A4A0"/><text y="46" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="20" fill="#2B1D12">POM</text><g transform="translate(74 -40)"><rect x="-26" y="-12" width="52" height="24" rx="12" fill="#2B1D12"/><text text-anchor="middle" y="5" font-family="Fredoka" font-weight="700" font-size="12" fill="#D9A520">NEW</text></g></g></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 02 A DAY ═══════ -->
+<section class="sec day" id="day">
+  <div class="day-space" id="daySpace">
+  <div class="day-pin" id="dayPin">
+    <div class="wrap">
+      <div class="sec-head rv day-head">
+        <div class="sec-no">02</div>
+        <h2 class="sec-ttl"><span data-t="day.ttl">オフィスの、ある一日。</span></h2>
+        <p class="sec-lead" data-t="day.lead">9:00 から 18:00 まで。スクロールすると、時計が進みます。</p>
+        <svg class="day-clock" id="dayClock" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="#FBF6EC" stroke="#2B1D12" stroke-width="4"/>
+          <line id="dH" x1="50" y1="50" x2="50" y2="28" stroke="#2B1D12" stroke-width="5" stroke-linecap="round" transform="rotate(90 50 50)"/>
+          <line id="dM" x1="50" y1="50" x2="50" y2="20" stroke="#D9A520" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="4" fill="#2B1D12"/>
+        </svg>
+      </div>
+      <div class="day-track" id="dayTrack">
+        <article class="day-card"><div class="day-time">9:00</div><div><h3 class="day-ttl" data-t="day.1.t">ジルの朝</h3><p class="day-text" data-t="day.1.d">メガネをかけたら、スイッチが入る。課長のスイッチは、まだ見つかっていない。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3"><circle cx="18" cy="30" r="9"/><circle cx="38" cy="30" r="9"/><path d="M27 30h2M9 28l-5-3M47 28l5-3"/></svg></div></article>
+        <article class="day-card"><div class="day-time">9:55</div><div><h3 class="day-ttl" data-t="day.2.t">会議の5分前</h3><p class="day-text" data-t="day.2.d">資料は、ある。たぶん。課長の耳が、いつもより低い。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><circle cx="28" cy="30" r="20"/><path d="M28 18v12l8 5"/></svg></div></article>
+        <article class="day-card"><div class="day-time">10:00</div><div><h3 class="day-ttl" data-t="day.3.t">カメラオフ会議</h3><p class="day-text" data-t="day.3.d">カメラを切れば、何をしても大丈夫。大丈夫？</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="16" width="28" height="22" rx="4"/><path d="M36 24l12-6v20l-12-6M10 42L46 12"/></svg></div></article>
+        <article class="day-card"><div class="day-time">11:30</div><div><h3 class="day-ttl" data-t="day.4.t">ハンコ</h3><p class="day-text" data-t="day.4.d">承認。鼻で。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><circle cx="28" cy="28" r="16"/><path d="M20 24c4 6 12 6 16 0"/></svg></div></article>
+        <article class="day-card"><div class="day-time">13:00</div><div><h3 class="day-ttl" data-t="day.5.t">書類の山</h3><p class="day-text" data-t="day.5.d">整えるほど崩れる。課長、手伝わなくていいです。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><path d="M10 44h36M12 36h32M14 28h28M18 20h20M22 12h12"/></svg></div></article>
+        <article class="day-card"><div class="day-time">14:30</div><div><h3 class="day-ttl" data-t="day.6.t">マグカップはどこ</h3><p class="day-text" data-t="day.6.d">課長、マグカップは頭の上です。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><path d="M12 20h26v14a8 8 0 0 1-8 8h-10a8 8 0 0 1-8-8V20ZM38 24h4a5 5 0 0 1 0 10h-4"/></svg></div></article>
+        <article class="day-card"><div class="day-time">16:00</div><div><h3 class="day-ttl" data-t="day.7.t">牧草の領収書</h3><p class="day-text" data-t="day.7.d">経費精算、ぜんぶ牧草。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h28v40l-4-3-4 3-4-3-4 3-4-3-4 3-4-3V8ZM20 18h16M20 26h16M20 34h10"/></svg></div></article>
+        <article class="day-card"><div class="day-time">17:30</div><div><h3 class="day-ttl" data-t="day.8.t">締め切りのカレンダー</h3><p class="day-text" data-t="day.8.d">見なければ、締め切りは来ない（来ます）。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><rect x="8" y="12" width="40" height="36" rx="4"/><path d="M8 22h40M18 8v8M38 8v8M24 32l4 4 8-8"/></svg></div></article>
+        <article class="day-card big"><div class="day-time">18:00</div><div><h3 class="day-ttl" data-t="day.9.t">定時のチャイム</h3><p class="day-text" data-t="day.9.d">よろこびが止まらない。今日もおつかれさまでした。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M28 6a12 12 0 0 1 12 12v10l5 8H11l5-8V18A12 12 0 0 1 28 6ZM23 42a5 5 0 0 0 10 0"/></svg></div></article>
+      </div>
+      <div class="day-progress"><i id="dayBar"></i></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ═══════ 03 EPISODES ═══════ -->
+<section class="sec" id="episodes">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-no">03</div>
+      <h2 class="sec-ttl"><span data-t="ep.ttl">エピソード</span></h2>
+      <p class="sec-lead" data-t="ep.lead">1本およそ30秒。カーソルを当てると動き出し、押すとそのまま見られます。</p>
+    </div>
+    <div class="eps" id="eps"></div>
+    <div class="eps-more rv">
+      <a class="btn" href="https://www.youtube.com/@renjill_office" target="_blank" rel="noopener"><span data-t="ep.more">YouTube で全部見る</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 04 GAME ═══════ -->
+<section class="sec game" id="game">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-no">04</div>
+      <h2 class="sec-ttl"><span data-t="game.ttl">遊べます。</span></h2>
+      <p class="sec-lead" data-t="game.lead">ブラウザでそのまま。インストール不要、無料。</p>
+    </div>
+    <div class="game-grid">
+      <a class="game-shot rv" href="https://renjill-hay-dash.pages.dev/" target="_blank" rel="noopener" aria-label="Ren & Jill: Hay Dash">
+        <img src="https://renjill-hay-dash.pages.dev/og.png" alt="Ren & Jill: Hay Dash の画面" width="1200" height="630" loading="lazy">
+      </a>
+      <div class="rv">
+        <div class="mono" style="margin-bottom:14px;color:var(--mustard)">REN &amp; JILL PRESENTS</div>
+        <h3 class="game-big">HAY<br>DASH!</h3>
+        <p class="game-text" data-t="game.text">「チモシーダッシュ」。うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。牧草を集めて、神田から東京タワーまで。新人のポムも走れます。</p>
+        <div class="hay-count"><span id="hayNum">0</span><small data-t="game.hay">HAY COLLECTED · DEMO</small></div>
+        <ul class="game-chars"><li><i></i>REN</li><li><i style="background:#E8A4A0"></i>JILL</li><li><i style="background:#F6D7A8"></i>POM</li></ul>
+        <a class="btn lite" href="https://renjill-hay-dash.pages.dev/" target="_blank" rel="noopener"><span data-t="game.cta">今すぐ遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ 05 FOLLOW ═══════ -->
+<section class="sec" id="follow">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-no">05</div>
+      <h2 class="sec-ttl"><span data-t="sns.ttl">フォローすると、週4回、ちょっと平和になります。</span></h2>
+      <p class="sec-lead" data-t="sns.lead">新作は月・水・金・日。どのSNSでも同じエピソードを見られます。</p>
+    </div>
+    <ul class="sns-list rv">
+      <li><a class="sns-row" style="--bg:#FF4B4B;--fg:#fff" href="https://www.youtube.com/@renjill_office" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#2B1D12"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-3.2.5-4.8s-.1-3.2-.5-4.8ZM9.8 15.3V8.7l6 3.3-6 3.3Z"/></svg></span><span class="sns-name">YouTube<small data-t="sns.yt">ショート · フルサイズで見るならここ</small></span><span class="sns-handle">@renjill_office</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      <li><a class="sns-row" style="--bg:#E1306C;--fg:#fff" href="https://www.instagram.com/renjill_office/" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2B1D12" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="#2B1D12" stroke="none"/></svg></span><span class="sns-name">Instagram<small data-t="sns.ig">リール · ストーリーズで裏側も</small></span><span class="sns-handle">@renjill_office</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      <li><a class="sns-row" style="--bg:#2B1D12;--fg:#F4EAD8" href="https://www.tiktok.com/@renjill_office" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M16.5 2h-3.2v13.2a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.1a6.2 6.2 0 1 0 5.2 6.1V8.6a7.4 7.4 0 0 0 4.3 1.4V6.8A4.3 4.3 0 0 1 16.5 2Z"/></svg></span><span class="sns-name">TikTok<small data-t="sns.tt">いちばん早く、新作が出ます</small></span><span class="sns-handle">@renjill_office</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      <li><a class="sns-row" style="--bg:#1877F2;--fg:#fff" href="https://www.facebook.com/profile.php?id=1358515160686321" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></span><span class="sns-name">Facebook<small data-t="sns.fb">ページをフォロー</small></span><span class="sns-handle">Ren &amp; Jill</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      <li><a class="sns-row" style="--bg:#D9A520;--fg:#2B1D12" href="https://renjill-hay-dash.pages.dev/" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2B1D12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 12h4M9 10v4M15 11h.01M18 13h.01"/></svg></span><span class="sns-name">Hay Dash<small data-t="sns.game">チモシーダッシュ · ブラウザで無料</small></span><span class="sns-handle">renjill-hay-dash.pages.dev</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    </ul>
+    <ul class="sched rv" aria-label="Schedule">
+      <li class="on">MON<em data-t="d.mon">月 · 新作</em></li><li>TUE<em data-t="d.tue">火</em></li><li class="on">WED<em data-t="d.wed">水 · 新作</em></li><li>THU<em data-t="d.thu">木</em></li><li class="on">FRI<em data-t="d.fri">金 · 新作</em></li><li>SAT<em data-t="d.sat">土</em></li><li class="on">SUN<em data-t="d.sun">日 · 新作</em></li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <p class="ftr-big rv">SEE YOU AT <span>6 PM.</span></p>
+    <div class="ftr-in">
+      <small>© <a class="u" href="https://coana.co.jp/" target="_blank" rel="noopener">COANA TOKYO LLC.</a> · REN &amp; JILL</small>
+      <small data-t="ftr.note">レンとジルは COANA TOKYO合同会社のオリジナルキャラクターです。</small>
+    </div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Video">
+  <div class="lb-in"><iframe id="lbFrame" title="Ren & Jill" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+  <button class="pill icon lb-x" id="lbX" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   REN & JILL — site script (no libraries: Web Animations API + rAF + IntersectionObserver)
+   1 i18n · 2 today/status · 3 loader+hero · 4 hay canvas · 5 stamp · 6 tape
+   7 characters (eyes, flip) · 8 a day (sticky horizontal + clock + chime)
+   9 episodes (preview, lightbox) · 10 game · 11 cursor / header / rail / totop · 12 sound
+   ═══════════════════════════════════════════════════════════════ */
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+const MEDIA = "https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/";
+const YT = "https://www.youtube.com/@renjill_office";
+const rnd = (a, b) => a + Math.random() * (b - a);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const EASE = "cubic-bezier(.22,1,.36,1)";
+const BACK = "cubic-bezier(.34,1.56,.64,1)";
+// scroll listeners (one rAF-throttled dispatcher)
+const onScrollFns = []; let sTick = 0;
+const onScroll = (fn) => onScrollFns.push(fn);
+addEventListener("scroll", () => { if (!sTick) sTick = requestAnimationFrame(() => { sTick = 0; const y = scrollY; onScrollFns.forEach((f) => f(y)); }); }, { passive: true });
+const runScroll = () => onScrollFns.forEach((f) => f(scrollY));
+
+/* ───────── 1. i18n ───────── */
+const T = {
+  "cur.play": ["PLAY", "PLAY"],
+  "hero.kicker": ["うさぎのオフィスコメディ · セリフなし", "A rabbit office comedy · no dialogue"],
+  "hero.sub": ["うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。", "Ren, a rabbit boss with floppy ears. Jill, the assistant who actually runs the place. No words — just gestures and sounds from a slightly peaceful office."],
+  "hero.cta1": ["エピソードを見る", "Watch episodes"],
+  "hero.cta2": ["ゲームで遊ぶ", "Play the game"],
+  "hero.st1": ["NO DIALOGUE", "NO DIALOGUE"],
+  "hero.st2": ["新作 · 月水金日", "NEW · MON WED FRI SUN"],
+  "today.label": ["TODAY IS", "TODAY IS"],
+  "pickup.k": ["PICKUP!!", "PICKUP!!"],
+  "pickup.t": ["11月1日、新人のポムが入社します。", "On November 1, Pom the rookie joins the office."],
+  "rail": ["FOLLOW", "FOLLOW"],
+  "totop": ["上へ", "TOP"],
+  "ch.ttl": ["はたらく、うさぎたち。", "Meet the office."],
+  "ch.lead": ["目が、カーソルを追いかけます。カードにカーソルを当てると、それぞれのクセが出ます。", "Their eyes follow your cursor. Hover a card and each one shows a habit."],
+  "ch.more": ["押してみる？", "Tap for details"], "ch.close": ["もどる", "Back"], "ch.detail": ["DETAIL", "DETAIL"],
+  "ch.d.role": ["役職", "ROLE"], "ch.d.breed": ["種類", "BREED"], "ch.d.like": ["好きなもの", "LIKES"], "ch.d.debut": ["初登場", "DEBUT"],
+  "ch.ren.name": ["課長のレン", "Ren, the boss"],
+  "ch.ren.text": ["たれ耳の課長。やる気はある。手伝うほど、なぜか仕事が増える。承認印は鼻で押す。定時のチャイムが、いちばんの楽しみ。", "A floppy-eared manager with good intentions. The more he helps, the more work appears. Approves documents with his nose. Lives for the 6 pm chime."],
+  "ch.ren.t1": ["牧草ラバー", "Hay lover"], "ch.ren.t2": ["鼻ハンコ", "Nose stamp"], "ch.ren.t3": ["18:00 が好き", "Loves 6 pm"],
+  "ch.ren.role": ["課長 · うさぎのボス", "Manager · the boss"], "ch.ren.breed": ["ホーランドロップ（たれ耳）", "Holland Lop (floppy ears)"], "ch.ren.like": ["牧草、定時のチャイム", "Hay, the 6 pm chime"], "ch.ren.debut": ["EP.01「ハンコ」", "EP.01 “The stamp”"],
+  "ch.jill.name": ["部下のジル", "Jill, the assistant"],
+  "ch.jill.text": ["しっかり者の部下。メガネをかけるとスイッチが入る。課長のマグカップがどこにあるか、だいたい知っている。", "The one who gets things done. Glasses on, switch on. Usually knows where the boss's mug is (on his head)."],
+  "ch.jill.t1": ["メガネでON", "Glasses = ON"], "ch.jill.t2": ["段取り上手", "Organized"], "ch.jill.t3": ["ツッコミ担当", "Straight man"],
+  "ch.jill.role": ["部下 · アシスタント", "Assistant"], "ch.jill.breed": ["ネザーランドドワーフ", "Netherland Dwarf"], "ch.jill.like": ["段取り、メガネ", "Plans, glasses"], "ch.jill.debut": ["EP.01「ハンコ」", "EP.01 “The stamp”"],
+  "ch.pom.name": ["新人のポム", "Pom, the rookie"],
+  "ch.pom.text": ["11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。", "Joined on November 1. Stores everything in those cheeks. Three times the boss's energy. The headband is non-negotiable."],
+  "ch.pom.t1": ["ほっぺ収納", "Cheek storage"], "ch.pom.t2": ["元気", "Energetic"],
+  "ch.pom.role": ["新人", "Rookie"], "ch.pom.breed": ["ゴールデンハムスター", "Golden hamster"], "ch.pom.like": ["ほっぺに入れること", "Filling those cheeks"], "ch.pom.debut": ["11/1「新人のポム」", "11/1 “New hire: Pom”"],
+  "rel.k": ["RELATIONSHIP", "RELATIONSHIP"], "rel.ttl": ["みんなの関係", "How they get along"],
+  "rel.1": ["手伝う（書類が崩れる）", "Helps (papers collapse)"], "rel.2": ["「マグカップは頭の上です」", "“The mug is on your head.”"], "rel.3": ["やる気3倍", "3× the energy"], "rel.4": ["教えてもらう", "Learns the ropes"],
+  "day.ttl": ["オフィスの、ある一日。", "A day at the office."],
+  "day.lead": ["9:00 から 18:00 まで。スクロールすると、時計が進みます。", "From 9:00 to 18:00. Scroll, and the clock moves."],
+  "day.1.t": ["ジルの朝", "Jill's morning"], "day.1.d": ["メガネをかけたら、スイッチが入る。課長のスイッチは、まだ見つかっていない。", "Glasses on, switch on. The boss's switch has not been located."],
+  "day.2.t": ["会議の5分前", "5 minutes before the meeting"], "day.2.d": ["資料は、ある。たぶん。課長の耳が、いつもより低い。", "The slides exist. Probably. The boss's ears are lower than usual."],
+  "day.3.t": ["カメラオフ会議", "Camera-off meeting"], "day.3.d": ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?"],
+  "day.4.t": ["ハンコ", "The stamp"], "day.4.d": ["承認。鼻で。", "Approved. With his nose."],
+  "day.5.t": ["書類の山", "The paper mountain"], "day.5.d": ["整えるほど崩れる。課長、手伝わなくていいです。", "The more he helps, the worse it gets."],
+  "day.6.t": ["マグカップはどこ", "Where's the mug"], "day.6.d": ["課長、マグカップは頭の上です。", "Sir. The mug. It's on your head."],
+  "day.7.t": ["牧草の領収書", "Hay receipts"], "day.7.d": ["経費精算、ぜんぶ牧草。", "Expense report: 100% hay."],
+  "day.8.t": ["締め切りのカレンダー", "The deadline calendar"], "day.8.d": ["見なければ、締め切りは来ない（来ます）。", "If you don't look, the deadline doesn't exist. (It does.)"],
+  "day.9.t": ["定時のチャイム", "The 6 pm chime"], "day.9.d": ["よろこびが止まらない。今日もおつかれさまでした。", "Joy cannot be contained. Good work today."],
+  "ep.ttl": ["エピソード", "Episodes"],
+  "ep.lead": ["1本およそ30秒。カーソルを当てると動き出し、押すとそのまま見られます。", "About 30 seconds each. Hover to preview, click to watch."],
+  "ep.more": ["YouTube で全部見る", "See all on YouTube"],
+  "ep.soon": ["11/1 公開", "COMING 11/1"],
+  "game.ttl": ["遊べます。", "You can play it."],
+  "game.lead": ["ブラウザでそのまま。インストール不要、無料。", "Right in the browser. No install, free."],
+  "game.text": ["「チモシーダッシュ」。うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。牧草を集めて、神田から東京タワーまで。新人のポムも走れます。", "Hay Dash: a run game where Ren and Jill dash across Tokyo. Grab hay from Kanda to Tokyo Tower. Pom runs too."],
+  "game.hay": ["HAY · 押してつかむ", "HAY · TAP TO GRAB"],
+  "game.cta": ["今すぐ遊ぶ", "Play now"],
+  "sns.ttl": ["フォローすると、週4回、ちょっと平和になります。", "Follow along. Four slightly peaceful moments a week."],
+  "sns.lead": ["新作は月・水・金・日。どのSNSでも同じエピソードを見られます。", "New episodes Mon, Wed, Fri and Sun. Same episodes on every platform."],
+  "sns.yt": ["ショート · フルサイズで見るならここ", "Shorts · best place for full size"],
+  "sns.ig": ["リール · ストーリーズで裏側も", "Reels · behind the scenes in Stories"],
+  "sns.tt": ["いちばん早く、新作が出ます", "New episodes land here first"],
+  "sns.fb": ["ページをフォロー", "Follow the page"],
+  "sns.game": ["チモシーダッシュ · ブラウザで無料", "The game · free in your browser"],
+  "d.mon": ["月 · 新作", "new"], "d.tue": ["火", "—"], "d.wed": ["水 · 新作", "new"], "d.thu": ["木", "—"], "d.fri": ["金 · 新作", "new"], "d.sat": ["土", "—"], "d.sun": ["日 · 新作", "new"],
+  "ftr.note": ["レンとジルは COANA TOKYO合同会社のオリジナルキャラクターです。", "Ren & Jill are original characters by COANA TOKYO LLC."],
+};
+const META = {
+  ja: { title: "レンとジル｜Ren & Jill — うさぎの課長と部下の、セリフのないオフィスコメディ", desc: "うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。新作は月・水・金・日。" },
+  en: { title: "Ren & Jill — a rabbit office comedy with no dialogue", desc: "Ren the boss, Jill the assistant. No words, just gestures and sounds from a slightly peaceful office. New episodes Mon, Wed, Fri, Sun." },
+};
+let lang = "ja";
+const t = (k) => (T[k] || [k, k])[lang === "en" ? 1 : 0];
+const langHooks = [];
+function setLang(l, save = true) {
+  lang = l === "en" ? "en" : "ja";
+  document.documentElement.lang = lang;
+  document.body.classList.toggle("lang-en", lang === "en");
+  document.body.classList.toggle("lang-ja", lang === "ja");
+  $$("[data-t]").forEach((el) => { if (T[el.dataset.t]) el.textContent = t(el.dataset.t); });
+  $$("#lang span").forEach((s) => s.classList.toggle("on", s.dataset.l === lang));
+  document.title = META[lang].title;
+  const d = $('meta[name="description"]'); if (d) d.content = META[lang].desc;
+  if (save) { try { localStorage.setItem("rj-lang", lang); } catch (e) {} }
+  langHooks.forEach((f) => f());
+}
+$("#lang").addEventListener("click", () => setLang(lang === "ja" ? "en" : "ja"));
+
+/* ───────── 2. today / office status (JST) ───────── */
+const jst = () => new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000);
+function today() {
+  const n = jst(), y = n.getFullYear(), m = n.getMonth() + 1, d = n.getDate(), dow = n.getDay(), h = n.getHours() + n.getMinutes() / 60;
+  $("#todayDate").textContent = `${y}.${String(m).padStart(2, "0")}.${String(d).padStart(2, "0")}`;
+  const dot = $("#statusDot"), st = $("#statusText");
+  let s, off = false;
+  if (dow === 0 || dow === 6) { s = lang === "en" ? "Weekend · the office is quiet" : "おやすみ · オフィスは静か"; off = true; }
+  else if (h >= 9 && h < 18) { s = lang === "en" ? "At work · 9:00–18:00 JST" : "勤務中 · 9:00–18:00（日本時間）"; }
+  else if (h >= 18 && h < 19) { s = lang === "en" ? "6 pm! Chime time" : "定時！ チャイムが鳴りました"; off = true; }
+  else { s = lang === "en" ? "Off duty · back at 9:00 JST" : "定時後 · 9:00 に戻ります"; off = true; }
+  st.textContent = s; dot.classList.toggle("off", off);
+  // next episode day: Mon(1) Wed(3) Fri(5) Sun(0)
+  const days = [1, 3, 5, 0]; let add = 1;
+  for (; add <= 7; add++) if (days.includes((dow + add) % 7)) break;
+  const nx = new Date(n); nx.setDate(d + add);
+  const names = lang === "en" ? ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"] : ["日", "月", "火", "水", "木", "金", "土"];
+  $("#nextEp").textContent = (lang === "en" ? "Next episode: " : "次の新作 ") + `${nx.getMonth() + 1}/${nx.getDate()} ${lang === "en" ? names[nx.getDay()] : "（" + names[nx.getDay()] + "）"}`;
+}
+langHooks.push(today); setInterval(today, 60000);
+
+/* ───────── 12. sound (WebAudio, off by default) ───────── */
+let actx = null, soundOn = false;
+const sndBtn = $("#snd");
+const audio = () => actx || (actx = new (window.AudioContext || window.webkitAudioContext)());
+function tone(freq, t0, dur, gain = .18, type = "sine") {
+  const c = audio(), o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  o.connect(g).connect(c.destination); o.start(t0); o.stop(t0 + dur + .05);
+}
+const chime = () => { if (!soundOn) return; const t0 = audio().currentTime + .05; [[659.25, 0], [523.25, .45], [587.33, .9], [392, 1.35]].forEach(([f, d]) => { tone(f, t0 + d, 1.6, .16); tone(f * 2, t0 + d, .8, .05); }); };
+const thump = () => { if (!soundOn) return; const t0 = audio().currentTime; tone(110, t0, .18, .3, "triangle"); tone(60, t0, .25, .25); };
+const blip = () => { if (!soundOn) return; const t0 = audio().currentTime; tone(880, t0, .09, .07, "square"); };
+sndBtn.addEventListener("click", () => { soundOn = !soundOn; sndBtn.classList.toggle("is-on", soundOn); sndBtn.setAttribute("aria-pressed", soundOn); if (soundOn) { audio().resume(); blip(); } });
+
+/* ───────── 3. loader + hero ───────── */
+let saved = null; try { saved = localStorage.getItem("rj-lang"); } catch (e) {}
+setLang(saved || ((navigator.language || "").toLowerCase().startsWith("en") ? "en" : "ja"), false);
+$$(".hero-title .c").forEach((c, i) => { c.style.setProperty("--i", i); c.style.setProperty("--rot", rnd(-14, 14).toFixed(1) + "deg"); });
+const hero = $("#hero");
+Promise.all([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 650))]).then(() => {
+  $("#loader").classList.add("done");
+  hero.classList.add("go");
+  if (reduce) $$(".rv").forEach((el) => el.classList.add("in"));
+});
+// letter nudge on hover
+if (!reduce) $$(".hero-title .c").forEach((c) => c.addEventListener("pointerenter", () => {
+  if (!hero.classList.contains("go")) return;
+  c.animate([{ transform: "translateY(0) rotate(0deg)" }, { transform: `translateY(-8%) rotate(${rnd(-10, 10)}deg)` }, { transform: "translateY(0) rotate(0deg)" }], { duration: 480, easing: EASE, composite: "add" });
+  blip();
+}));
+// parallax while hero leaves
+if (!reduce) {
+  const art = $("#heroArt"), ttl = $(".hero-title");
+  onScroll((y) => { const p = clamp(y / innerHeight, 0, 1); art.style.transform = `translateY(${p * 18}%)`; ttl.style.transform = `translateY(${-p * 10}%)`; });
+}
+// cover → video (desktop, visible, no data saver)
+(() => {
+  const phone = $("#heroPhone"), v = $("video", phone), conn = navigator.connection || {};
+  if (reduce || !fine || conn.saveData) return;
+  let armed = false;
+  const tryPlay = () => v.play().then(() => phone.classList.add("playing")).catch(() => {});
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) { if (!armed) { armed = true; v.preload = "auto"; setTimeout(tryPlay, 1400); } else tryPlay(); } else v.pause(); }, { threshold: .2 }).observe(phone);
+})();
+// hero clock = JST
+(() => {
+  const h = $("#hHand"), m = $("#mHand");
+  const tick = () => { const n = jst(), mm = n.getMinutes() + n.getSeconds() / 60, hh = (n.getHours() % 12) + mm / 60; h.setAttribute("transform", `rotate(${hh * 30} 50 50)`); m.setAttribute("transform", `rotate(${mm * 6} 50 50)`); };
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ───────── 4. hay canvas ───────── */
+(() => {
+  const cv = $("#hay"), ctx = cv.getContext("2d");
+  let W = 0, H = 0, P = [], raf = 0, on = false, mx = -9999, my = -9999;
+  const N = () => (innerWidth < 760 ? 26 : 60);
+  const make = (fresh) => ({ x: Math.random() * W, y: fresh ? -40 : Math.random() * H, vy: rnd(.25, .8), vx: 0, a: rnd(0, 6.28), va: rnd(-.01, .01), len: rnd(14, 40), w: rnd(2, 4), paper: Math.random() < .14, sway: rnd(0, 6.28), col: ["#D9A520", "#C99A67", "#B88612", "#E6C9A4"][Math.random() * 4 | 0] });
+  const size = () => { const D = Math.min(1.5, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * D; cv.height = H * D; ctx.setTransform(D, 0, 0, D, 0, 0); P = Array.from({ length: N() }, () => make(false)); };
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of P) {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.globalAlpha = .85;
+      if (p.paper) { ctx.fillStyle = "#FBF6EC"; ctx.strokeStyle = "#2B1D12"; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-14, -18, 28, 36, 3) : ctx.rect(-14, -18, 28, 36); ctx.fill(); ctx.stroke(); ctx.strokeStyle = "#C99A67"; ctx.lineWidth = 1.5; for (let i = -8; i <= 8; i += 6) { ctx.beginPath(); ctx.moveTo(-8, i); ctx.lineTo(8, i); ctx.stroke(); } }
+      else { ctx.strokeStyle = p.col; ctx.lineWidth = p.w; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(-p.len / 2, 0); ctx.quadraticCurveTo(0, -3, p.len / 2, 0); ctx.stroke(); }
+      ctx.restore();
+    }
+  };
+  const step = () => {
+    for (const p of P) {
+      p.sway += .012; p.y += p.vy; p.x += Math.sin(p.sway) * .35 + p.vx; p.a += p.va; p.vx *= .94;
+      const dx = p.x - mx, dy = p.y - my, d2 = dx * dx + dy * dy;
+      if (d2 < 150 * 150) { const d = Math.sqrt(d2) || 1, f = (150 - d) / 150; p.vx += (dx / d) * f * 1.6; p.y += (dy / d) * f * 1.2; p.va += f * .01; }
+      if (p.y > H + 40 || p.x < -60 || p.x > W + 60) Object.assign(p, make(true));
+    }
+    draw();
+    raf = on && !document.hidden ? requestAnimationFrame(step) : 0;
+  };
+  const start = () => { if (!reduce && on && !document.hidden && !raf) raf = requestAnimationFrame(step); };
+  size(); draw();
+  if (reduce) return;
+  addEventListener("resize", () => { size(); draw(); });
+  new IntersectionObserver(([e]) => { on = e.isIntersecting; start(); }).observe(hero);
+  document.addEventListener("visibilitychange", start);
+  hero.addEventListener("pointermove", (e) => { const r = cv.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; }, { passive: true });
+  hero.addEventListener("pointerleave", () => { mx = my = -9999; });
+})();
+
+/* ───────── 5. nose stamp ───────── */
+(() => {
+  const svg = (ja) => `<svg viewBox="0 0 120 120"><g fill="none" stroke="#C8322B" stroke-width="5"><circle cx="60" cy="60" r="54"/><circle cx="60" cy="60" r="46" stroke-width="2.5"/></g><text x="60" y="${ja ? 52 : 56}" text-anchor="middle" font-family="${ja ? "Zen Maru Gothic" : "Fredoka"}" font-weight="900" font-size="${ja ? 30 : 20}" fill="#C8322B">${ja ? "承認" : "APPROVED"}</text><path d="M52 76 h16 l-8 9 Z" fill="#C8322B"/><text x="60" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" letter-spacing="2" fill="#C8322B">REN · NOSE</text></svg>`;
+  hero.addEventListener("click", (e) => {
+    if (e.target.closest("a, button") || reduce) return;
+    const el = document.createElement("div"); el.className = "stamp"; el.innerHTML = svg(lang === "ja");
+    el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; document.body.appendChild(el);
+    thump();
+    const r0 = rnd(-20, 20);
+    el.animate([{ transform: `scale(1.8) rotate(${r0}deg)`, opacity: 0 }, { transform: `scale(1) rotate(${r0 / 3}deg)`, opacity: 1, offset: .2 }, { transform: `scale(1) rotate(${r0 / 3}deg)`, opacity: 1, offset: .75 }, { transform: `scale(1) translateY(-10px) rotate(${r0 / 3}deg)`, opacity: 0 }], { duration: 1800, easing: "ease-out", fill: "forwards" }).onfinish = () => el.remove();
+  });
+})();
+
+/* ───────── 6. tape ───────── */
+(() => {
+  const words = { ja: ["セリフなし", "うさぎの課長レン", "しっかり者のジル", "新人のポム", "新作は月・水・金・日", "定時は 18:00", "牧草は経費"], en: ["NO DIALOGUE", "REN THE BOSS", "JILL THE ASSISTANT", "POM THE ROOKIE", "NEW · MON WED FRI SUN", "6 PM IS SACRED", "HAY IS AN EXPENSE"] };
+  const track = $("#tape");
+  const build = () => { const w = words[lang]; track.innerHTML = [...w, ...w].map((s) => `<span>${s}</span>`).join(""); };
+  build(); langHooks.push(build);
+  new IntersectionObserver(([e]) => track.classList.toggle("paused", !e.isIntersecting)).observe(track);
+})();
+
+/* ───────── 7. characters: eyes + flip ───────── */
+(() => {
+  const eyes = $$("[data-eye]");
+  let C = [];
+  const centers = () => { C = eyes.map((g) => { const r = g.getBoundingClientRect(); return { g, cx: r.left + r.width / 2, cy: r.top + r.height / 2, s: r.width / 22 }; }); };
+  centers(); addEventListener("resize", centers); onScroll(centers);
+  const look = (x, y) => { for (const e of C) { const dx = x - e.cx, dy = y - e.cy, d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 260) * 7 * e.s; e.g.style.transform = `translate(${(dx / d) * m}px, ${(dy / d) * m}px)`; } };
+  if (reduce) {}
+  else if (fine) addEventListener("pointermove", (e) => look(e.clientX, e.clientY), { passive: true });
+  else setInterval(() => { const r = $("#characters").getBoundingClientRect(); look(r.left + Math.random() * r.width, r.top + Math.random() * r.height); }, 2600);
+  $$("[data-char]").forEach((card) => {
+    card.addEventListener("pointerenter", blip);
+    $$("[data-flip]", card).forEach((b) => b.addEventListener("click", () => {
+      const f = card.classList.toggle("flipped");
+      $(".char-back", card).setAttribute("aria-hidden", !f); $(".char-front", card).setAttribute("aria-hidden", f);
+      blip();
+    }));
+  });
+})();
+
+/* ───────── 8. a day: sticky horizontal + clock + chime ───────── */
+(() => {
+  const space = $("#daySpace"), pin = $("#dayPin"), track = $("#dayTrack"), bar = $("#dayBar"), dH = $("#dH"), dM = $("#dM");
+  let chimed = false, dist = 0, active = false;
+  const setClock = (p) => { const h = 9 + p * 9; dH.setAttribute("transform", `rotate(${(h % 12) * 30} 50 50)`); dM.setAttribute("transform", `rotate(${(h % 1) * 360} 50 50)`); };
+  const burst = () => {
+    if (reduce) return;
+    const r = pin.getBoundingClientRect();
+    for (let i = 0; i < 26; i++) {
+      const s = document.createElement("i");
+      s.style.cssText = `position:fixed;left:${r.left + r.width * .82}px;top:${r.top + 70}px;width:${rnd(6, 14)}px;height:3px;border-radius:2px;background:${["#D9A520", "#F4EAD8", "#E8A4A0"][i % 3]};z-index:120;pointer-events:none`;
+      document.body.appendChild(s);
+      s.animate([{ transform: "translate(0,0) rotate(0)", opacity: 1 }, { transform: `translate(${rnd(-280, 120)}px, ${rnd(-170, 230)}px) rotate(${rnd(-360, 360)}deg)`, opacity: 0 }], { duration: rnd(1300, 2300), easing: "cubic-bezier(.2,.8,.3,1)", fill: "forwards" }).onfinish = () => s.remove();
+    }
+  };
+  const layout = () => {
+    active = innerWidth > 760 && !reduce;
+    if (!active) { space.style.height = ""; track.style.transform = ""; bar.style.transform = "scaleX(1)"; setClock(1); return; }
+    const g = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter")) || 24;
+    dist = Math.max(0, track.scrollWidth - innerWidth + g * 2);
+    space.style.height = (dist * 1.15 + innerHeight) + "px";
+    update(scrollY);
+  };
+  const update = (y) => {
+    if (!active) return;
+    const top = space.getBoundingClientRect().top + y;
+    const p = clamp((y - top) / (space.offsetHeight - innerHeight), 0, 1);
+    track.style.transform = `translate3d(${-dist * p}px,0,0)`;
+    bar.style.transform = `scaleX(${p})`;
+    setClock(p);
+    if (p > .985 && !chimed) { chimed = true; chime(); burst(); }
+    if (p < .5) chimed = false;
+  };
+  layout(); addEventListener("resize", layout); addEventListener("load", layout); onScroll(update);
+  langHooks.push(() => setTimeout(layout, 50));
+})();
+
+/* ───────── 9. episodes ───────── */
+const EPS = [
+  { ep: "pom_debut", ja: "新人のポム", en: "New hire: Pom", cja: "11月1日、ハムスターのポムが入社します。", cen: "On November 1, Pom the hamster joins the office.", cover: "20261101_pom_debut_cover.jpg", video: "20261101_pom_debut.mp4", soon: true, date: "2026.11.01" },
+  { ep: "deadline2", ja: "締め切りのカレンダー", en: "The deadline calendar", cja: "見なければ、締め切りは来ない（来ます）。", cen: "If you don't look, the deadline doesn't exist. (It does.)", cover: "20261030_deadline2_cover.jpg", video: "20261030_deadline2.mp4", yt: "rnYfUNddYQs", date: "2026.10.30" },
+  { ep: "receipts2", ja: "牧草の領収書", en: "Hay receipts", cja: "経費精算、ぜんぶ牧草。", cen: "Expense report: 100% hay.", cover: "20261028_receipts2_cover.jpg", video: "20261028_receipts2.mp4", yt: "Z4xjAF7jovo", date: "2026.10.28" },
+  { ep: "jil_morning2", ja: "ジルの朝", en: "Jill's morning", cja: "メガネをかけたらスイッチが入る。課長のスイッチはどこ？", cen: "Glasses on, switch on. Where's the boss's switch?", cover: "20261026_jil_morning2_cover.jpg", video: "20261026_jil_morning2.mp4", yt: "QvCS2uRpm8o", date: "2026.10.26" },
+  { ep: "chime2", ja: "定時のチャイム", en: "The 6 pm chime", cja: "定時のチャイム、よろこびが止まらない。", cen: "6pm chime. Joy cannot be contained.", cover: "20261025_chime2_cover.jpg", video: "20261025_chime2.mp4", yt: "ToguHMsoIaU", date: "2026.10.25" },
+  { ep: "mug2", ja: "マグカップはどこ", en: "Where's the mug", cja: "課長、マグカップは頭の上です。", cen: "Sir. The mug. It's on your head.", cover: "20261023_mug2_cover.jpg", video: "20261023_mug2.mp4", yt: "xIzVzowGgjw", date: "2026.10.23" },
+  { ep: "papers2", ja: "書類の山", en: "The paper mountain", cja: "整えるほど崩れる。課長、手伝わなくていいです。", cen: "The more he helps, the worse it gets.", yt: "tgxLKS_ontc", date: "2026.10.21" },
+  { ep: "cameraoff", ja: "カメラオフ会議", en: "Camera-off meeting", cja: "カメラを切れば、何をしても大丈夫。大丈夫？", cen: "Camera off. Totally safe. Right?", yt: "mtduSRvoJdk" },
+  { ep: "meeting5", ja: "会議の5分前", en: "5 minutes before the meeting", cja: "会議まで、あと5分。", cen: "5 minutes before the meeting.", yt: "3_wI617Sj5Y" },
+  { ep: "hanko", ja: "ハンコ", en: "The stamp", cja: "承認。鼻で。", cen: "Approved. With his nose.", yt: "NH1nbAYF6OY" },
+];
+const epsEl = $("#eps");
+const revealIO = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+function renderEpisodes() {
+  const en = lang === "en";
+  epsEl.innerHTML = EPS.map((e, i) => {
+    const n = String(EPS.length - i).padStart(2, "0");
+    const img = e.cover ? MEDIA + e.cover : `https://i.ytimg.com/vi/${e.yt}/oardefault.jpg`;
+    const fb = e.yt ? `https://i.ytimg.com/vi/${e.yt}/hqdefault.jpg` : "";
+    const href = e.yt ? `https://www.youtube.com/shorts/${e.yt}` : YT;
+    const vid = e.video ? `<video muted loop playsinline preload="none" data-src="${MEDIA + e.video}" aria-hidden="true"></video>` : "";
+    return `<a class="ep rv${e.soon ? " soon" : ""}" style="--d:${(i % 4) * .08}s" href="${href}" target="_blank" rel="noopener" data-yt="${e.yt || ""}" data-cur="${e.yt ? "PLAY" : "OPEN"}">
+      <div class="ep-media" data-soon="${t("ep.soon")}">
+        <span class="ep-no">EP.${n}</span>
+        <img src="${img}" alt="${en ? e.en : e.ja}" loading="lazy" width="1080" height="1920"${fb ? ` onerror="this.onerror=null;this.src='${fb}'"` : ""}>${vid}
+        <span class="ep-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></span>
+      </div>
+      <div class="ep-body"><span class="ep-date">${e.date || "EP." + n}</span><h3 class="ep-ttl">${en ? e.en : e.ja}</h3><p class="ep-cap">${en ? e.cen : e.cja}</p></div>
+    </a>`;
+  }).join("");
+  $$(".ep", epsEl).forEach((card) => {
+    const v = $("video", card);
+    const start = () => { if (!v || reduce) return; if (!v.src) v.src = v.dataset.src; v.play().then(() => card.classList.add("playing")).catch(() => {}); };
+    const stop = () => { if (!v) return; v.pause(); card.classList.remove("playing"); };
+    card.addEventListener("pointerenter", start); card.addEventListener("pointerleave", stop);
+    card.addEventListener("focus", start); card.addEventListener("blur", stop);
+    card.addEventListener("click", (e) => { const id = card.dataset.yt; if (!id) return; e.preventDefault(); openLb(id); stop(); });
+    if (reduce) card.classList.add("in"); else revealIO.observe(card);
+  });
+}
+renderEpisodes(); langHooks.push(renderEpisodes);
+const lb = $("#lb"), lbFrame = $("#lbFrame"); let lbLast = null;
+function openLb(id) { lbLast = document.activeElement; lbFrame.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1`; lb.classList.add("open"); document.body.style.overflow = "hidden"; $("#lbX").focus(); }
+function closeLb() { lb.classList.remove("open"); setTimeout(() => (lbFrame.src = ""), 350); document.body.style.overflow = ""; if (lbLast) lbLast.focus(); }
+$("#lbX").addEventListener("click", closeLb);
+lb.addEventListener("click", (e) => { if (e.target === lb) closeLb(); });
+addEventListener("keydown", (e) => { if (e.key === "Escape" && lb.classList.contains("open")) closeLb(); });
+
+/* ───────── 10. game: grab hay ───────── */
+(() => {
+  const num = $("#hayNum"), box = $(".hay-count"); let hay = 0;
+  const grab = () => { hay += Math.random() < .1 ? 10 : 1; num.textContent = hay.toLocaleString(); blip(); if (!reduce) num.animate([{ transform: "scale(1.3)", color: "#D9A520" }, { transform: "scale(1)", color: "#F4EAD8" }], { duration: 420, easing: BACK }); };
+  box.style.cursor = "pointer"; box.setAttribute("role", "button"); box.setAttribute("tabindex", "0"); box.dataset.cur = "GRAB";
+  box.addEventListener("click", grab); box.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); grab(); } });
+  const shot = $(".game-shot"), sec = $("#game");
+  if (!reduce) onScroll(() => { const r = sec.getBoundingClientRect(); const p = clamp(1 - (r.bottom) / (innerHeight + r.height), 0, 1); shot.style.transform = `rotate(${-2 + p * 3.5}deg) translateY(${-p * 6}%)`; });
+})();
+
+/* ───────── reveals ───────── */
+$$(".rv").forEach((el) => { if (el.closest("#hero")) return; if (reduce) el.classList.add("in"); else revealIO.observe(el); });
+
+/* ───────── 11. cursor / header / rail / totop ───────── */
+(() => {
+  const hdr = $("#hdr"), prog = $("#prog"), totop = $("#totop");
+  let last = 0;
+  onScroll((y) => {
+    hdr.classList.toggle("hide", y > 240 && y > last); last = y;
+    const max = document.documentElement.scrollHeight - innerHeight; prog.style.transform = `scaleY(${max > 0 ? y / max : 0})`;
+    totop.classList.toggle("show", y > innerHeight * 1.2);
+  });
+  totop.addEventListener("click", () => scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
+  $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const id = a.getAttribute("href"); const el = id.length > 1 && $(id); if (el) { e.preventDefault(); el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); } }));
+  if (!fine || reduce) return;
+  const cur = $(".cur"), ring = $(".cur-ring"), txt = $(".cur-txt"), label = $(".cur-label");
+  document.body.classList.add("has-cursor");
+  let tx = -100, ty = -100, cx = -100, cy = -100, rx = -100, ry = -100, raf = 0;
+  const loop = () => { cx += (tx - cx) * .35; cy += (ty - cy) * .35; rx += (tx - rx) * .14; ry += (ty - ry) * .14; cur.style.translate = `${cx}px ${cy}px`; txt.style.translate = `${cx}px ${cy}px`; ring.style.translate = `${rx}px ${ry}px`; raf = (Math.abs(tx - rx) > .2 || Math.abs(ty - ry) > .2) ? requestAnimationFrame(loop) : 0; };
+  addEventListener("pointermove", (e) => { tx = e.clientX; ty = e.clientY; if (!raf) raf = requestAnimationFrame(loop); }, { passive: true });
+  document.addEventListener("pointerover", (e) => {
+    const h = e.target.closest("a, button, [data-cur]");
+    if (h) { label.textContent = h.dataset.cur || "OPEN"; document.body.classList.add("cur-hover"); document.body.classList.toggle("cur-video", h.classList.contains("ep")); }
+    else if (e.target.closest("#hero")) { label.textContent = "STAMP"; document.body.classList.add("cur-hover"); document.body.classList.remove("cur-video"); }
+    else document.body.classList.remove("cur-hover", "cur-video");
+  });
+})();
+runScroll();
+})();
+</script>
+</body>
+</html>
