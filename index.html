@@ -512,6 +512,16 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
 .rail-btn:hover { transform: translateY(-3px); background: var(--mustard); border-color: var(--mustard); }
 .rail-btn.game { border-color: var(--navy); }
 .totop { border: 3px solid #fff; box-shadow: var(--shadow-lg); }
+/* rail over the navy / brown sections: light ink so the label, progress line and game button stay visible */
+.rail-label, .rail-prog, .rail-prog i, .rail-btn.game { transition: color .3s, background-color .3s, border-color .3s; }
+body.on-dark .rail-label { color: var(--cream); opacity: .9; }
+body.on-dark .rail-prog { background: rgba(251, 246, 236, .25); }
+body.on-dark .rail-prog i { background: var(--cream); }
+body.on-dark .rail-btn.game { border-color: var(--cream); }
+/* footer: keep the note clear of the fixed "to top" button */
+.ftr { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
+/* schedule chips on phones: one line per label */
+@media (max-width: 480px) { .sched { gap: 4px; } .sched li { padding: 9px 0 7px; font-size: 11px; gap: 6px; border-radius: 12px; } .sched li em { font-size: 9px; letter-spacing: 0; white-space: nowrap; } }
 .lb-in { border: 4px solid #fff; box-shadow: var(--shadow-lg); }
 .ftr { border-top: 3px dotted var(--fur); }
 /* ticker: a straight strip of paper, not a tilted black band */
@@ -635,7 +645,7 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
   <div class="wrap">
     <div class="sec-head rv">
       <div class="sec-no">01</div>
-      <h2 class="sec-ttl"><span data-t="ch.ttl">はたらく、うさぎたち。</span></h2>
+      <h2 class="sec-ttl"><span data-t="ch.ttl">オフィスの、3人。</span></h2>
       <p class="sec-lead" data-t="ch.lead">目が、カーソルを追いかけます。カードにカーソルを当てると、それぞれのクセが出ます。</p>
     </div>
     <div class="chars">
@@ -744,7 +754,7 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
         <div class="char-role">ROOKIE · GOLDEN HAMSTER</div>
         <h3 class="char-name">POM<small data-t="ch.pom.name">新人のポム</small></h3>
         <p class="char-text" data-t="ch.pom.text">11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。</p>
-        <ul class="char-tags"><li data-t="ch.pom.t1">ほっぺ収納</li><li data-t="ch.pom.t2">元気</li><li>NEW 11/1</li></ul>
+        <ul class="char-tags"><li data-t="ch.pom.t1">ほっぺ収納</li><li data-t="ch.pom.t2">元気</li><li data-t="ch.pom.t3">NEW 11/1</li></ul>
       
             <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
           </div>
@@ -776,7 +786,7 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
         <!-- nodes -->
         <g transform="translate(160 175)"><g class="rel-node"><path d="M-42 -50 C -78 -38, -86 18, -70 50 C -60 70, -36 62, -34 32 C -32 2, -30 -24, -42 -50 Z M42 -50 C 78 -38, 86 18, 70 50 C 60 70, 36 62, 34 32 C 32 2, 30 -24, 42 -50 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><circle cx="-22" cy="-6" r="7" fill="#2B1D12"/><circle cx="22" cy="-6" r="7" fill="#2B1D12"/><path d="M-6 14 h12 l-6 6Z" fill="#E8A4A0"/><path d="M0 20 v8 M-8 32 c4 4 12 4 16 0" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><path d="M0 48 l-7 16 h14 Z" fill="#D9A520" stroke="#2B1D12" stroke-width="3"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">REN</text></g></g>
         <g transform="translate(740 175)"><g class="rel-node"><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><path d="M-26 -50 C -34 -90, -16 -112, -8 -84 C -4 -70, -8 -56, -14 -44 Z M26 -50 C 34 -90, 16 -112, 8 -84 C 4 -70, 8 -56, 14 -44 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><g fill="none" stroke="#8C5A37" stroke-width="3.5"><circle cx="-22" cy="-4" r="18"/><circle cx="22" cy="-4" r="18"/><path d="M-4 -4h8"/></g><circle cx="-22" cy="-4" r="8" fill="#2B1D12"/><circle cx="22" cy="-4" r="8" fill="#2B1D12"/><path d="M-6 16 h12 l-6 6Z" fill="#E8A4A0"/><path d="M-7 30 h14" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">JILL</text></g></g>
-        <g transform="translate(450 392)"><g class="rel-node"><circle r="54" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="-38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><path d="M-48 -18 C -30 -30, 30 -30, 48 -18 l-3 10 C 28 -20, -28 -20, -45 -8 Z" fill="#E05A4E" stroke="#2B1D12" stroke-width="3"/><circle cx="-18" cy="0" r="6" fill="#2B1D12"/><circle cx="18" cy="0" r="6" fill="#2B1D12"/><circle cx="-30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><circle cx="30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><path d="M-4 14 h8 l-4 5Z" fill="#E8A4A0"/><text y="46" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="20" fill="#2B1D12">POM</text><g transform="translate(74 -40)"><rect x="-26" y="-12" width="52" height="24" rx="12" fill="#2B1D12"/><text text-anchor="middle" y="5" font-family="Fredoka" font-weight="700" font-size="12" fill="#D9A520">NEW</text></g></g></g>
+        <g transform="translate(450 392)"><g class="rel-node"><circle r="54" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="-38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><path d="M-48 -18 C -30 -30, 30 -30, 48 -18 l-3 10 C 28 -20, -28 -20, -45 -8 Z" fill="#E05A4E" stroke="#2B1D12" stroke-width="3"/><circle cx="-18" cy="0" r="6" fill="#2B1D12"/><circle cx="18" cy="0" r="6" fill="#2B1D12"/><circle cx="-30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><circle cx="30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><path d="M-4 14 h8 l-4 5Z" fill="#E8A4A0"/><text y="46" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="20" fill="#2B1D12">POM</text><g id="relNew" transform="translate(74 -40)"><rect x="-26" y="-12" width="52" height="24" rx="12" fill="#2B1D12"/><text text-anchor="middle" y="5" font-family="Fredoka" font-weight="700" font-size="12" fill="#D9A520">NEW</text></g></g></g>
       </svg>
     </div>
   </div>
@@ -991,10 +1001,10 @@ const T = {
 "맨 위로"
 ],
 "ch.ttl": [
-"はたらく、うさぎたち。",
+"オフィスの、3人。",
 "Meet the office.",
-"上班的兔子們。",
-"일하는 토끼들."
+"辦公室的三人。",
+"오피스의 세 명."
 ],
 "ch.lead": [
 "目が、カーソルを追いかけます。カードにカーソルを当てると、それぞれのクセが出ます。",
@@ -1163,6 +1173,24 @@ const T = {
 "Joined on November 1. Stores everything in those cheeks. Three times the boss's energy. The headband is non-negotiable.",
 "11月1日入職的新人。什麼都往臉頰裡塞。幹勁是課長的3倍。頭帶是本人的堅持。",
 "11월 1일 입사한 신입. 뭐든 볼주머니에 넣어 둡니다. 의욕은 과장님의 3배. 머리띠는 본인의 고집."
+],
+"ch.pom.text.pre": [
+"11月1日に入社する新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。",
+"Joins on November 1. Stores everything in those cheeks. Three times the boss's energy. The headband is non-negotiable.",
+"11月1日即將入職的新人。什麼都往臉頰裡塞。幹勁是課長的3倍。頭帶是本人的堅持。",
+"11월 1일 입사하는 신입. 뭐든 볼주머니에 넣어 둡니다. 의욕은 과장님의 3배. 머리띠는 본인의 고집."
+],
+"ch.pom.t3": [
+"NEW 11/1",
+"NEW 11/1",
+"NEW 11/1",
+"NEW 11/1"
+],
+"ch.pom.t3.late": [
+"11/1 入社",
+"Joined 11/1",
+"11/1 入職",
+"11/1 입사"
 ],
 "ch.pom.t1": [
 "ほっぺ収納",
@@ -1547,9 +1575,9 @@ const EPS = [
   { ep: "chime2", title: ["定時のチャイム", "The 6 pm chime", "下班的鐘聲", "퇴근 종소리"], cap: ["定時のチャイム、よろこびが止まらない。", "6pm chime. Joy cannot be contained.", "下班鐘聲一響，喜悅停不下來。", "퇴근 종소리. 기쁨이 멈추지 않아요."], cover: "20261025_chime2_cover.jpg", video: "20261025_chime2.mp4", yt: "ToguHMsoIaU", date: "2026.10.25" },
   { ep: "mug2", title: ["マグカップはどこ", "Where's the mug", "馬克杯在哪", "머그컵은 어디에"], cap: ["課長、マグカップは頭の上です。", "Sir. The mug. It's on your head.", "課長，馬克杯在你頭上。", "과장님, 머그컵은 머리 위에 있어요."], cover: "20261023_mug2_cover.jpg", video: "20261023_mug2.mp4", yt: "xIzVzowGgjw", date: "2026.10.23" },
   { ep: "papers2", title: ["書類の山", "The paper mountain", "文件山", "서류 산"], cap: ["整えるほど崩れる。課長、手伝わなくていいです。", "The more he helps, the worse it gets.", "越整理越崩。課長，不用幫忙。", "정리할수록 무너집니다. 과장님, 안 도와주셔도 돼요."], yt: "tgxLKS_ontc", date: "2026.10.21" },
-  { ep: "cameraoff", title: ["カメラオフ会議", "Camera-off meeting", "關鏡頭會議", "카메라 끄고 회의"], cap: ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?", "關掉鏡頭就什麼都沒問題。沒問題吧？", "카메라만 끄면 괜찮아요. 괜찮죠?"], yt: "mtduSRvoJdk" },
-  { ep: "meeting5", title: ["会議の5分前", "5 minutes before the meeting", "會議前5分鐘", "회의 5분 전"], cap: ["会議まで、あと5分。", "5 minutes before the meeting.", "距離會議，還有5分鐘。", "회의까지 앞으로 5분."], yt: "3_wI617Sj5Y" },
-  { ep: "hanko", title: ["ハンコ", "The stamp", "蓋章", "도장"], cap: ["承認。鼻で。", "Approved. With his nose.", "批准。用鼻子。", "승인. 코로."], yt: "NH1nbAYF6OY" },
+  { ep: "cameraoff", title: ["カメラオフ会議", "Camera-off meeting", "關鏡頭會議", "카메라 끄고 회의"], cap: ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?", "關掉鏡頭就什麼都沒問題。沒問題吧？", "카메라만 끄면 괜찮아요. 괜찮죠?"], yt: "mtduSRvoJdk", date: "2026.10.19" },
+  { ep: "meeting5", title: ["会議の5分前", "5 minutes before the meeting", "會議前5分鐘", "회의 5분 전"], cap: ["会議まで、あと5分。", "5 minutes before the meeting.", "距離會議，還有5分鐘。", "회의까지 앞으로 5분."], yt: "3_wI617Sj5Y", date: "2026.10.19" },
+  { ep: "hanko", title: ["ハンコ", "The stamp", "蓋章", "도장"], cap: ["承認。鼻で。", "Approved. With his nose.", "批准。用鼻子。", "승인. 코로."], yt: "NH1nbAYF6OY", date: "2026.10.19" },
 ];
 /* languages: ja / en / zh (Traditional) / ko — chosen for where wordless kawaii comedy actually finds fans
    (Japan, English-speaking world, Taiwan·Hong Kong, Korea). Kept to four so the switch stays simple. */
@@ -1570,7 +1598,15 @@ function setLang(l, save = true) {
   ensureFont(lang);
   document.documentElement.lang = LANG_META[lang].tag;
   LANGS.forEach((x) => document.body.classList.toggle("lang-" + x, x === lang));
-  $$("[data-t]").forEach((el) => { const k = (!fine && T[el.dataset.t + ".touch"]) ? el.dataset.t + ".touch" : el.dataset.t; if (T[k]) el.textContent = t(k); });
+  const cal = jstISO();
+  $$("[data-t]").forEach((el) => {
+    let k = el.dataset.t;
+    if (!fine && T[k + ".touch"]) k += ".touch";
+    if (cal < POM_DAY && T[k + ".pre"]) k += ".pre";            // before Pom's first day
+    else if (cal >= POM_FRESH_UNTIL && T[k + ".late"]) k += ".late"; // once "NEW" would be stale
+    if (T[k]) el.textContent = t(k);
+  });
+  const nb = $("#relNew"); if (nb) nb.style.display = cal >= POM_FRESH_UNTIL ? "none" : "";
   $("#langCur").textContent = LANG_META[lang].short;
   $$("#langMenu button").forEach((b) => { const on = b.dataset.l === lang; b.classList.toggle("on", on); b.setAttribute("aria-current", on ? "true" : "false"); });
   document.title = META[lang].title;
@@ -1590,6 +1626,9 @@ const detectLang = () => { const n = (navigator.language || "").toLowerCase(); i
 
 /* ───────── 2. today / office status (JST) ───────── */
 const jst = () => new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000);
+// JST calendar date as YYYY-MM-DD (read with local getters: toISOString() would shift the day for visitors in Japan before 9:00)
+const jstISO = () => { const n = jst(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`; };
+const POM_DAY = "2026-11-01", POM_FRESH_UNTIL = "2026-12-01";
 function today() {
   const n = jst(), y = n.getFullYear(), m = n.getMonth() + 1, d = n.getDate(), dow = n.getDay(), h = n.getHours() + n.getMinutes() / 60;
   $("#todayDate").textContent = `${y}.${String(m).padStart(2, "0")}.${String(d).padStart(2, "0")}`;
@@ -1614,14 +1653,14 @@ function today() {
   for (; add <= 7; add++) if (days.includes((dow + add) % 7)) break;
   const nx = new Date(n); nx.setDate(d + add);
   const dn = S.days[i][nx.getDay()];
-  $("#nextEp").textContent = S.next[i] + `${nx.getMonth() + 1}/${nx.getDate()} ` + (lang === "en" ? dn : lang === "ko" ? "(" + dn + ")" : "（" + dn + "）");
+  $("#nextEp").textContent = S.next[i] + `${nx.getMonth() + 1}/${nx.getDate()}` + (lang === "en" ? " " + dn : lang === "ko" ? " (" + dn + ")" : "（" + dn + "）");
 }
 langHooks.push(today); setInterval(today, 60000);
 /* PICKUP card follows the calendar: announce Pom until 11/1, "joined" for two weeks after, then the latest episode */
 function pickup() {
   const el = $("#pickup .pickup-t"), a = $("#pickup"); if (!el) return;
-  const d = jst().toISOString().slice(0, 10);
-  if (d < "2026-11-01") el.textContent = t("pickup.t");
+  const d = jstISO();
+  if (d < POM_DAY) el.textContent = t("pickup.t");
   else if (d <= "2026-11-14") el.textContent = t("pickup.after");
   else { const e = EPS.find((x) => x.yt) || EPS[0]; el.textContent = t("pickup.latest") + (e.title[li()] || e.title[0]); }
   a.href = "#episodes";
@@ -1661,8 +1700,9 @@ if (!reduce) $$(".hero-title .c").forEach((c) => c.addEventListener("pointerente
 }));
 // parallax while hero leaves
 if (!reduce) {
-  const art = $("#heroArt"), copy = $(".hero-copy");
-  onScroll((y) => { const p = clamp(y / innerHeight, 0, 1); art.style.transform = `translateY(${p * 18}%)`; copy.style.transform = `translateY(${-p * 6}%)`; });
+  const art = $("#heroArt"), copy = $(".hero-copy"), twoCol = matchMedia("(min-width: 901px)");
+  // only when the art sits beside the copy; stacked (phone) layouts would push the art down over the date/pickup
+  onScroll((y) => { if (!twoCol.matches) { art.style.transform = copy.style.transform = ""; return; } const p = clamp(y / innerHeight, 0, 1); art.style.transform = `translateY(${p * 18}%)`; copy.style.transform = `translateY(${-p * 6}%)`; });
 }
 // cover → video (desktop, visible, no data saver)
 (() => {
@@ -1671,6 +1711,16 @@ if (!reduce) {
   let armed = false;
   const tryPlay = () => v.play().then(() => phone.classList.add("playing")).catch(() => {});
   new IntersectionObserver(([e]) => { if (e.isIntersecting) { if (!armed) { armed = true; v.preload = "auto"; setTimeout(tryPlay, 1400); } else tryPlay(); } else v.pause(); }, { threshold: .2 }).observe(phone);
+})();
+// relationship diagram: same nodes, taller triangle on phones so the labels stay readable
+(() => {
+  const svg = $(".rel-svg"); if (!svg) return;
+  const paths = $$("path.rel-line", svg), labs = $$("g.rel-lab", svg), nodes = $$(":scope > g", svg).filter((g) => g.querySelector(".rel-node"));
+  const WIDE = { vb: "0 0 900 470", paths: ["M250 140 C 330 70, 570 70, 650 140", "M650 212 C 570 282, 330 282, 250 212", "M392 352 C 340 326, 290 294, 236 250", "M508 352 C 560 326, 610 294, 664 250"], labs: ["translate(450 78)", "translate(450 268)", "translate(290 318)", "translate(610 318)"], nodes: ["translate(160 175)", "translate(740 175)", "translate(450 392)"] };
+  const TALL = { vb: "0 0 520 570", paths: ["M186 104 C 216 30, 304 30, 334 104", "M332 206 C 300 300, 220 300, 188 206", "M212 466 C 120 450, 40 340, 54 232", "M308 466 C 400 450, 480 340, 466 232"], labs: ["translate(260 46) scale(1.15)", "translate(260 290) scale(1.2)", "translate(86 372) scale(1.1)", "translate(434 372) scale(1.1)"], nodes: ["translate(96 150)", "translate(424 150)", "translate(260 500)"] };
+  const mq = matchMedia("(max-width: 640px)");
+  const apply = () => { const L = mq.matches ? TALL : WIDE; svg.setAttribute("viewBox", L.vb); paths.forEach((p, i) => p.setAttribute("d", L.paths[i])); labs.forEach((g, i) => g.setAttribute("transform", L.labs[i])); nodes.forEach((g, i) => g.setAttribute("transform", L.nodes[i])); };
+  apply(); mq.addEventListener("change", apply);
 })();
 // hero clock = JST
 (() => {
@@ -1803,7 +1853,7 @@ if (!reduce) {
 const epsEl = $("#eps");
 const revealIO = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
 function renderEpisodes() {
-  const L = li(), todayISO = jst().toISOString().slice(0, 10);
+  const L = li(), todayISO = jstISO();
   epsEl.innerHTML = EPS.map((e, i) => {
     const title = e.title[L] || e.title[0], cap = e.cap[L] || e.cap[0];
     e.soon = !e.yt && !!e.date && e.date.replace(/\./g, "-") > todayISO;
@@ -1811,12 +1861,12 @@ function renderEpisodes() {
     const img = e.cover ? MEDIA + e.cover : `https://i.ytimg.com/vi/${e.yt}/oardefault.jpg`;
     const fb = e.yt ? `https://i.ytimg.com/vi/${e.yt}/hqdefault.jpg` : "";
     const href = e.yt ? `https://www.youtube.com/shorts/${e.yt}` : YT;
-    const vid = e.video ? `<video muted loop playsinline preload="none" data-src="${MEDIA + e.video}" aria-hidden="true"></video>` : "";
-    return `<a class="ep rv${e.soon ? " soon" : ""}" style="--d:${(i % 4) * .08}s" href="${href}" target="_blank" rel="noopener" data-yt="${e.yt || ""}" data-cur="${e.yt ? "PLAY" : "OPEN"}">
+    const vid = e.video && !e.soon ? `<video muted loop playsinline preload="none" data-src="${MEDIA + e.video}" aria-hidden="true"></video>` : "";
+    return `<a class="ep rv${e.soon ? " soon" : ""}" style="--d:${(i % 4) * .08}s" href="${href}" target="_blank" rel="noopener" data-yt="${e.yt || ""}" data-cur="${e.yt ? "PLAY" : e.soon ? "SOON" : "OPEN"}">
       <div class="ep-media" data-soon="${t("ep.soon")}">
         <span class="ep-no">EP.${n}</span>
         <img src="${img}" alt="${title}" loading="lazy" width="1080" height="1920"${fb ? ` onerror="this.onerror=null;this.src='${fb}'"` : ""}>${vid}
-        <span class="ep-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></span>
+        ${e.soon ? "" : `<span class="ep-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></span>`}
       </div>
       <div class="ep-body"><span class="ep-date">${e.date || t("ep.shorts")}</span><h3 class="ep-ttl">${title}</h3><p class="ep-cap">${cap}</p></div>
     </a>`;
@@ -1886,10 +1936,14 @@ $$(".rv").forEach((el) => { if (el.closest("#hero")) return; if (reduce) el.clas
 (() => {
   const hdr = $("#hdr"), prog = $("#prog"), totop = $("#totop");
   let last = 0;
+  const darks = $$(".day, .game");
   onScroll((y) => {
     hdr.classList.toggle("hide", y > 240 && y > last); last = y;
     const max = document.documentElement.scrollHeight - innerHeight; prog.style.transform = `scaleY(${max > 0 ? y / max : 0})`;
     totop.classList.toggle("show", y > innerHeight * 1.2);
+    // rail sits at mid-screen: switch it to light ink while a dark section is behind it
+    const mid = innerHeight / 2;
+    document.body.classList.toggle("on-dark", darks.some((s) => { const r = s.getBoundingClientRect(); return r.top < mid && r.bottom > mid; }));
   });
   totop.addEventListener("click", () => scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
   $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const id = a.getAttribute("href"); const el = id.length > 1 && $(id); if (el) { e.preventDefault(); el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); } }));
