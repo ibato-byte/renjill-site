@@ -231,7 +231,16 @@ body.lang-en .day-ttl { font-family: var(--f-en); font-weight: 700; }
 .day-clock { position: absolute; right: 0; bottom: 26px; width: 80px; height: 80px; z-index: 2; }
 .day-progress { height: 4px; background: rgba(255, 255, 255, .2); border-radius: 999px; margin-top: 36px; overflow: hidden; }
 .day-progress i { display: block; height: 100%; width: 100%; background: var(--mustard); transform: scaleX(0); transform-origin: left; }
-@media (max-width: 760px) { .day-track { flex-direction: column; width: auto; padding-right: 0; } .day-card, .day-card.big { width: 100%; } .day-clock { display: none; } .day-progress { display: none; } .day-head { padding-right: 0; } .day-pin { padding-block: clamp(90px, 12vw, 180px); } }
+@media (max-width: 760px) {
+  .day-track { width: auto; margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); overscroll-behavior-x: contain; scrollbar-width: none; will-change: auto; }
+  .day-track::-webkit-scrollbar { display: none; }
+  .day-card, .day-card.big { width: min(78vw, 320px); scroll-snap-align: start; }
+  .day-card.big { width: min(84vw, 340px); }
+  .day-clock { width: 56px; height: 56px; bottom: 30px; }
+  .day-head { padding-right: 0; } .day .sec-lead { padding-right: 70px; }
+  .day-progress { margin-top: 14px; }
+  .day-pin { padding-block: clamp(90px, 12vw, 180px); }
+}
 
 /* ═══════ EPISODES ═══════ */
 .eps { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: clamp(14px, 2vw, 28px); }
@@ -273,8 +282,6 @@ body.lang-en .ep-ttl { font-family: var(--f-en); font-weight: 700; }
 .game-shot img { width: 100%; height: auto; }
 .game-big { font: 700 clamp(56px, 8vw, 120px)/.9 var(--f-en); letter-spacing: -.04em; margin: 0 0 10px; color: var(--mustard); -webkit-text-stroke: 3px var(--cream); paint-order: stroke fill; }
 .game-text { font-size: 15.5px; line-height: 1.9; opacity: .9; margin: 0 0 24px; max-width: 34em; }
-.hay-count { display: inline-flex; align-items: baseline; gap: 10px; margin: 0 0 26px; font: 700 clamp(30px, 3.4vw, 48px)/1 var(--f-en); color: var(--cream); }
-.hay-count small { font: 500 12px/1 var(--f-mono); letter-spacing: .2em; opacity: .7; }
 .game-chars { display: flex; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; flex-wrap: wrap; }
 .game-chars li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 2px solid var(--cream); border-radius: 999px; font: 700 13px/1 var(--f-en); letter-spacing: .04em; }
 .game-chars i { width: 10px; height: 10px; border-radius: 50%; background: var(--mustard); }
@@ -502,7 +509,6 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
 .ep-no { background: var(--navy); color: #fff; border-radius: 999px; }
 .ep.soon .ep-media::after { border-top: 0; }
 .game-shot { border: var(--sticker); box-shadow: var(--shadow-lg); }
-.hay-count small { color: var(--mustard); opacity: 1; }
 .game-chars li { border-color: rgba(255, 255, 255, .35); }
 .sns-row { border-bottom: 3px dotted var(--fur); }
 .sns-row .ic { border: 0; background: var(--paper-2); border-radius: 14px; }
@@ -528,6 +534,44 @@ body.on-dark .rail-btn.game { border-color: var(--cream); }
 .tape-wrap { margin-top: 0; padding-block: 0; }
 .tape { margin: 0; padding-block: 16px; background: var(--paper); color: var(--fur-d); border-block: 3px dotted var(--fur); transform: none; }
 .tape-track span::after { width: .42em; height: .42em; border-radius: 2px; background: var(--blush); transform: rotate(45deg); }
+
+/* thumbnails: one look for every card — the baked frames on the covers are cropped off and a single frame is drawn on top;
+   episodes without a cover image get the same title lettering as the covers */
+.ep-media { container-type: inline-size; }
+.ep-media img, .ep-media video { transform: scale(1.085); }
+.ep:hover .ep-media img { transform: scale(1.13); }
+.ep-media::before { content: ""; position: absolute; inset: 3.2%; z-index: 1; border: 3px solid #D6A33A; border-radius: 6px; pointer-events: none; }
+.ep-cv { position: absolute; z-index: 1; left: 6%; right: 6%; top: 17.5%; display: grid; justify-items: center; gap: 1.6cqw; text-align: center; pointer-events: none; transition: transform .8s var(--ease); }
+.ep-cv b { font: 900 11.5cqw/1 "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; letter-spacing: -.01em; color: #FFF8EC; -webkit-text-stroke: 1.2cqw #5C3A1E; paint-order: stroke fill; text-shadow: 0 .9cqw 0 #5C3A1E; white-space: nowrap; }
+.ep-cv i { font: 900 6.4cqw/1.1 "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; font-style: normal; color: #E9B53A; -webkit-text-stroke: .9cqw #5C3A1E; paint-order: stroke fill; white-space: nowrap; }
+.ep-cv em { margin-top: 1.4cqw; padding: 1.6cqw 4.2cqw; border-radius: 999px; background: #2F5B8A; color: #fff; font: 700 4.4cqw/1 system-ui, sans-serif; font-style: normal; letter-spacing: .08em; box-shadow: 0 .8cqw 0 #5C3A1E; }
+.ep:hover .ep-cv { transform: scale(1.04); }
+
+/* relationship: diagram + four explained pairs (hovering a pair lights up its arrow) */
+.rel-lead { margin: 4px 0 6px; max-width: 46em; font-size: 15px; line-height: 1.9; color: var(--ink-2); }
+.rel-svg .rel-line, .rel-svg .rel-lab { transition: opacity .3s, stroke .3s, stroke-width .3s; }
+.rel-svg[data-hl] .rel-line, .rel-svg[data-hl] > g.rel-lab { opacity: .22; }
+.rel-svg[data-hl="0"] > path.rel-line:nth-of-type(1), .rel-svg[data-hl="1"] > path.rel-line:nth-of-type(2), .rel-svg[data-hl="2"] > path.rel-line:nth-of-type(3), .rel-svg[data-hl="3"] > path.rel-line:nth-of-type(4) { opacity: 1; stroke: var(--stamp); stroke-width: 5; }
+.rel-svg[data-hl="0"] > g.rel-lab:nth-of-type(1), .rel-svg[data-hl="1"] > g.rel-lab:nth-of-type(2), .rel-svg[data-hl="2"] > g.rel-lab:nth-of-type(3), .rel-svg[data-hl="3"] > g.rel-lab:nth-of-type(4) { opacity: 1; }
+.rel-cards { list-style: none; margin: clamp(18px, 2.4vw, 30px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.rel-card { position: relative; display: grid; gap: 10px; align-content: start; padding: 20px 22px 18px; border-radius: 22px; background: var(--paper-2); border: 2px solid transparent; transition: border-color .3s, transform .3s var(--ease), background .3s; outline: none; }
+.rel-card:hover, .rel-card.on { border-color: var(--stamp); background: var(--paper); transform: translateY(-3px); }
+.rel-card:focus-visible { border-color: var(--navy); }
+.rel-no { position: absolute; right: 18px; top: 16px; font: 700 12px/1 var(--f-mono); letter-spacing: .1em; color: var(--stamp); }
+.rel-who { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding-right: 30px; }
+.rel-av { display: inline-flex; align-items: center; gap: 7px; padding: 3px 12px 3px 4px; border-radius: 999px; background: var(--paper); box-shadow: 0 2px 0 var(--edge); font: 700 12.5px/1 var(--f-en); letter-spacing: .06em; }
+.rel-av svg { width: 26px; height: 26px; flex: none; }
+.rel-who svg { width: 22px; height: 12px; flex: none; color: var(--fur-d); }
+.rel-card h4 { margin: 2px 0 0; font: 900 17px/1.45 var(--f-jp); }
+body.lang-en .rel-card h4 { font-family: var(--f-en); font-weight: 700; }
+.rel-card p { margin: 0; font-size: 14px; line-height: 1.85; color: var(--ink-2); }
+.rel-ep { justify-self: start; display: inline-flex; align-items: center; gap: 8px; margin-top: 2px; padding: 7px 14px 7px 8px; border-radius: 999px; background: var(--navy); color: #fff; font: 700 12.5px/1.2 var(--f-jp); transition: background .25s, transform .25s var(--ease); }
+.rel-ep:hover { background: var(--stamp); transform: translateY(-2px); }
+.rel-ep i { width: 22px; height: 22px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; flex: none; }
+.rel-ep i svg { width: 9px; height: 9px; margin-left: 1px; }
+body:not(.lang-en) :is(.rel-card p, .rel-lead) { word-break: auto-phrase; overflow-wrap: anywhere; }
+@media (max-width: 640px) { .rel-cards { grid-template-columns: 1fr; } .rel-card { padding: 18px 18px 16px; } }
+@media (prefers-reduced-motion: reduce) { .rel-card, .rel-card:hover { transform: none; } }
 </style>
 </head>
 <body class="lang-ja">
@@ -770,6 +814,7 @@ body.on-dark .rail-btn.game { border-color: var(--cream); }
 
     <div class="rel rv" id="rel">
       <div class="rel-head"><span class="mono" data-t="rel.k">RELATIONSHIP</span><h3 class="rel-ttl" data-t="rel.ttl">みんなの関係</h3></div>
+      <p class="rel-lead" data-t="rel.lead">.</p>
       <svg class="rel-svg" viewBox="0 0 900 470" aria-labelledby="relTitle" role="img">
         <title id="relTitle">Ren, Jill and Pom</title>
         <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10Z" fill="#2B1D12"/></marker></defs>
@@ -788,6 +833,12 @@ body.on-dark .rail-btn.game { border-color: var(--cream); }
         <g transform="translate(740 175)"><g class="rel-node"><circle r="72" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/><path d="M-26 -50 C -34 -90, -16 -112, -8 -84 C -4 -70, -8 -56, -14 -44 Z M26 -50 C 34 -90, 16 -112, 8 -84 C 4 -70, 8 -56, 14 -44 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><g fill="none" stroke="#8C5A37" stroke-width="3.5"><circle cx="-22" cy="-4" r="18"/><circle cx="22" cy="-4" r="18"/><path d="M-4 -4h8"/></g><circle cx="-22" cy="-4" r="8" fill="#2B1D12"/><circle cx="22" cy="-4" r="8" fill="#2B1D12"/><path d="M-6 16 h12 l-6 6Z" fill="#E8A4A0"/><path d="M-7 30 h14" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/><text y="104" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="22" fill="#2B1D12">JILL</text></g></g>
         <g transform="translate(450 392)"><g class="rel-node"><circle r="54" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="-38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><circle cx="38" cy="-36" r="13" fill="#E6C9A4" stroke="#2B1D12" stroke-width="4"/><path d="M-48 -18 C -30 -30, 30 -30, 48 -18 l-3 10 C 28 -20, -28 -20, -45 -8 Z" fill="#E05A4E" stroke="#2B1D12" stroke-width="3"/><circle cx="-18" cy="0" r="6" fill="#2B1D12"/><circle cx="18" cy="0" r="6" fill="#2B1D12"/><circle cx="-30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><circle cx="30" cy="18" r="14" fill="#F6D7A8" stroke="#2B1D12" stroke-width="3"/><path d="M-4 14 h8 l-4 5Z" fill="#E8A4A0"/><text y="46" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="20" fill="#2B1D12">POM</text><g id="relNew" transform="translate(74 -40)"><rect x="-26" y="-12" width="52" height="24" rx="12" fill="#2B1D12"/><text text-anchor="middle" y="5" font-family="Fredoka" font-weight="700" font-size="12" fill="#D9A520">NEW</text></g></g></g>
       </svg>
+      <ul class="rel-cards">
+        <li class="rel-card" data-rel="0" tabindex="0"><span class="rel-no">01</span><div class="rel-who"><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 12C3 16 3 30 8 33c4 2 6-3 6-9M30 12c7 4 7 18 2 21-4 2-6-3-6-9" fill="#B98552" stroke="#5C3A1E" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="20" r="12" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="15.5" cy="19" r="1.9" fill="#2B1D12"/><circle cx="24.5" cy="19" r="1.9" fill="#2B1D12"/><path d="M18.5 24h3l-1.5 1.6z" fill="#E8A4A0"/><path d="M18 32l2-4 2 4z" fill="#D9A520" stroke="#5C3A1E" stroke-width="1.4"/></svg>REN</span><svg viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M14 12c-3-9 1-12 3-9 1 2 1 5 0 8M26 12c3-9-1-12-3-9-1 2-1 5 0 8" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="23" r="12" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2"/><g fill="none" stroke="#8C5A37" stroke-width="1.8"><circle cx="15" cy="22" r="4"/><circle cx="25" cy="22" r="4"/><path d="M19 22h2"/></g><circle cx="15" cy="22" r="1.6" fill="#2B1D12"/><circle cx="25" cy="22" r="1.6" fill="#2B1D12"/><path d="M18.5 27.5h3l-1.5 1.5z" fill="#E8A4A0"/></svg>JILL</span></div><h4 data-t="rel.1">.</h4><p data-t="rel.1.d">.</p><a class="rel-ep" href="#episodes" data-ep="papers2"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="1" tabindex="0"><span class="rel-no">02</span><div class="rel-who"><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M14 12c-3-9 1-12 3-9 1 2 1 5 0 8M26 12c3-9-1-12-3-9-1 2-1 5 0 8" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="23" r="12" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2"/><g fill="none" stroke="#8C5A37" stroke-width="1.8"><circle cx="15" cy="22" r="4"/><circle cx="25" cy="22" r="4"/><path d="M19 22h2"/></g><circle cx="15" cy="22" r="1.6" fill="#2B1D12"/><circle cx="25" cy="22" r="1.6" fill="#2B1D12"/><path d="M18.5 27.5h3l-1.5 1.5z" fill="#E8A4A0"/></svg>JILL</span><svg viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 12C3 16 3 30 8 33c4 2 6-3 6-9M30 12c7 4 7 18 2 21-4 2-6-3-6-9" fill="#B98552" stroke="#5C3A1E" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="20" r="12" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="15.5" cy="19" r="1.9" fill="#2B1D12"/><circle cx="24.5" cy="19" r="1.9" fill="#2B1D12"/><path d="M18.5 24h3l-1.5 1.6z" fill="#E8A4A0"/><path d="M18 32l2-4 2 4z" fill="#D9A520" stroke="#5C3A1E" stroke-width="1.4"/></svg>REN</span></div><h4 data-t="rel.2">.</h4><p data-t="rel.2.d">.</p><a class="rel-ep" href="#episodes" data-ep="mug2"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="2" tabindex="0"><span class="rel-no">03</span><div class="rel-who"><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="10" cy="11" r="4.5" fill="#E6C9A4" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="30" cy="11" r="4.5" fill="#E6C9A4" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="20" cy="21" r="13" fill="#E6C9A4" stroke="#5C3A1E" stroke-width="2.2"/><path d="M8 15c6-4 18-4 24 0l-1 3.5c-6-3.5-16-3.5-22 0z" fill="#E05A4E" stroke="#5C3A1E" stroke-width="1.6"/><circle cx="16" cy="22" r="1.7" fill="#2B1D12"/><circle cx="24" cy="22" r="1.7" fill="#2B1D12"/><circle cx="12.5" cy="27" r="3.6" fill="#F6D7A8" stroke="#5C3A1E" stroke-width="1.4"/><circle cx="27.5" cy="27" r="3.6" fill="#F6D7A8" stroke="#5C3A1E" stroke-width="1.4"/></svg>POM</span><svg viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 12C3 16 3 30 8 33c4 2 6-3 6-9M30 12c7 4 7 18 2 21-4 2-6-3-6-9" fill="#B98552" stroke="#5C3A1E" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="20" r="12" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="15.5" cy="19" r="1.9" fill="#2B1D12"/><circle cx="24.5" cy="19" r="1.9" fill="#2B1D12"/><path d="M18.5 24h3l-1.5 1.6z" fill="#E8A4A0"/><path d="M18 32l2-4 2 4z" fill="#D9A520" stroke="#5C3A1E" stroke-width="1.4"/></svg>REN</span></div><h4 data-t="rel.3">.</h4><p data-t="rel.3.d">.</p><a class="rel-ep" href="#episodes" data-ep="pom_debut"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="3" tabindex="0"><span class="rel-no">04</span><div class="rel-who"><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="10" cy="11" r="4.5" fill="#E6C9A4" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="30" cy="11" r="4.5" fill="#E6C9A4" stroke="#5C3A1E" stroke-width="2.2"/><circle cx="20" cy="21" r="13" fill="#E6C9A4" stroke="#5C3A1E" stroke-width="2.2"/><path d="M8 15c6-4 18-4 24 0l-1 3.5c-6-3.5-16-3.5-22 0z" fill="#E05A4E" stroke="#5C3A1E" stroke-width="1.6"/><circle cx="16" cy="22" r="1.7" fill="#2B1D12"/><circle cx="24" cy="22" r="1.7" fill="#2B1D12"/><circle cx="12.5" cy="27" r="3.6" fill="#F6D7A8" stroke="#5C3A1E" stroke-width="1.4"/><circle cx="27.5" cy="27" r="3.6" fill="#F6D7A8" stroke="#5C3A1E" stroke-width="1.4"/></svg>POM</span><svg viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M14 12c-3-9 1-12 3-9 1 2 1 5 0 8M26 12c3-9-1-12-3-9-1 2-1 5 0 8" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="23" r="12" fill="#C99A67" stroke="#5C3A1E" stroke-width="2.2"/><g fill="none" stroke="#8C5A37" stroke-width="1.8"><circle cx="15" cy="22" r="4"/><circle cx="25" cy="22" r="4"/><path d="M19 22h2"/></g><circle cx="15" cy="22" r="1.6" fill="#2B1D12"/><circle cx="25" cy="22" r="1.6" fill="#2B1D12"/><path d="M18.5 27.5h3l-1.5 1.5z" fill="#E8A4A0"/></svg>JILL</span></div><h4 data-t="rel.4">.</h4><p data-t="rel.4.d">.</p><a class="rel-ep" href="#episodes" data-ep="pom_debut"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+      </ul>
     </div>
   </div>
 </section>
@@ -856,7 +907,6 @@ body.on-dark .rail-btn.game { border-color: var(--cream); }
         <div class="mono" style="margin-bottom:14px;color:var(--mustard)">REN &amp; JILL PRESENTS</div>
         <h3 class="game-big">HAY<br>DASH!</h3>
         <p class="game-text" data-t="game.text">「チモシーダッシュ」。うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。牧草を集めて、神田から東京タワーまで。新人のポムも走れます。</p>
-        <div class="hay-count"><span id="hayNum">0</span><small data-t="game.hay">HAY COLLECTED · DEMO</small></div>
         <ul class="game-chars"><li><i></i>REN</li><li><i style="background:#E8A4A0"></i>JILL</li><li><i style="background:#F6D7A8"></i>POM</li></ul>
         <a class="btn lite" href="https://renjill-hay-dash.pages.dev/" target="_blank" rel="noopener"><span data-t="game.cta">今すぐ遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
       </div>
@@ -1426,12 +1476,6 @@ const T = {
 "「Hay Dash」：兔子課長 Ren 和部下 Jill 奔跑穿越東京的跑酷遊戲。收集牧草，從神田跑到東京鐵塔。新人 Pom 也能跑。",
 "‘Hay Dash’: 토끼 과장 Ren과 부하 Jill이 도쿄를 달리는 런 게임. 건초를 모아 간다에서 도쿄타워까지. 신입 Pom도 달려요."
 ],
-"game.hay": [
-"HAY · 押してつかむ",
-"HAY · TAP TO GRAB",
-"HAY · 點一下抓牧草",
-"HAY · 눌러서 잡기"
-],
 "game.cta": [
 "今すぐ遊ぶ",
 "Play now",
@@ -1535,10 +1579,10 @@ const T = {
 "세 명 모두 가끔 눈이 움직여요. ‘눌러볼래요?’로 프로필을 볼 수 있어요."
 ],
 "day.lead.touch": [
-"9:00 から 18:00 まで、レンとジルの一日。",
-"From 9:00 to 18:00 — a day with Ren and Jill.",
-"從 9:00 到 18:00，Ren 和 Jill 的一天。",
-"9:00부터 18:00까지, Ren과 Jill의 하루."
+"9:00 から 18:00 まで。横にスワイプして、一日をのぞいてみて。",
+"From 9:00 to 18:00. Swipe sideways through the day.",
+"從 9:00 到 18:00。往旁邊滑，看看這一天。",
+"9:00부터 18:00까지. 옆으로 넘기며 하루를 들여다보세요."
 ],
 "ep.lead.touch": [
 "1本およそ30秒。押すと、そのまま見られます。",
@@ -1563,6 +1607,48 @@ const T = {
 "YouTube Shorts",
 "YouTube Shorts",
 "YouTube 쇼츠"
+],
+"rel.lead": [
+"立場は課長が上。しっかり度は、部下が上。そこへ、やる気だけは満タンの新人がやってきました。",
+"The boss outranks Jill. Jill out-organizes the boss. And now a rookie with a full tank of enthusiasm has joined.",
+"職位是課長比較高，可靠程度是部下比較高。現在又來了一位幹勁滿滿的新人。",
+"직급은 과장님이 위. 야무짐은 부하가 위. 그리고 의욕만큼은 가득한 신입이 들어왔습니다."
+],
+"rel.1.d": [
+"部下を助けたい課長。手を出すほど書類の山は高くなり、そして崩れる。止めるのは、だいたいジル。",
+"The boss wants to help. The more he helps, the higher the paper pile gets — and then it falls. Jill is usually the one who stops him.",
+"課長想幫部下的忙。越幫，文件堆得越高，然後倒塌。出手阻止的通常是 Jill。",
+"부하를 돕고 싶은 과장님. 손을 댈수록 서류 산은 높아지고, 결국 무너집니다. 말리는 건 대체로 Jill."
+],
+"rel.2.d": [
+"課長の探しものがどこにあるか、ジルはだいたい知っている。答えは、たいてい課長の頭の上。",
+"Jill usually knows where the boss's missing things are. The answer is usually: on his head.",
+"課長在找的東西在哪裡，Jill 大概都知道。答案通常是：在課長頭上。",
+"과장님이 찾는 물건이 어디 있는지 Jill은 대체로 알고 있어요. 정답은 대개 과장님 머리 위."
+],
+"rel.3.d": [
+"11月1日に入社した新人のポム。課長のとなりで、やる気だけは課長の3倍。",
+"Pom joined on November 1 — right next to the boss, with three times the boss's energy.",
+"11月1日入職的新人 Pom。坐在課長旁邊，幹勁是課長的3倍。",
+"11월 1일 입사한 신입 Pom. 과장님 옆에서, 의욕만큼은 과장님의 3배."
+],
+"rel.3.d.pre": [
+"11月1日に入社する新人のポム。課長のとなりで、やる気だけは課長の3倍。",
+"Pom joins on November 1 — right next to the boss, with three times the boss's energy.",
+"11月1日即將入職的新人 Pom。坐在課長旁邊，幹勁是課長的3倍。",
+"11월 1일 입사하는 신입 Pom. 과장님 옆에서, 의욕만큼은 과장님의 3배."
+],
+"rel.4.d": [
+"仕事の段取りは、しっかり者のジル先輩に教わり中。メモは、たぶんほっぺの中。",
+"Learning the ropes from Jill, the organized one. The notes are probably tucked in those cheeks.",
+"工作的安排，正在跟可靠的 Jill 前輩學習。筆記大概收在臉頰裡。",
+"일하는 요령은 야무진 Jill 선배에게 배우는 중. 메모는 아마 볼주머니 안에."
+],
+"rel.watch": [
+"この回を見る：",
+"Watch: ",
+"看這集：",
+"이 편 보기: "
 ]
 };
 const META = {"ja": {"title": "レンとジル｜Ren & Jill — うさぎの課長と部下の、セリフのないオフィスコメディ", "desc": "うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。新作は月・水・金・日。"}, "en": {"title": "Ren & Jill — a rabbit office comedy with no dialogue", "desc": "Ren the boss, Jill the assistant. No words, just gestures and sounds from a slightly peaceful office. New episodes Mon, Wed, Fri, Sun."}, "zh": {"title": "Ren & Jill｜沒有台詞的兔子辦公室喜劇", "desc": "兔子課長 Ren 和可靠的部下 Jill。沒有台詞，只用動作和聲音描繪稍微和平的辦公室日常。新片在一、三、五、日。"}, "ko": {"title": "Ren & Jill — 대사 없는 토끼 오피스 코미디", "desc": "토끼 과장 Ren과 야무진 부하 Jill. 대사 없이 몸짓과 소리만으로 그리는 조금 평화로운 오피스의 일상. 신작은 월·수·금·일."}};
@@ -1574,10 +1660,10 @@ const EPS = [
   { ep: "jil_morning2", title: ["ジルの朝", "Jill's morning", "Jill 的早晨", "Jill의 아침"], cap: ["メガネをかけたらスイッチが入る。課長のスイッチはどこ？", "Glasses on, switch on. Where's the boss's switch?", "戴上眼鏡就開啟工作模式。課長的開關在哪？", "안경을 쓰면 스위치 ON. 과장님의 스위치는 어디?"], cover: "20261026_jil_morning2_cover.jpg", video: "20261026_jil_morning2.mp4", yt: "QvCS2uRpm8o", date: "2026.10.26" },
   { ep: "chime2", title: ["定時のチャイム", "The 6 pm chime", "下班的鐘聲", "퇴근 종소리"], cap: ["定時のチャイム、よろこびが止まらない。", "6pm chime. Joy cannot be contained.", "下班鐘聲一響，喜悅停不下來。", "퇴근 종소리. 기쁨이 멈추지 않아요."], cover: "20261025_chime2_cover.jpg", video: "20261025_chime2.mp4", yt: "ToguHMsoIaU", date: "2026.10.25" },
   { ep: "mug2", title: ["マグカップはどこ", "Where's the mug", "馬克杯在哪", "머그컵은 어디에"], cap: ["課長、マグカップは頭の上です。", "Sir. The mug. It's on your head.", "課長，馬克杯在你頭上。", "과장님, 머그컵은 머리 위에 있어요."], cover: "20261023_mug2_cover.jpg", video: "20261023_mug2.mp4", yt: "xIzVzowGgjw", date: "2026.10.23" },
-  { ep: "papers2", title: ["書類の山", "The paper mountain", "文件山", "서류 산"], cap: ["整えるほど崩れる。課長、手伝わなくていいです。", "The more he helps, the worse it gets.", "越整理越崩。課長，不用幫忙。", "정리할수록 무너집니다. 과장님, 안 도와주셔도 돼요."], yt: "tgxLKS_ontc", date: "2026.10.21" },
-  { ep: "cameraoff", title: ["カメラオフ会議", "Camera-off meeting", "關鏡頭會議", "카메라 끄고 회의"], cap: ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?", "關掉鏡頭就什麼都沒問題。沒問題吧？", "카메라만 끄면 괜찮아요. 괜찮죠?"], yt: "mtduSRvoJdk", date: "2026.10.19" },
-  { ep: "meeting5", title: ["会議の5分前", "5 minutes before the meeting", "會議前5分鐘", "회의 5분 전"], cap: ["会議まで、あと5分。", "5 minutes before the meeting.", "距離會議，還有5分鐘。", "회의까지 앞으로 5분."], yt: "3_wI617Sj5Y", date: "2026.10.19" },
-  { ep: "hanko", title: ["ハンコ", "The stamp", "蓋章", "도장"], cap: ["承認。鼻で。", "Approved. With his nose.", "批准。用鼻子。", "승인. 코로."], yt: "NH1nbAYF6OY", date: "2026.10.19" },
+  { ep: "papers2", cv: ["HELPING.", "整えるほど崩れる"], title: ["書類の山", "The paper mountain", "文件山", "서류 산"], cap: ["整えるほど崩れる。課長、手伝わなくていいです。", "The more he helps, the worse it gets.", "越整理越崩。課長，不用幫忙。", "정리할수록 무너집니다. 과장님, 안 도와주셔도 돼요."], yt: "tgxLKS_ontc", date: "2026.10.21" },
+  { ep: "cameraoff", cv: ["CAMERA OFF", "寝てもバレない？"], title: ["カメラオフ会議", "Camera-off meeting", "關鏡頭會議", "카메라 끄고 회의"], cap: ["カメラを切れば、何をしても大丈夫。大丈夫？", "Camera off. Totally safe. Right?", "關掉鏡頭就什麼都沒問題。沒問題吧？", "카메라만 끄면 괜찮아요. 괜찮죠?"], yt: "mtduSRvoJdk", date: "2026.10.19" },
+  { ep: "meeting5", cv: ["5 MIN TO GO", "課長はまだ夢の中"], title: ["会議の5分前", "5 minutes before the meeting", "會議前5分鐘", "회의 5분 전"], cap: ["会議まで、あと5分。", "5 minutes before the meeting.", "距離會議，還有5分鐘。", "회의까지 앞으로 5분."], yt: "3_wI617Sj5Y", date: "2026.10.19" },
+  { ep: "hanko", cv: ["APPROVED.", "ハンコは鼻で"], title: ["ハンコ", "The stamp", "蓋章", "도장"], cap: ["承認。鼻で。", "Approved. With his nose.", "批准。用鼻子。", "승인. 코로."], yt: "NH1nbAYF6OY", date: "2026.10.19" },
 ];
 /* languages: ja / en / zh (Traditional) / ko — chosen for where wordless kawaii comedy actually finds fans
    (Japan, English-speaking world, Taiwan·Hong Kong, Korea). Kept to four so the switch stays simple. */
@@ -1722,6 +1808,26 @@ if (!reduce) {
   const apply = () => { const L = mq.matches ? TALL : WIDE; svg.setAttribute("viewBox", L.vb); paths.forEach((p, i) => p.setAttribute("d", L.paths[i])); labs.forEach((g, i) => g.setAttribute("transform", L.labs[i])); nodes.forEach((g, i) => g.setAttribute("transform", L.nodes[i])); };
   apply(); mq.addEventListener("change", apply);
 })();
+// relationship pairs: light up the matching arrow; episode chips follow the language and the latest episode data
+(() => {
+  const svg = $(".rel-svg"), cards = $$(".rel-card");
+  const hl = (i) => { if (i == null) svg.removeAttribute("data-hl"); else svg.setAttribute("data-hl", i); cards.forEach((c) => c.classList.toggle("on", c.dataset.rel === String(i))); };
+  cards.forEach((c) => {
+    c.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") hl(c.dataset.rel); });
+    c.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") hl(null); });
+    c.addEventListener("focusin", () => hl(c.dataset.rel)); c.addEventListener("focusout", () => hl(null));
+    c.addEventListener("click", (e) => { if (!e.target.closest("a") && !fine) hl(c.classList.contains("on") ? null : c.dataset.rel); });
+  });
+  window.__relChips = () => $$(".rel-ep").forEach((a) => {
+    const e = EPS.find((x) => x.ep === a.dataset.ep); if (!e) { a.hidden = true; return; }
+    a.hidden = false;
+    a.querySelector("span").textContent = t("rel.watch") + (e.title[li()] || e.title[0]);
+    a.href = e.yt ? `https://www.youtube.com/shorts/${e.yt}` : "#episodes";
+    if (e.yt) { a.target = "_blank"; a.rel = "noopener"; } else { a.removeAttribute("target"); a.removeAttribute("rel"); }
+    a.dataset.yt = e.yt || "";
+  });
+  $$(".rel-ep").forEach((a) => a.addEventListener("click", (ev) => { if (a.dataset.yt) { ev.preventDefault(); openLb(a.dataset.yt); } }));
+})();
 // hero clock = JST
 (() => {
   const h = $("#hHand"), m = $("#mHand");
@@ -1828,10 +1934,10 @@ if (!reduce) {
   };
   const layout = () => {
     active = innerWidth > 760 && !reduce;
-    if (!active) { space.style.height = ""; track.style.transform = ""; bar.style.transform = "scaleX(1)"; setClock(1); return; }
+    if (!active) { space.style.height = ""; track.style.transform = ""; swipe(); return; }
     const g = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter")) || 24;
     dist = Math.max(0, track.scrollWidth - innerWidth + g * 2);
-    space.style.height = (dist * 1.15 + innerHeight) + "px";
+    space.style.height = (dist * .6 + innerHeight) + "px"; // ~0.6px of scroll per px of travel: brisk, not a chore
     update(scrollY);
   };
   const update = (y) => {
@@ -1844,6 +1950,9 @@ if (!reduce) {
     if (p > .985 && !chimed) { chimed = true; chime(); burst(); }
     if (p < .5) chimed = false;
   };
+  // phones: the cards are a native swipe row; the bar and clock follow the swipe
+  function swipe() { const max = track.scrollWidth - track.clientWidth; const p = max > 0 ? clamp(track.scrollLeft / max, 0, 1) : 1; bar.style.transform = `scaleX(${p})`; setClock(p); }
+  track.addEventListener("scroll", () => { if (!active) swipe(); }, { passive: true });
   layout(); addEventListener("resize", layout); addEventListener("load", layout); if (document.fonts) document.fonts.ready.then(layout); onScroll(update);
   langHooks.push(() => setTimeout(layout, 50));
 })();
@@ -1865,13 +1974,13 @@ function renderEpisodes() {
     return `<a class="ep rv${e.soon ? " soon" : ""}" style="--d:${(i % 4) * .08}s" href="${href}" target="_blank" rel="noopener" data-yt="${e.yt || ""}" data-cur="${e.yt ? "PLAY" : e.soon ? "SOON" : "OPEN"}">
       <div class="ep-media" data-soon="${t("ep.soon")}">
         <span class="ep-no">EP.${n}</span>
-        <img src="${img}" alt="${title}" loading="lazy" width="1080" height="1920"${fb ? ` onerror="this.onerror=null;this.src='${fb}'"` : ""}>${vid}
+        <img src="${img}" alt="${title}" loading="lazy" width="1080" height="1920"${fb ? ` onerror="this.onerror=null;this.src='${fb}'"` : ""}>${vid}${!e.cover && e.cv ? `<span class="ep-cv" aria-hidden="true"><b>${e.cv[0]}</b><i>${e.cv[1]}</i><em>REN &amp; JILL</em></span>` : ""}
         ${e.soon ? "" : `<span class="ep-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></span>`}
       </div>
       <div class="ep-body"><span class="ep-date">${e.date || t("ep.shorts")}</span><h3 class="ep-ttl">${title}</h3><p class="ep-cap">${cap}</p></div>
     </a>`;
   }).join("");
-  pickup();
+  pickup(); if (window.__relChips) window.__relChips();
   $$(".ep", epsEl).forEach((card) => {
     const v = $("video", card);
     const start = () => { if (!v || reduce) return; if (!v.src) v.src = v.dataset.src; v.play().then(() => card.classList.add("playing")).catch(() => {}); };
@@ -1902,7 +2011,7 @@ renderEpisodes(); langHooks.push(renderEpisodes);
       const title = pick(x.title, "title", old.title || ["", "", "", ""], old.title || ["", "", "", ""]);
       const cap = x.caption && typeof x.caption === "object" ? pick(x.caption, "cap", old.cap || title, old.cap || title) : [x.caption_ja || (old.cap || [""])[0] || "", x.caption_en || (old.cap || ["", ""])[1] || x.caption_ja || "", (old.cap || ["", "", ""])[2] || x.caption_en || x.caption_ja || "", (old.cap || ["", "", "", ""])[3] || x.caption_en || x.caption_ja || ""];
       const yt = x.youtube_id || x.yt || old.yt || "";
-      return { ep: x.ep, title, cap, cover: x.cover || old.cover, video: x.video || old.video, yt, date: date ? date.replace(/-/g, ".") : old.date };
+      return { ep: x.ep, title, cap, cv: old.cv, cover: x.cover || old.cover, video: x.video || old.video, yt, date: date ? date.replace(/-/g, ".") : old.date };
     }).filter((e) => e.ep && e.title[0]).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
     if (!mapped.length) return;
     // keep embedded episodes that the remote file doesn't know about
@@ -1919,12 +2028,8 @@ $("#lbX").addEventListener("click", closeLb);
 lb.addEventListener("click", (e) => { if (e.target === lb) closeLb(); });
 addEventListener("keydown", (e) => { if (e.key === "Escape" && lb.classList.contains("open")) closeLb(); });
 
-/* ───────── 10. game: grab hay ───────── */
+/* ───────── 10. game ───────── */
 (() => {
-  const num = $("#hayNum"), box = $(".hay-count"); let hay = 0;
-  const grab = () => { hay += Math.random() < .1 ? 10 : 1; num.textContent = hay.toLocaleString(); blip(); if (!reduce) num.animate([{ transform: "scale(1.3)", color: "#D9A520" }, { transform: "scale(1)", color: "#F4EAD8" }], { duration: 420, easing: BACK }); };
-  box.style.cursor = "pointer"; box.setAttribute("role", "button"); box.setAttribute("tabindex", "0"); box.dataset.cur = "GRAB";
-  box.addEventListener("click", grab); box.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); grab(); } });
   const shot = $(".game-shot"), sec = $("#game");
   if (!reduce) onScroll(() => { const r = sec.getBoundingClientRect(); const p = clamp(1 - (r.bottom) / (innerHeight + r.height), 0, 1); shot.style.transform = `rotate(${-2 + p * 3.5}deg) translateY(${-p * 6}%)`; });
 })();
@@ -1946,7 +2051,15 @@ $$(".rv").forEach((el) => { if (el.closest("#hero")) return; if (reduce) el.clas
     document.body.classList.toggle("on-dark", darks.some((s) => { const r = s.getBoundingClientRect(); return r.top < mid && r.bottom > mid; }));
   });
   totop.addEventListener("click", () => scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
-  $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => { const id = a.getAttribute("href"); const el = id.length > 1 && $(id); if (el) { e.preventDefault(); el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); } }));
+  // in-page links: far targets jump most of the way at once, then glide the last bit (no long ride through the pinned "day")
+  $$('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => {
+    const id = a.getAttribute("href") || ""; if (!/^#[\w-]+$/.test(id)) return; const el = $(id); if (!el) return;
+    e.preventDefault();
+    const to = el.getBoundingClientRect().top + scrollY, far = Math.abs(to - scrollY) > innerHeight * 1.5;
+    if (reduce) { scrollTo(0, to); return; }
+    if (far) scrollTo({ top: to - Math.sign(to - scrollY) * innerHeight * .6, behavior: "instant" });
+    requestAnimationFrame(() => scrollTo({ top: to, behavior: "smooth" }));
+  }));
   if (!fine || reduce) return;
   const cur = $(".cur"), ring = $(".cur-ring"), txt = $(".cur-txt"), label = $(".cur-label");
   document.body.classList.add("has-cursor");
