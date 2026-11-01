@@ -573,6 +573,12 @@ body.lang-en .rel-card h4 { font-family: var(--f-en); font-weight: 700; }
 body:not(.lang-en) :is(.rel-card p, .rel-lead) { word-break: auto-phrase; overflow-wrap: anywhere; }
 @media (max-width: 640px) { .rel-cards { grid-template-columns: 1fr; } .rel-card { padding: 18px 18px 16px; } }
 @media (prefers-reduced-motion: reduce) { .rel-card, .rel-card:hover { transform: none; } }
+
+/* game: button + a short, readable address next to it */
+.game-go { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.game-url { font: 500 13px/1 var(--f-mono); letter-spacing: .06em; color: var(--mustard); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.game-url:hover { color: var(--cream); }
+.sched { padding: 0; }
 </style>
 </head>
 <body class="lang-ja">
@@ -909,7 +915,10 @@ body:not(.lang-en) :is(.rel-card p, .rel-lead) { word-break: auto-phrase; overfl
         <h3 class="game-big">HAY<br>DASH!</h3>
         <p class="game-text" data-t="game.text">「チモシーダッシュ」。うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。牧草を集めて、神田から東京タワーまで。新人のポムも走れます。</p>
         <ul class="game-chars"><li><i></i>REN</li><li><i style="background:#E8A4A0"></i>JILL</li><li><i style="background:#F6D7A8"></i>POM</li></ul>
-        <a class="btn lite" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener"><span data-t="game.cta">今すぐ遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        <div class="game-go">
+          <a class="btn lite" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener"><span data-t="game.cta">今すぐ遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+          <a class="game-url" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener">hay-dash.coana.co.jp</a>
+        </div>
       </div>
     </div>
   </div>
