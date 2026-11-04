@@ -26,6 +26,11 @@ a.btn.lite { background: #fff; color: var(--ink); box-shadow: 0 6px 0 var(--edge
 a.btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--navy-d); }
 a.btn.lite:hover { box-shadow: 0 4px 0 var(--edge); }
 a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
+.sns { margin-top: 22px; padding-top: 18px; border-top: 3px dotted var(--fur); }
+.sns p { margin: 0 0 10px; font-size: 13px; }
+.sns div { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.sns a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 12px; background: var(--cream); color: var(--ink); font: 600 13px/1 "Fredoka", sans-serif; text-decoration: none; }
+.sns a:hover { background: var(--mustard); }
 .langs { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 6px; font-size: 13px; }
 .langs button { min-height: 36px; padding: 0 10px; border: 0; border-radius: 10px; background: none; color: var(--ink-2); font: inherit; cursor: pointer; }
 .langs button[aria-pressed="true"] { background: var(--mustard); color: var(--ink); }
@@ -53,6 +58,16 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
     <a class="btn" id="home" href="/">トップへ戻る</a>
     <a class="btn lite" id="game" href="https://hay-dash.coana.co.jp/">ゲームで遊ぶ</a>
   </div>
+  <nav class="sns" aria-label="SNS">
+    <p id="f">新作は月・水・金・日。フォローしてね。</p>
+    <div>
+      <a href="https://www.youtube.com/@renjill_office?sub_confirmation=1" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.instagram.com/renjill_office/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@renjill_office" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.threads.net/@renjill_office" target="_blank" rel="noopener">Threads</a>
+      <a href="https://www.facebook.com/1358515160686321" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </nav>
   <div class="langs" role="group" aria-label="Language">
     <button type="button" data-l="ja" lang="ja">日本語</button>
     <button type="button" data-l="en" lang="en">English</button>
@@ -63,16 +78,16 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
 <script>
 (() => {
   const L = {
-    ja: { tag: "ja", title: "ページが見つかりません｜レンとジル", h: "ページが見つかりません", m: "課長が書類の山を崩してしまったようです。<br>このページは見つかりませんでした。", home: "トップへ戻る", game: "ゲームで遊ぶ" },
-    en: { tag: "en", title: "Page not found | Ren & Jill", h: "Page not found", m: "Looks like the boss knocked over the paper pile.<br>We couldn't find this page.", home: "Back to the top page", game: "Play the game" },
-    zh: { tag: "zh-Hant", title: "找不到頁面｜Ren & Jill", h: "找不到頁面", m: "好像是課長把文件山弄倒了。<br>找不到這個頁面。", home: "回到首頁", game: "玩遊戲" },
-    ko: { tag: "ko", title: "페이지를 찾을 수 없어요 | Ren & Jill", h: "페이지를 찾을 수 없어요", m: "과장님이 서류 산을 무너뜨린 것 같아요.<br>이 페이지를 찾지 못했습니다.", home: "처음 페이지로", game: "게임하기" }
+    ja: { tag: "ja", title: "ページが見つかりません｜レンとジル", h: "ページが見つかりません", m: "課長が書類の山を崩してしまったようです。<br>このページは見つかりませんでした。", home: "トップへ戻る", game: "ゲームで遊ぶ", f: "新作は月・水・金・日。フォローしてね。" },
+    en: { tag: "en", title: "Page not found | Ren & Jill", h: "Page not found", m: "Looks like the boss knocked over the paper pile.<br>We couldn't find this page.", home: "Back to the top page", game: "Play the game", f: "New episodes Mon, Wed, Fri and Sun. Follow along!" },
+    zh: { tag: "zh-Hant", title: "找不到頁面｜Ren & Jill", h: "找不到頁面", m: "好像是課長把文件山弄倒了。<br>找不到這個頁面。", home: "回到首頁", game: "玩遊戲", f: "新片在一、三、五、日。歡迎追蹤！" },
+    ko: { tag: "ko", title: "페이지를 찾을 수 없어요 | Ren & Jill", h: "페이지를 찾을 수 없어요", m: "과장님이 서류 산을 무너뜨린 것 같아요.<br>이 페이지를 찾지 못했습니다.", home: "처음 페이지로", game: "게임하기", f: "신작은 월·수·금·일. 팔로우해 주세요!" }
   };
   const $ = (id) => document.getElementById(id);
   const set = (l) => {
     const x = L[l] || L.ja;
     document.documentElement.lang = x.tag; document.title = x.title; document.body.classList.toggle("en", l === "en");
-    $("h").textContent = x.h; $("m").innerHTML = x.m; $("home").textContent = x.home; $("game").textContent = x.game;
+    $("h").textContent = x.h; $("m").innerHTML = x.m; $("home").textContent = x.home; $("game").textContent = x.game; $("f").textContent = x.f;
     $("home").href = "/?lang=" + l;
     document.querySelectorAll(".langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.l === l));
   };
