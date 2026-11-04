@@ -92,6 +92,9 @@ body::before {
   body.cur-hover .cur { transform: scale(5); background: var(--mustard); }
   body.cur-hover .cur-ring { transform: scale(1.4); opacity: 0; }
   body.cur-hover .cur-label { opacity: 1; }
+  /* カーソルの下の背景が暗いときはクリーム色に（04 ゲームの茶色の帯などで見えなくなっていた） */
+  body.cur-dark:not(.cur-hover) .cur { background: var(--cream); }
+  body.cur-dark .cur-ring { border-color: var(--cream); opacity: .6; }
   body.cur-video .cur { transform: scale(5.6); background: var(--navy); }
   body.cur-video .cur-label { color: var(--paper); }
 }
@@ -2194,6 +2197,23 @@ $$(".rv").forEach((el) => { if (el.closest("#hero")) return; if (reduce) el.clas
   });
 })();
 runScroll();
+})();
+</script>
+<script>
+/* カーソルの下の背景が暗いとき（04 ゲームの茶色の帯など）は、カーソルをクリーム色に切り替えて見えるようにする */
+(() => {
+  const isDark = (el) => {
+    for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
+      if (/^(IMG|VIDEO|CANVAS|IFRAME)$/.test(e.tagName)) return false; // 写真・動画の上は明るい扱い
+      const m = getComputedStyle(e).backgroundColor.match(/[\d.]+/g);
+      if (m && (m.length < 4 || +m[3] > 0.5)) return 0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2] < 110;
+    }
+    return false;
+  };
+  let raf = 0, x = -1, y = -1;
+  const check = () => { raf = 0; if (x < 0) return; document.body.classList.toggle("cur-dark", isDark(document.elementFromPoint(x, y))); };
+  addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
+  addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
 })();
 </script>
 </body>
