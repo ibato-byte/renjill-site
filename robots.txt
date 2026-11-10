@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
+
+# AI 向けの説明：https://renjill.coana.co.jp/llms.txt
 Sitemap: https://renjill.coana.co.jp/sitemap.xml

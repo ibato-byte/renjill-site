@@ -1,17 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://renjill.coana.co.jp/</loc>
-    <lastmod>2026-11-04</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/?lang=ja"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
     <image:image>
       <image:loc>https://renjill.coana.co.jp/og.jpg</image:loc>
     </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261110_lastsheet_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261108_thumbsup_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261106_replyall_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261104_vending_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261102_update99_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261101_pom_debut_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261030_deadline2_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261028_receipts2_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261026_jil_morning2_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261025_chime2_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261023_mug2_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261110_lastsheet_cover.jpg</video:thumbnail_loc>
+      <video:title>最後の1枚｜レンとジル</video:title>
+      <video:description>最後の1枚をレンもジルも譲らない。結局ポムがテープで貼って「1枚」。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/0vmSNpJNgMM</video:player_loc>
+      <video:publication_date>2026-11-10</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261108_thumbsup_cover.jpg</video:thumbnail_loc>
+      <video:title>了解です｜レンとジル</video:title>
+      <video:description>「了解です」を押しすぎた課長。辞めますにも親指。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/lc9nIK9SNY4</video:player_loc>
+      <video:publication_date>2026-11-08</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261106_replyall_cover.jpg</video:thumbnail_loc>
+      <video:title>全員に返信｜レンとジル</video:title>
+      <video:description>「返信」のつもりが「全員に返信」。取り消しは間に合わない。（尻尾は正直）</video:description>
+      <video:player_loc>https://www.youtube.com/embed/TwQ8ilmzlpY</video:player_loc>
+      <video:publication_date>2026-11-06</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261104_vending_cover.jpg</video:thumbnail_loc>
+      <video:title>自販機のにんじんジュース｜レンとジル</video:title>
+      <video:description>自販機にコインを入れたのに、にんじんジュースが出ない。叩いて、蹴って、そして缶の雨。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/DS44Zo6wJQg</video:player_loc>
+      <video:publication_date>2026-11-04</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261102_update99_cover.jpg</video:thumbnail_loc>
+      <video:title>99%で止まる更新｜レンとジル</video:title>
+      <video:description>99%で止まった更新バー。待っているうちに全員寝ました。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/QB6yeURg6sk</video:player_loc>
+      <video:publication_date>2026-11-02</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261101_pom_debut_cover.jpg</video:thumbnail_loc>
+      <video:title>新人のポム｜レンとジル</video:title>
+      <video:description>断れない新人のほおぶくろは、もう満杯です。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/PRylIlpVD-k</video:player_loc>
+      <video:publication_date>2026-11-01</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261030_deadline2_cover.jpg</video:thumbnail_loc>
+      <video:title>締め切りのカレンダー｜レンとジル</video:title>
+      <video:description>見なければ、締め切りは来ない（来ます）。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/rnYfUNddYQs</video:player_loc>
+      <video:publication_date>2026-10-30</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261028_receipts2_cover.jpg</video:thumbnail_loc>
+      <video:title>牧草の領収書｜レンとジル</video:title>
+      <video:description>経費精算、ぜんぶ牧草。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/Z4xjAF7jovo</video:player_loc>
+      <video:publication_date>2026-10-28</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261026_jil_morning2_cover.jpg</video:thumbnail_loc>
+      <video:title>ジルの朝｜レンとジル</video:title>
+      <video:description>メガネをかけたらスイッチが入る。課長のスイッチはどこ？</video:description>
+      <video:player_loc>https://www.youtube.com/embed/QvCS2uRpm8o</video:player_loc>
+      <video:publication_date>2026-10-26</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261025_chime2_cover.jpg</video:thumbnail_loc>
+      <video:title>定時のチャイム｜レンとジル</video:title>
+      <video:description>定時のチャイム、よろこびが止まらない。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/ToguHMsoIaU</video:player_loc>
+      <video:publication_date>2026-10-25</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261023_mug2_cover.jpg</video:thumbnail_loc>
+      <video:title>マグカップはどこ｜レンとジル</video:title>
+      <video:description>課長、マグカップは頭の上です。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/xIzVzowGgjw</video:player_loc>
+      <video:publication_date>2026-10-23</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/tgxLKS_ontc/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>書類の山｜レンとジル</video:title>
+      <video:description>整えるほど崩れる。課長、手伝わなくていいです。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/tgxLKS_ontc</video:player_loc>
+      <video:publication_date>2026-10-21</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/mtduSRvoJdk/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>カメラオフ会議｜レンとジル</video:title>
+      <video:description>カメラを切れば、何をしても大丈夫。大丈夫？</video:description>
+      <video:player_loc>https://www.youtube.com/embed/mtduSRvoJdk</video:player_loc>
+      <video:publication_date>2026-10-19</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/3_wI617Sj5Y/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>会議の5分前｜レンとジル</video:title>
+      <video:description>会議まで、あと5分。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/3_wI617Sj5Y</video:player_loc>
+      <video:publication_date>2026-10-19</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/NH1nbAYF6OY/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>ハンコ｜レンとジル</video:title>
+      <video:description>承認。鼻で。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/NH1nbAYF6OY</video:player_loc>
+      <video:publication_date>2026-10-19</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
 </urlset>
