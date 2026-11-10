@@ -57,7 +57,7 @@ const m = (re) => (html.match(re) || [])[1];
   for (const [re, msg] of FACT) if (re.test(html.replace(/<!--[\s\S]*?-->/g, ''))) note(17, msg);
   if (/Lenis \+ GSAP/.test(html)) note(17, 'コメントに使っていない GSAP/Lenis');
   // オーナーの指示（2026-11-10）：「COANA TOKYO合同会社のオリジナルキャラクターです」という言葉は入れない（© の表記だけ残す）
-  for (const f of ['../index.html', '../llms.txt', '../404.html']) { const x = fs.readFileSync(new URL(f, import.meta.url), 'utf8'); if (/オリジナルキャラクター|original characters? by|原創角色|原創。|오리지널 캐릭터/i.test(x)) note(17, f.slice(3) + ' に「オリジナルキャラクター」の一文');}
+  for (const f of ['../index.html', '../llms.txt', '../404.html']) { const x = fs.readFileSync(new URL(f, import.meta.url), 'utf8'); if (/オリジナルキャラクター|original characters? by|原創角色|原創。|오리지널 캐릭터/i.test(x)) note(17, f.slice(3) + ' に「オリジナルキャラクター」の一文'); if (/トラッカーを使っていません|no analytics or ad trackers/i.test(x)) note(17, f.slice(3) + ' に「トラッカーを使っていません」の一文（オーナー：不要）');}
   if (fs.statSync(new URL('../index.html', import.meta.url)).size > 400 * 1024) note(50, 'index.html が 400KB 超');
   // feed.xml は Search Console にも出す：記事のリンク（alternate）はこのサイトの URL だけ（2026-11-10：YouTube へのリンクが「許可されていない URL」になった）
   try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://renjill.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
@@ -114,6 +114,7 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
     out.small12 = [...document.querySelectorAll('main p, main li, main span, main a')].filter(vis).filter((e) => e.childElementCount === 0 && e.innerText.trim().length > 3 && parseFloat(getComputedStyle(e).fontSize) < 11.5).map((e) => e.innerText.trim().slice(0, 16) + ':' + getComputedStyle(e).fontSize).slice(0, 4);
     out.canon = (document.querySelector('link[rel=canonical]') || {}).href;
     out.epTitles = [...document.querySelectorAll('#eps h3')].map((e) => e.innerText.trim()).slice(0, 20);
+    out.zeroMore = [...document.querySelectorAll('button')].filter(vis).map((b) => b.innerText).filter((x) => /あと0|\(0 more\)|還有 0|0편 더/.test(x));
     out.heroAlt = (document.querySelector('#heroPhone img') || {}).alt || '';
     out.imgAltJa = [...document.querySelectorAll('img[alt]')].map((i) => i.alt).filter((x) => /[\u3040-\u30ff]/.test(x)).slice(0, 3);
     return out;
@@ -136,6 +137,7 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
   if (r.dateBad.length) note(37, tag + ' ' + r.dateBad.join(','));
   if (!r.dateOrder) note(36, tag + ' 日付が新しい順でない');
   if (r.small12.length) note(48, tag + ' ' + r.small12.join(' / '));
+  if (r.zeroMore && r.zeroMore.length) note(47, tag + ' 「あと0話」のボタンが見えている');
   if (lang === 'en' && r.imgAltJa.length) note(45, tag + ' 画像の代替テキストが日本語 ' + r.imgAltJa.join(' / '));
   if (lang === 'en' && r.epTitles.some((s) => /[぀-ヿ]/.test(s))) note(45, tag + ' ' + r.epTitles.filter((s) => /[぀-ヿ]/.test(s)).slice(0, 3).join(' / '));
   if (lang === 'zh' && r.epTitles.some((s) => /[぀-ゟ]/.test(s))) note(45, tag + ' ' + r.epTitles.filter((s) => /[぀-ゟ]/.test(s)).slice(0, 2).join(' / '));
@@ -170,7 +172,7 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
     document.getElementById('lbNext').click(); await new Promise((r) => setTimeout(r, 200)); const ttl2 = document.querySelector('#lbInfo b').textContent; const nextHidden = document.getElementById('lbNext').hidden; window.__RJ.closeLb();
     return ttl && prevOk && nextOk && ttl2 !== ttl && nextHidden ? 'ok' : JSON.stringify({ ttl, prevOk, nextOk, ttl2, nextHidden }); });
   if (nav !== 'ok') note(47, '前後の回 ' + nav);
-  const more = await p.evaluate(async () => { const b = document.getElementById('epsMore'); const hidden0 = document.querySelectorAll('#eps .ep.more-hidden').length; if (!hidden0) return 'ok'; if (b.hidden) return 'ボタンが出ない'; b.click(); await new Promise((r) => setTimeout(r, 200)); return document.querySelectorAll('#eps .ep.more-hidden').length === 0 && b.hidden ? 'ok' : 'もっと見るで全部出ない'; });
+  const more = await p.evaluate(async () => { const b = document.getElementById('epsMore'); const hidden0 = document.querySelectorAll('#eps .ep.more-hidden').length; if (!hidden0) return 'ok'; if (b.getBoundingClientRect().height === 0) return 'ボタンが出ない'; b.click(); await new Promise((r) => setTimeout(r, 200)); const shown = b.getBoundingClientRect().height > 0 && getComputedStyle(b).display !== 'none'; return document.querySelectorAll('#eps .ep.more-hidden').length === 0 && !shown ? 'ok' : (shown ? '全部出たあともボタンが見えている：' + b.textContent : 'もっと見るで全部出ない'); });
   if (more !== 'ok') note(47, more);
   // 戻るボタン：動画を開く→前の回→戻る で窓が閉じ、アドレスの ?ep= も消える（iframe の履歴で戻れない不具合の再発防止）
   await p.evaluate(() => window.scrollTo(0, 0)); await p.evaluate(() => { const a = document.querySelector('#eps .ep:not(.more-hidden) .ep-link[data-yt]:not([data-yt=""])'); a && a.click(); }); await p.waitForTimeout(300);
