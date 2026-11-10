@@ -1,7 +1,7 @@
 {
   "name": "レンとジル｜Ren & Jill",
   "short_name": "Ren & Jill",
-  "description": "うさぎの課長レンと、しっかり者の部下ジル。セリフのないオフィスコメディ。",
+  "description": "うさぎの課長レンと、しっかり者の部下ジル。セリフのない、毎日10秒のオフィスコメディ（ショートアニメ）。",
   "lang": "ja",
   "start_url": "/",
   "scope": "/",
@@ -10,9 +10,20 @@
   "theme_color": "#F4EAD8",
   "icons": [
     {
+      "src": "https://hay-dash.coana.co.jp/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "https://hay-dash.coana.co.jp/favicon.png",
       "sizes": "192x192",
       "type": "image/png"
     }
+  ],
+  "id": "/",
+  "categories": [
+    "entertainment",
+    "games"
   ]
 }
