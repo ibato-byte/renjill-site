@@ -16,7 +16,7 @@ const def = (id, name) => (CHECKS[id] = name);
 // ---- 静的（ファイル）
 def(1, 'title の長さ（15〜70文字）'); def(2, 'meta description（50〜160文字）'); def(3, 'canonical が正しい'); def(4, 'hreflang 4言語＋x-default');
 def(5, 'OGP（title/description/image/url/type）'); def(6, 'Twitter カード'); def(7, 'JSON-LD が正しい JSON で、主要な型がある');
-def(8, 'sitemap.xml が正しく、canonical と hreflang を含む'); def(9, 'robots.txt に sitemap'); def(10, 'site.webmanifest が正しい JSON（name・icons）');
+def(8, 'sitemap.xml・feed.xml が正しく、このサイトの URL だけ'); def(9, 'robots.txt に sitemap'); def(10, 'site.webmanifest が正しい JSON（name・icons）');
 def(11, 'llms.txt があり、サイトと同じ事実（毎日・秒数）'); def(12, '404.html がある・noindex'); def(13, 'SNS の URL が全部の場所で同じ');
 def(14, '文言 T：全部のキーに4言語'); def(15, 'data-t のキーが T にあり、HTML の初めの文と食い違わない'); def(16, 'エピソード EPS：4言語の題・一言');
 def(17, '事実の矛盾がない（秒数・投稿の頻度・イベント期間・TikTok が早い等の言い過ぎ）'); def(18, 'http: の読み込みがない'); def(19, 'img に alt / width・height');
@@ -29,7 +29,7 @@ def(32, 'スマホでタップ領域が小さすぎない（主要ボタン 40px
 def(35, '画像が読めないときも枠が崩れない'); def(36, 'エピソードの番号が重複しない・新しい順'); def(37, '日付の書式がそろっている'); def(38, '次の新作の日付が正しい（毎日）');
 def(39, '曜日の帯が「毎日」と矛盾しない'); def(40, 'PICKUP が最新回 or 告知期間に合う'); def(41, '動きを減らす設定でアニメーションが止まる'); def(42, 'ページ内リンク #id の行き先がある');
 def(43, 'キーボードのフォーカスが見える'); def(44, '文字のコントラスト（主要な文 4.5:1 以上）'); def(45, 'エピソード一覧の題がその言語で出る'); def(46, '言語の保存と ?lang= が効く');
-def(47, 'ライトボックス（動画）が Esc で閉じる'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
+def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見るで全部出る'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
 
 // ---------- 静的な検査
 const m = (re) => (html.match(re) || [])[1];
@@ -57,6 +57,8 @@ const m = (re) => (html.match(re) || [])[1];
   for (const [re, msg] of FACT) if (re.test(html.replace(/<!--[\s\S]*?-->/g, ''))) note(17, msg);
   if (/Lenis \+ GSAP/.test(html)) note(17, 'コメントに使っていない GSAP/Lenis');
   if (fs.statSync(new URL('../index.html', import.meta.url)).size > 400 * 1024) note(50, 'index.html が 400KB 超');
+  // feed.xml は Search Console にも出す：記事のリンク（alternate）はこのサイトの URL だけ（2026-11-10：YouTube へのリンクが「許可されていない URL」になった）
+  try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://renjill.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
 }
 
 // ---------- ブラウザでの検査
@@ -159,9 +161,25 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
 // 46：言語の保存
 { const { p, ctx } = await open(1440, 900, 'ko', { q: '' }); await p.evaluate(() => { const b = document.querySelector('#langMenu button[data-lang="ko"], [data-lang="ko"]'); if (b) b.click(); }); await p.waitForTimeout(300); await p.reload(); await p.waitForTimeout(1500); const l = await p.evaluate(() => document.documentElement.lang); if (!l.startsWith('ko')) note(46, '保存されない ' + l); await ctx.close(); }
 // 35：エピソード一覧が空（取得失敗）でも埋め込みの一覧が出る・画像が無くても枠がある
-{ const { p, ctx } = await open(390, 844, 'ja', { noFeed: true }); const n = await p.evaluate(() => document.querySelectorAll('#eps [id^="ep-"]').length); if (n < 3) note(35, '一覧が空 ' + n); const zero = await p.evaluate(() => [...document.querySelectorAll('#eps .ep-media')].filter((e) => e.getBoundingClientRect().height < 50).length); if (zero) note(35, '枠がつぶれる ' + zero); await ctx.close(); }
+{ const { p, ctx } = await open(390, 844, 'ja', { noFeed: true }); const n = await p.evaluate(() => document.querySelectorAll('#eps [id^="ep-"]').length); if (n < 3) note(35, '一覧が空 ' + n); const zero = await p.evaluate(() => [...document.querySelectorAll('#eps .ep:not(.more-hidden) .ep-media')].filter((e) => e.getBoundingClientRect().height < 50).length); if (zero) note(35, '枠がつぶれる ' + zero); await ctx.close(); }
 // 47：ライトボックス
-{ const { p, ctx } = await open(1440, 900, 'ja'); const ok = await p.evaluate(async () => { const { openLb } = window.__RJ || {}; if (typeof openLb !== 'function') return 'no openLb'; openLb('xxxxxxxxxxx', null); await new Promise((r) => setTimeout(r, 300)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise((r) => setTimeout(r, 400)); return document.getElementById('lb').classList.contains('open') ? 'still open' : 'ok'; }); if (ok !== 'ok') note(47, ok); await ctx.close(); }
+{ const { p, ctx } = await open(1440, 900, 'ja'); const ok = await p.evaluate(async () => { const { openLb } = window.__RJ || {}; if (typeof openLb !== 'function') return 'no openLb'; openLb('xxxxxxxxxxx', null); await new Promise((r) => setTimeout(r, 300)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise((r) => setTimeout(r, 400)); return document.getElementById('lb').classList.contains('open') ? 'still open' : 'ok'; }); if (ok !== 'ok') note(47, ok);
+  const nav = await p.evaluate(async () => { const { EPS, openLb } = window.__RJ; const list = EPS.filter((e) => e.yt && !e.soon); if (list.length < 3) return 'ok'; openLb(list[1].yt, list[1]); await new Promise((r) => setTimeout(r, 200)); const ttl = document.querySelector('#lbInfo b').textContent; const prevOk = !document.getElementById('lbPrev').hidden, nextOk = !document.getElementById('lbNext').hidden;
+    document.getElementById('lbNext').click(); await new Promise((r) => setTimeout(r, 200)); const ttl2 = document.querySelector('#lbInfo b').textContent; const nextHidden = document.getElementById('lbNext').hidden; window.__RJ.closeLb();
+    return ttl && prevOk && nextOk && ttl2 !== ttl && nextHidden ? 'ok' : JSON.stringify({ ttl, prevOk, nextOk, ttl2, nextHidden }); });
+  if (nav !== 'ok') note(47, '前後の回 ' + nav);
+  const more = await p.evaluate(async () => { const b = document.getElementById('epsMore'); const hidden0 = document.querySelectorAll('#eps .ep.more-hidden').length; if (!hidden0) return 'ok'; if (b.hidden) return 'ボタンが出ない'; b.click(); await new Promise((r) => setTimeout(r, 200)); return document.querySelectorAll('#eps .ep.more-hidden').length === 0 && b.hidden ? 'ok' : 'もっと見るで全部出ない'; });
+  if (more !== 'ok') note(47, more);
+  // 戻るボタン：動画を開く→前の回→戻る で窓が閉じ、アドレスの ?ep= も消える（iframe の履歴で戻れない不具合の再発防止）
+  await p.evaluate(() => window.scrollTo(0, 0)); await p.evaluate(() => { const a = document.querySelector('#eps .ep:not(.more-hidden) .ep-link[data-yt]:not([data-yt=""])'); a && a.click(); }); await p.waitForTimeout(300);
+  await p.evaluate(() => { const b = document.getElementById('lbPrev'); if (!b.hidden) b.click(); }); await p.waitForTimeout(300);
+  const u1 = await p.evaluate(() => location.search); await p.evaluate(() => history.back()); await p.waitForTimeout(600);
+  const back = await p.evaluate(() => ({ open: document.getElementById('lb').classList.contains('open'), q: location.search }));
+  if (!/ep=/.test(u1) || back.open || /ep=/.test(back.q)) note(47, '戻るボタン ' + JSON.stringify({ u1, ...back }));
+  // 「ある一日」のカード・初登場から、同じ題の回が開く
+  const day = await p.evaluate(async () => { const c = document.querySelectorAll('#dayTrack .day-card.has-ep'); if (c.length < 5) return 'つながったカードが ' + c.length; c[0].click(); await new Promise((r) => setTimeout(r, 300)); const ok = document.getElementById('lb').classList.contains('open') && document.querySelector('#lbInfo b').textContent === c[0].querySelector('.day-ttl').textContent; window.__RJ.closeLb(); await new Promise((r) => setTimeout(r, 400)); return ok ? 'ok' : '開いた回の題がちがう'; });
+  if (day !== 'ok') note(47, 'ある一日 ' + day);
+  await ctx.close(); }
 // 40：PICKUP
 { const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'ポムの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
 await b.close();

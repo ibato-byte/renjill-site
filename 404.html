@@ -57,6 +57,8 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
   <div class="go">
     <a class="btn" id="home" href="/">トップへ戻る</a>
     <a class="btn lite" id="game" href="https://hay-dash.coana.co.jp/">ゲームで遊ぶ</a>
+    <a class="btn lite" id="eps" href="/#episodes">エピソードを見る</a>
+    <a class="btn lite" id="faq" href="/#faq">よくある質問</a>
   </div>
   <nav class="sns" aria-label="SNS">
     <p id="f">新作は毎日。フォローしてね。</p>
@@ -78,9 +80,9 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
 <script>
 (() => {
   const L = {
-    ja: { tag: "ja", title: "ページが見つかりません｜レンとジル", h: "ページが見つかりません", m: "課長が書類の山を崩してしまったようです。<br>このページは見つかりませんでした。", home: "トップへ戻る", game: "ゲームで遊ぶ", f: "新作は毎日。フォローしてね。" },
-    en: { tag: "en", title: "Page not found | Ren & Jill", h: "Page not found", m: "Looks like the boss knocked over the paper pile.<br>We couldn't find this page.", home: "Back to the top page", game: "Play the game", f: "New episodes every day. Follow along!" },
-    zh: { tag: "zh-Hant", title: "找不到頁面｜Ren & Jill", h: "找不到頁面", m: "好像是課長把文件山弄倒了。<br>找不到這個頁面。", home: "回到首頁", game: "玩遊戲", f: "每天都有新片。歡迎追蹤！" },
+    ja: { tag: "ja", title: "ページが見つかりません｜レンとジル", h: "ページが見つかりません", m: "課長が書類の山を崩してしまったようです。<br>このページは見つかりませんでした。", home: "トップへ戻る", game: "ゲームで遊ぶ", f: "新作は毎日。フォローしてね。", eps: "エピソードを見る", faq: "よくある質問" },
+    en: { tag: "en", title: "Page not found | Ren & Jill", h: "Page not found", m: "Looks like the boss knocked over the paper pile.<br>We couldn't find this page.", home: "Back to the top page", game: "Play the game", f: "New episodes every day. Follow along!", eps: "Watch episodes", faq: "FAQ" },
+    zh: { tag: "zh-Hant", title: "找不到頁面｜Ren & Jill", h: "找不到頁面", m: "好像是課長把文件山弄倒了。<br>找不到這個頁面。", home: "回到首頁", game: "玩遊戲", f: "每天都有新片。歡迎追蹤！", eps: "看影片", faq: "常見問題" },
     ko: { tag: "ko", title: "페이지를 찾을 수 없어요 | Ren & Jill", h: "페이지를 찾을 수 없어요", m: "과장님이 서류 산을 무너뜨린 것 같아요.<br>이 페이지를 찾지 못했습니다.", home: "처음 페이지로", game: "게임하기", f: "신작은 매일. 팔로우해 주세요!" }
   };
   const $ = (id) => document.getElementById(id);
@@ -88,7 +90,7 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
     const x = L[l] || L.ja;
     document.documentElement.lang = x.tag; document.title = x.title; document.body.classList.toggle("en", l === "en");
     $("h").textContent = x.h; $("m").innerHTML = x.m; $("home").textContent = x.home; $("game").textContent = x.game; $("f").textContent = x.f;
-    $("home").href = "/?lang=" + l;
+    $("home").href = "/?lang=" + l; $("eps").textContent = x.eps; $("faq").textContent = x.faq; $("eps").href = "/?lang=" + l + "#episodes"; $("faq").href = "/?lang=" + l + "#faq";
     document.querySelectorAll(".langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.l === l));
   };
   let l = null; try { l = localStorage.getItem("rj-lang"); } catch (e) {}
