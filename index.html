@@ -356,6 +356,7 @@ a, button, summary { -webkit-tap-highlight-color: rgba(43, 29, 18, .08); }
 .ep.more-hidden { display: none; }
 .eps-showmore { display: flex; justify-content: center; margin: 28px 0 0; }
 .eps-showmore[hidden] { display: none; }
+#epsMore[hidden] { display: none !important; } /* .btn の display より強く（「あと0話」が見えていた） */
 .ep-new { position: absolute; left: 12px; bottom: 12px; z-index: 3; padding: 4px 10px; border-radius: 999px; background: #C8322B; color: #fff; font: 700 12px/1.2 var(--f-mono); letter-spacing: .12em; }
 .lb-info { color: #fff; text-align: center; max-width: min(92vw, 520px); margin: 0 auto; }
 .lb-info b { display: block; font: 900 18px/1.4 var(--f-jp); }
@@ -367,7 +368,6 @@ a, button, summary { -webkit-tap-highlight-color: rgba(43, 29, 18, .08); }
 @media (max-width: 640px) { .lb-nav { top: 18px; transform: none; } .lb-nav.prev { left: 18px; } .lb-nav.next { left: 72px; right: auto; } }
 .ftr-nav { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 18px; padding: 0; list-style: none; font-size: 14px; }
 .ftr-nav a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding: 6px 0; }
-.ftr-priv { display: block; margin-top: 6px; opacity: .85; }
 .day-card.has-ep { cursor: pointer; } .day-card.has-ep:focus-visible { outline: 3px solid var(--mustard); outline-offset: 4px; }
 .debut-link { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; } .debut-link:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
 .nt-hint { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
@@ -1254,7 +1254,6 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     <nav aria-label="このページの中" data-ta="fn.k"><ul class="ftr-nav"><li><a href="#characters" data-t="fn.chars">キャラクター</a></li><li><a href="#day" data-t="fn.day">ある一日</a></li><li><a href="#episodes" data-t="fn.eps">エピソード</a></li><li><a href="#game" data-t="fn.game">ゲーム</a></li><li><a href="#follow" data-t="fn.follow">フォロー</a></li><li><a href="#faq" data-t="fn.faq">よくある質問</a></li></ul></nav>
     <div class="ftr-in">
       <small>© <a class="u" href="https://coana.co.jp/" target="_blank" rel="noopener">COANA TOKYO LLC.</a> · REN &amp; JILL</small>
-      <small class="ftr-priv" data-t="ftr.privacy">このサイトは、アクセス解析や広告のトラッカーを使っていません。</small>
     </div>
   </div>
 </footer>
@@ -1403,12 +1402,6 @@ const T = {
 "FAQ",
 "常見問題",
 "자주 묻는 질문"
-],
-"ftr.privacy": [
-"このサイトは、アクセス解析や広告のトラッカーを使っていません。",
-"This site uses no analytics or ad trackers.",
-"本網站不使用任何流量分析或廣告追蹤。",
-"이 사이트는 접속 분석이나 광고 추적 도구를 쓰지 않아요."
 ],
 "faq.ttl": [
 "よくある質問",
