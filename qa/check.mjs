@@ -56,6 +56,8 @@ const m = (re) => (html.match(re) || [])[1];
   const FACT = [[/30\s?秒|30 seconds|30-second|約30秒|30초/, '1話は約10秒なのに「30秒」'], [/いちばん早く、新作が出ます|first to get new episodes/i, 'TikTok が最速と書いている（TikTok は手動で同じ日か遅い）'], [/毎週|every week|weekly/i, '投稿は毎日なのに「毎週」']];
   for (const [re, msg] of FACT) if (re.test(html.replace(/<!--[\s\S]*?-->/g, ''))) note(17, msg);
   if (/Lenis \+ GSAP/.test(html)) note(17, 'コメントに使っていない GSAP/Lenis');
+  // オーナーの指示（2026-11-10）：「COANA TOKYO合同会社のオリジナルキャラクターです」という言葉は入れない（© の表記だけ残す）
+  for (const f of ['../index.html', '../llms.txt', '../404.html']) { const x = fs.readFileSync(new URL(f, import.meta.url), 'utf8'); if (/オリジナルキャラクター|original characters? by|原創角色|原創。|오리지널 캐릭터/i.test(x)) note(17, f.slice(3) + ' に「オリジナルキャラクター」の一文');}
   if (fs.statSync(new URL('../index.html', import.meta.url)).size > 400 * 1024) note(50, 'index.html が 400KB 超');
   // feed.xml は Search Console にも出す：記事のリンク（alternate）はこのサイトの URL だけ（2026-11-10：YouTube へのリンクが「許可されていない URL」になった）
   try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://renjill.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
