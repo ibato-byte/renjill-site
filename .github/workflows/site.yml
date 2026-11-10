@@ -1,0 +1,45 @@
+# 公式サイトの見張りと毎日の更新（2026-11-10）
+# - 変更のたび（PR・main）：qa/check.mjs（50項目 × 32通り）を通す。不合格なら赤くなる
+# - 毎日 0:30（日本時間）：最新の episodes.json から、静的なエピソード一覧・sitemap.xml・feed.xml を作り直して main に入れる
+name: site
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "30 15 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  refresh:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 最新の episodes.json で作り直す
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/ibato-byte/renjill-media/main/episodes.json -o /tmp/episodes.json || echo "[]" > /tmp/episodes.json
+          EPISODES_JSON=/tmp/episodes.json node tools/prerender.mjs
+      - name: 変わっていれば main に入れる
+        run: |
+          if git diff --quiet; then echo "変更なし"; exit 0; fi
+          git config user.name "renjill-bot"; git config user.email "actions@users.noreply.github.com"
+          git commit -am "毎日の更新：エピソード一覧・sitemap・feed（自動）" && git push
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: 50項目の検査
+        run: |
+          python3 -m http.server 8765 >/dev/null 2>&1 &
+          sleep 1
+          node qa/check.mjs ci
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: qa-report, path: qa/reports/ }
