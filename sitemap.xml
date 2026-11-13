@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://renjill.coana.co.jp/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/?lang=ja"/>
@@ -14,6 +14,9 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
     <image:image>
       <image:loc>https://renjill.coana.co.jp/og.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261113_teiji_cover.jpg</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261111_nenmatsu_cover.jpg</image:loc>
@@ -51,6 +54,14 @@
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261023_mug2_cover.jpg</image:loc>
     </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261113_teiji_cover.jpg</video:thumbnail_loc>
+      <video:title>定時1分前｜レンとジル</video:title>
+      <video:description>金曜17:59、書類の山を抱えた課長が来た。ジルは18:00ちょうどに消えました。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/NO7yNGaorco</video:player_loc>
+      <video:publication_date>2026-11-13</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
     <video:video>
       <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261111_nenmatsu_cover.jpg</video:thumbnail_loc>
       <video:title>年末調整｜レンとジル</video:title>

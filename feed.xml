@@ -5,8 +5,16 @@
   <link href="https://renjill.coana.co.jp/"/>
   <link rel="self" href="https://renjill.coana.co.jp/feed.xml"/>
   <id>https://renjill.coana.co.jp/</id>
-  <updated>2026-11-11T00:00:00+09:00</updated>
+  <updated>2026-11-13T00:00:00+09:00</updated>
   <author><name>COANA TOKYO LLC.</name></author>
+  <entry>
+    <title>定時1分前｜レンとジル</title>
+    <link rel="alternate" href="https://renjill.coana.co.jp/?ep=teiji"/>
+    <link rel="related" href="https://www.youtube.com/shorts/NO7yNGaorco"/>
+    <id>https://renjill.coana.co.jp/#ep-teiji</id>
+    <updated>2026-11-13T00:00:00+09:00</updated>
+    <summary>金曜17:59、書類の山を抱えた課長が来た。ジルは18:00ちょうどに消えました。</summary>
+  </entry>
   <entry>
     <title>年末調整｜レンとジル</title>
     <link rel="alternate" href="https://renjill.coana.co.jp/?ep=nenmatsu"/>
