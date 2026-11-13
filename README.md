@@ -28,6 +28,7 @@ GitHub Pages で公開する、依存ライブラリなしの単一ファイル�
 | 何が | どこから | 誰が書く |
 |---|---|---|
 | 03 エピソード一覧（新作・題・一言・カバー・動画・YouTube ID） | `renjill-media/episodes.json`（raw.githubusercontent、5分ほどで反映） | 投稿の自動化 renjill-auto（投稿のたび） |
+| 03 の下の「作業用BGMも、あります。」（長い動画の一覧。新しい順に4本まで。0本なら枠ごと隠れる） | `renjill-media/bgm.json`（`[{date, youtube_id, minutes, thumb, title:{ja,en,zh,ko}}]`。表紙は `renjill-media/bgm_<日付>_thumb.jpg`） | 作業用BGMの自動化 renjill-auto の `auto/bgm.py`（公開するたび） |
 | ヒーローのスマホ画面（カバー→動画） | 同上の「公開済みでカバーと動画がある一番新しい回」 | 同上 |
 | PICKUP（11/15 以降は「最新回：◯◯」） | 同上 | 同上 |
 | 関係カードの「この回を見る」 | 同上（ep 名で照合。YouTube ID が入ればその場で再生） | 同上 |
