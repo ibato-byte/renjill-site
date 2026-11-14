@@ -248,6 +248,21 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
 .char-pic { position: absolute; inset: 7% 5% 2%; display: block; pointer-events: none; }
 .char-pic img { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; max-width: none; transform: translateX(-50%); opacity: 0; transition: opacity .1s linear; -webkit-user-drag: none; user-select: none; }
 .char-pic .p-open { opacity: 1; }
+/* スマホの最初の画面：題名の右に 2 人（PC は右の大きな絵があるので出さない） */
+.hero-duo { display: none; }
+@media (max-width: 900px) {
+  .hero-title { position: relative; }
+  .hero-duo { display: block; position: absolute; right: -16px; bottom: -.04em; height: 104%; aspect-ratio: 10 / 8; max-width: 52%; pointer-events: none; z-index: 1; letter-spacing: 0; }
+  .duo-pic { position: absolute; bottom: 0; display: block; }
+  .duo-pic.ren { left: 0; width: 72%; aspect-ratio: 1; }
+  .duo-pic.jill { right: 0; width: 50%; aspect-ratio: 1; }
+  .duo-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; transition: opacity .1s linear; filter: drop-shadow(0 5px 0 rgba(43, 29, 18, .16)); }
+  .duo-pic .p-blink { opacity: 0; } .duo-pic.blink .p-open { opacity: 0; } .duo-pic.blink .p-blink { opacity: 1; }
+  .hero .hero-duo { opacity: 0; transform: translateY(14px) scale(.94); transform-origin: 50% 100%; }
+  .hero.go .hero-duo { opacity: 1; transform: none; transition: opacity .6s var(--ease) .5s, transform .7s cubic-bezier(.2, 1.3, .4, 1) .5s; }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) { .hero.go .duo-pic.ren { animation: duoBob 3.6s ease-in-out 1.4s infinite; } .hero.go .duo-pic.jill { animation: duoBob 3.6s ease-in-out 1.9s infinite; } }
+@keyframes duoBob { 0%, 100% { transform: none; } 50% { transform: translateY(-3px) scale(1.012, .99); } }
 .char-pic.blink .p-open { opacity: 0; } .char-pic.blink .p-blink { opacity: 1; }
 .char:hover .char-pic .p-open, .char:focus-within .char-pic .p-open, .char.flipped .char-pic .p-open, .char:hover .char-pic .p-blink, .char:focus-within .char-pic .p-blink, .char.flipped .char-pic .p-blink { opacity: 0; }
 .char:hover .char-pic .p-happy, .char:focus-within .char-pic .p-happy, .char.flipped .char-pic .p-happy { opacity: 1; }
@@ -283,15 +298,17 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
 .day .sec-lead { color: rgba(255, 255, 255, .75); }
 .day-pin { position: relative; }
 .day-track { display: flex; gap: clamp(16px, 2vw, 32px); width: max-content; padding-right: 20vw; will-change: transform; align-items: stretch; }
-.day-card { position: relative; width: clamp(260px, 30vw, 380px); flex: none; border: 3px solid var(--paper); border-radius: 24px; background: var(--navy-d); padding: 22px 22px 24px; display: grid; gap: 12px; grid-template-rows: auto 1fr auto; }
+.day-card { position: relative; width: clamp(260px, 30vw, 380px); flex: none; border: 3px solid var(--paper); border-radius: 24px; background: var(--navy-d); padding: 22px 22px 24px; display: grid; gap: 12px; grid-template-rows: auto auto 1fr; align-content: start; }
 .day-card.big { width: clamp(300px, 34vw, 440px); background: var(--mustard); color: var(--ink); border-color: var(--ink); }
 .day-time { font: 700 clamp(40px, 4.6vw, 64px)/1 var(--f-en); letter-spacing: -.03em; }
 .day-card.big .day-time { font-size: clamp(56px, 6.5vw, 96px); }
 .day-ttl { margin: 0; font: 900 clamp(18px, 1.7vw, 23px)/1.4 var(--f-jp); }
 body.lang-en .day-ttl { font-family: var(--f-en); font-weight: 700; }
 .day-text { margin: 0; font-size: 14px; line-height: 1.8; opacity: .85; }
-.day-ico { width: 56px; height: 56px; }
-.day-ico svg { width: 100%; height: 100%; }
+.day-pic { margin: -10px -10px 2px; border-radius: 18px; overflow: hidden; aspect-ratio: 16 / 10; background: #EADFCB; }
+.day-pic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease, ease-out); }
+.day-card:hover .day-pic img { transform: scale(1.05); }
+@media (prefers-reduced-motion: reduce) { .day-pic img { transition: none; } .day-card:hover .day-pic img { transform: none; } }
 .day-head { position: relative; padding-right: 100px; }
 .day-clock { position: absolute; right: 0; bottom: 26px; width: 80px; height: 80px; z-index: 2; }
 .day-progress { height: 4px; background: rgba(255, 255, 255, .2); border-radius: 999px; margin-top: 36px; overflow: hidden; }
@@ -349,8 +366,29 @@ body.lang-en .ep-ttl { font-family: var(--f-en); font-weight: 700; }
 .game-big { font: 700 clamp(56px, 8vw, 120px)/.9 var(--f-en); letter-spacing: -.04em; margin: 0 0 10px; color: var(--mustard); -webkit-text-stroke: 3px var(--cream); paint-order: stroke fill; }
 .game-text { font-size: 15.5px; line-height: 1.9; opacity: .9; margin: 0 0 24px; max-width: 34em; }
 .game-chars { display: flex; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; flex-wrap: wrap; }
-.game-chars li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 2px solid var(--cream); border-radius: 999px; font: 700 13px/1 var(--f-en); letter-spacing: .04em; }
-.game-chars i { width: 10px; height: 10px; border-radius: 50%; background: var(--mustard); }
+.game-chars li { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px 4px 5px; border: 2px solid var(--cream); border-radius: 999px; font: 700 13px/1 var(--f-en); letter-spacing: .04em; }
+.game-chars img { width: 30px; height: 30px; border-radius: 50%; background: var(--cream); object-fit: cover; }
+.game-id { display: flex; align-items: center; gap: 16px; margin: 0 0 14px; }
+.game-icon { width: 72px; height: 72px; flex: none; border-radius: 18px; box-shadow: 0 6px 0 rgba(0, 0, 0, .35), 0 0 0 2px rgba(251, 246, 236, .5); transform: rotate(-4deg); }
+.game-pre { margin-bottom: 8px; color: var(--mustard); }
+.game-id .game-big { font-size: clamp(44px, 6.2vw, 92px); margin: 0; white-space: nowrap; }
+.game-facts { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.game-facts li { padding: 9px 14px; border-radius: 999px; background: rgba(251, 246, 236, .1); font-size: 13.5px; font-weight: 700; line-height: 1.2; }
+.game-facts li.hot { background: var(--stamp); color: #fff; }
+.game-facts li[hidden] { display: none; }
+.stages { margin-top: clamp(36px, 6vw, 72px); }
+.stages-k { display: flex; align-items: baseline; gap: 10px; margin: 0 0 16px; font-size: 15px; font-weight: 700; color: rgba(255, 255, 255, .85); }
+.stages-k b { font: 700 clamp(30px, 4.6vw, 46px)/1 var(--f-en); letter-spacing: -.02em; color: var(--mustard); }
+.stage-row { list-style: none; margin: 0 calc(var(--gutter) * -1); padding: 6px var(--gutter) 22px; display: flex; gap: clamp(12px, 1.8vw, 20px); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.stage-row::-webkit-scrollbar { display: none; }
+.stage-row li { flex: 0 0 clamp(150px, 15.2vw, 196px); scroll-snap-align: center; }
+.stage-row figure { position: relative; margin: 0; border-radius: 20px; overflow: hidden; border: 2px solid rgba(251, 246, 236, .85); background: var(--navy); box-shadow: 0 10px 0 rgba(0, 0, 0, .3); transition: transform .35s cubic-bezier(.2, .9, .3, 1.3); }
+.stage-row li:nth-child(odd) figure { transform: rotate(-1.2deg); } .stage-row li:nth-child(even) figure { transform: rotate(1.2deg) translateY(8px); }
+.stage-row figure:hover { transform: rotate(0) translateY(-6px) scale(1.03); }
+.stage-row img { display: block; width: 100%; height: auto; aspect-ratio: 520 / 1125; object-fit: cover; }
+.stage-row figcaption { position: absolute; left: 8px; bottom: 8px; padding: 6px 11px; border-radius: 999px; background: rgba(43, 29, 18, .82); color: #fff; font-size: 12.5px; font-weight: 700; line-height: 1; }
+@media (prefers-reduced-motion: reduce) { .stage-row figure { transition: none; } }
+@media (min-width: 1000px) { .stage-row { margin: 0; padding: 6px 4px 22px; overflow: visible; } .stage-row li { flex: 1 1 0; min-width: 0; } }
 @media (max-width: 860px) { .game-grid { grid-template-columns: 1fr; } .game-shot { transform: rotate(-1deg); } }
 
 /* ═══════ FOLLOW ═══════ */
@@ -732,13 +770,6 @@ body:not(.lang-en) :is(.sns-name small, .ftr-note, .hero-kicker .mono) { font-fa
 /* character face is tappable too (flips the card) */
 .char-face { cursor: pointer; }
 /* game: what's new in the game */
-.game-feats { list-style: none; margin: 0 0 26px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 34em; }
-.game-feats li { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 16px; background: rgba(251, 246, 236, .08); font-size: 14px; line-height: 1.55; }
-.game-feats li[hidden] { display: none; }
-.game-feats svg { width: 22px; height: 22px; flex: none; margin-top: 1px; }
-.game-feats-k { margin: 0 0 10px; font: 700 12px/1 var(--f-mono); letter-spacing: .16em; color: var(--mustard); }
-body:not(.lang-en) .game-feats-k { font-family: var(--f-jp); letter-spacing: .08em; font-size: 12.5px; }
-@media (max-width: 480px) { .game-feats { grid-template-columns: 1fr; } }
 /* schedule: today is marked */
 .sched li { position: relative; }
 .sched li.today { outline: 3px solid var(--navy); outline-offset: 3px; }
@@ -930,8 +961,9 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <span class="sr" data-t="h1">レンとジル（Ren &amp; Jill）</span>
         <span class="w" aria-hidden="true"><span class="c">R</span><span class="c">E</span><span class="c">N</span><span class="c amp">&amp;</span></span>
         <span class="w" aria-hidden="true"><span class="c">J</span><span class="c">I</span><span class="c">L</span><span class="c">L</span></span>
+        <span class="hero-duo" aria-hidden="true"><span class="duo-pic ren"><img class="p-open" src="img/char/ren_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/ren_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span><span class="duo-pic jill"><img class="p-open" src="img/char/jill_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/jill_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span></span>
       </h1>
-      <p class="hero-sub rv" data-t="hero.sub">うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。</p>
+      <p class="hero-sub rv" data-t="hero.sub">セリフなし。しぐさと音だけで描く、ちょっと平和なオフィスの毎日。</p>
       <div class="hero-cta rv">
         <a class="btn" href="#episodes"><span data-t="hero.cta1">エピソードを見る</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn lite" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener"><span data-t="hero.cta2">ゲームで遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
@@ -997,7 +1029,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         </div>
         <div class="char-role">BOSS · HOLLAND LOP</div>
         <h3 class="char-name">REN<small data-t="ch.ren.name">課長のレン</small></h3>
-        <p class="char-text" data-t="ch.ren.text">たれ耳の課長。やる気はある。手伝うほど、なぜか仕事が増える。承認印は鼻で押す。定時のチャイムが、いちばんの楽しみ。</p>
+        <p class="char-text" data-t="ch.ren.text">たれ耳の課長。手伝うほど、なぜか仕事が増える。</p>
         <ul class="char-tags"><li data-t="ch.ren.t1">牧草ラバー</li><li data-t="ch.ren.t2">鼻ハンコ</li><li data-t="ch.ren.t3">18:00 が好き</li></ul>
       
             <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -1020,7 +1052,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         </div>
         <div class="char-role">ASSISTANT · NETHERLAND DWARF</div>
         <h3 class="char-name">JILL<small data-t="ch.jill.name">部下のジル</small></h3>
-        <p class="char-text" data-t="ch.jill.text">しっかり者の部下。メガネをかけるとスイッチが入る。課長のマグカップがどこにあるか、だいたい知っている。</p>
+        <p class="char-text" data-t="ch.jill.text">しっかり者の部下。メガネをかけると、スイッチが入る。</p>
         <ul class="char-tags"><li data-t="ch.jill.t1">メガネでON</li><li data-t="ch.jill.t2">段取り上手</li><li data-t="ch.jill.t3">ツッコミ担当</li></ul>
       
             <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -1043,7 +1075,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         </div>
         <div class="char-role">ROOKIE · GOLDEN HAMSTER</div>
         <h3 class="char-name">POM<small data-t="ch.pom.name">新人のポム</small></h3>
-        <p class="char-text" data-t="ch.pom.text">11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。</p>
+        <p class="char-text" data-t="ch.pom.text">11月に入社した新人。やる気は、課長の3倍。</p>
         <ul class="char-tags"><li data-t="ch.pom.t1">ほっぺ収納</li><li data-t="ch.pom.t2">元気</li><li data-t="ch.pom.t3">NEW 11/1</li></ul>
       
             <button class="char-more" type="button" data-flip><span data-t="ch.more">押してみる？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -1081,10 +1113,10 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <g transform="translate(450 392)"><g class="rel-node"><image href="img/char/pom_open.webp" x="-75" y="-108" width="150" height="150" preserveAspectRatio="xMidYMid meet"/><text y="46" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="20" fill="#2B1D12">POM</text><g id="relNew" transform="translate(74 -40)"><rect x="-26" y="-12" width="52" height="24" rx="12" fill="#2B1D12"/><text text-anchor="middle" y="5" font-family="Fredoka" font-weight="700" font-size="12" fill="#D9A520">NEW</text></g></g></g>
       </svg>
       <ul class="rel-cards">
-        <li class="rel-card" data-rel="0" tabindex="0"><span class="rel-no">01</span><div class="rel-who"><span class="rel-av"><img src="img/char/ren_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">REN</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/jill_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">JILL</span></div><h4 data-t="rel.1">頼りにしてる</h4><p data-t="rel.1.d">段取りも探しものも、ジルが頼り。お礼に手伝おうとすると、なぜか書類の山が崩れる。</p><a class="rel-ep" href="#episodes" data-ep="papers2"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
-        <li class="rel-card" data-rel="1" tabindex="0"><span class="rel-no">02</span><div class="rel-who"><span class="rel-av"><img src="img/char/jill_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">JILL</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/ren_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">REN</span></div><h4 data-t="rel.2">世話を焼く</h4><p data-t="rel.2.d">課長の探しものの場所は、だいたい知っている。マグカップは、たいてい課長の頭の上。</p><a class="rel-ep" href="#episodes" data-ep="mug2"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
-        <li class="rel-card" data-rel="2" tabindex="0"><span class="rel-no">03</span><div class="rel-who"><span class="rel-av"><img src="img/char/pom_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">POM</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/ren_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">REN</span></div><h4 data-t="rel.3">あこがれ</h4><p data-t="rel.3.d">11月1日に入社した新人のポム。課長のとなりで、やる気だけは課長の3倍。</p><a class="rel-ep" href="#episodes" data-ep="pom_debut"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
-        <li class="rel-card" data-rel="3" tabindex="0"><span class="rel-no">04</span><div class="rel-who"><span class="rel-av"><img src="img/char/pom_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">POM</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/jill_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">JILL</span></div><h4 data-t="rel.4">教わる</h4><p data-t="rel.4.d">仕事の段取りは、しっかり者のジル先輩に教わり中。メモは、たぶんほっぺの中。</p><a class="rel-ep" href="#episodes" data-ep="pom_debut"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="0" tabindex="0"><span class="rel-no">01</span><div class="rel-who"><span class="rel-av"><img src="img/char/ren_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">REN</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/jill_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">JILL</span></div><h4 data-t="rel.1">頼りにしてる</h4><p data-t="rel.1.d">段取りも探しものも、ジルが頼り。</p><a class="rel-ep" href="#episodes" data-ep="papers2"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="1" tabindex="0"><span class="rel-no">02</span><div class="rel-who"><span class="rel-av"><img src="img/char/jill_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">JILL</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/ren_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">REN</span></div><h4 data-t="rel.2">世話を焼く</h4><p data-t="rel.2.d">マグカップは、たいてい課長の頭の上。</p><a class="rel-ep" href="#episodes" data-ep="mug2"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="2" tabindex="0"><span class="rel-no">03</span><div class="rel-who"><span class="rel-av"><img src="img/char/pom_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">POM</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/ren_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">REN</span></div><h4 data-t="rel.3">あこがれ</h4><p data-t="rel.3.d">課長のとなりで、やる気だけは3倍。</p><a class="rel-ep" href="#episodes" data-ep="pom_debut"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
+        <li class="rel-card" data-rel="3" tabindex="0"><span class="rel-no">04</span><div class="rel-who"><span class="rel-av"><img src="img/char/pom_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">POM</span><svg class="rel-arr" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h19M15 1l5 5-5 5"/></svg><span class="rel-av"><img src="img/char/jill_head.webp" alt="" width="26" height="26" loading="lazy" decoding="async">JILL</span></div><h4 data-t="rel.4">教わる</h4><p data-t="rel.4.d">メモは、たぶん、ほっぺの中。</p><a class="rel-ep" href="#episodes" data-ep="pom_debut"><i><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M6 4l14 8-14 8Z"/></svg></i><span></span></a></li>
       </ul>
     </div>
   </div>
@@ -1107,15 +1139,15 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         </svg>
       </div>
       <div class="day-track" id="dayTrack">
-        <article class="day-card"><div class="day-time">9:00</div><div><h3 class="day-ttl" data-t="day.1.t">ジルの朝</h3><p class="day-text" data-t="day.1.d">メガネをかけたら、スイッチが入る。課長のスイッチは、まだ見つかっていない。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3"><circle cx="18" cy="30" r="9"/><circle cx="38" cy="30" r="9"/><path d="M27 30h2M9 28l-5-3M47 28l5-3"/></svg></div></article>
-        <article class="day-card"><div class="day-time">9:55</div><div><h3 class="day-ttl" data-t="day.2.t">会議の5分前</h3><p class="day-text" data-t="day.2.d">資料は、ある。たぶん。課長の耳が、いつもより低い。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><circle cx="28" cy="30" r="20"/><path d="M28 18v12l8 5"/></svg></div></article>
-        <article class="day-card"><div class="day-time">10:00</div><div><h3 class="day-ttl" data-t="day.3.t">カメラオフ会議</h3><p class="day-text" data-t="day.3.d">カメラを切れば、何をしても大丈夫。大丈夫？</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="16" width="28" height="22" rx="4"/><path d="M36 24l12-6v20l-12-6M10 42L46 12"/></svg></div></article>
-        <article class="day-card"><div class="day-time">11:30</div><div><h3 class="day-ttl" data-t="day.4.t">ハンコ</h3><p class="day-text" data-t="day.4.d">承認。鼻で。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><circle cx="28" cy="28" r="16"/><path d="M20 24c4 6 12 6 16 0"/></svg></div></article>
-        <article class="day-card"><div class="day-time">13:00</div><div><h3 class="day-ttl" data-t="day.5.t">書類の山</h3><p class="day-text" data-t="day.5.d">整えるほど崩れる。課長、手伝わなくていいです。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><path d="M10 44h36M12 36h32M14 28h28M18 20h20M22 12h12"/></svg></div></article>
-        <article class="day-card"><div class="day-time">14:30</div><div><h3 class="day-ttl" data-t="day.6.t">マグカップはどこ</h3><p class="day-text" data-t="day.6.d">課長、マグカップは頭の上です。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><path d="M12 20h26v14a8 8 0 0 1-8 8h-10a8 8 0 0 1-8-8V20ZM38 24h4a5 5 0 0 1 0 10h-4"/></svg></div></article>
-        <article class="day-card"><div class="day-time">16:00</div><div><h3 class="day-ttl" data-t="day.7.t">牧草の領収書</h3><p class="day-text" data-t="day.7.d">経費精算、ぜんぶ牧草。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h28v40l-4-3-4 3-4-3-4 3-4-3-4 3-4-3V8ZM20 18h16M20 26h16M20 34h10"/></svg></div></article>
-        <article class="day-card"><div class="day-time">17:30</div><div><h3 class="day-ttl" data-t="day.8.t">締め切りのカレンダー</h3><p class="day-text" data-t="day.8.d">見なければ、締め切りは来ない（来ます）。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#FBF6EC" stroke-width="3" stroke-linecap="round"><rect x="8" y="12" width="40" height="36" rx="4"/><path d="M8 22h40M18 8v8M38 8v8M24 32l4 4 8-8"/></svg></div></article>
-        <article class="day-card big"><div class="day-time">18:00</div><div><h3 class="day-ttl" data-t="day.9.t">定時のチャイム</h3><p class="day-text" data-t="day.9.d">よろこびが止まらない。今日もおつかれさまでした。</p></div><div class="day-ico"><svg viewBox="0 0 56 56" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M28 6a12 12 0 0 1 12 12v10l5 8H11l5-8V18A12 12 0 0 1 28 6ZM23 42a5 5 0 0 0 10 0"/></svg></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/1.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">9:00</div><div><h3 class="day-ttl" data-t="day.1.t">ジルの朝</h3><p class="day-text" data-t="day.1.d">メガネをかけたら、スイッチが入る。課長のスイッチは、まだ見つかっていない。</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/2.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">9:55</div><div><h3 class="day-ttl" data-t="day.2.t">会議の5分前</h3><p class="day-text" data-t="day.2.d">資料は、ある。たぶん。課長の耳が、いつもより低い。</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/3.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">10:00</div><div><h3 class="day-ttl" data-t="day.3.t">カメラオフ会議</h3><p class="day-text" data-t="day.3.d">カメラを切れば、何をしても大丈夫。大丈夫？</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/4.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">11:30</div><div><h3 class="day-ttl" data-t="day.4.t">ハンコ</h3><p class="day-text" data-t="day.4.d">承認。鼻で。</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/5.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">13:00</div><div><h3 class="day-ttl" data-t="day.5.t">書類の山</h3><p class="day-text" data-t="day.5.d">整えるほど崩れる。課長、手伝わなくていいです。</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/6.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">14:30</div><div><h3 class="day-ttl" data-t="day.6.t">マグカップはどこ</h3><p class="day-text" data-t="day.6.d">課長、マグカップは頭の上です。</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/7.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">16:00</div><div><h3 class="day-ttl" data-t="day.7.t">牧草の領収書</h3><p class="day-text" data-t="day.7.d">経費精算、ぜんぶ牧草。</p></div></article>
+        <article class="day-card"><div class="day-pic"><img src="img/day/8.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">17:30</div><div><h3 class="day-ttl" data-t="day.8.t">締め切りのカレンダー</h3><p class="day-text" data-t="day.8.d">見なければ、締め切りは来ない（来ます）。</p></div></article>
+        <article class="day-card big"><div class="day-pic"><img src="img/day/9.webp" width="720" height="450" loading="lazy" decoding="async" alt=""></div><div class="day-time">18:00</div><div><h3 class="day-ttl" data-t="day.9.t">定時のチャイム</h3><p class="day-text" data-t="day.9.d">よろこびが止まらない。今日もおつかれさまでした。</p></div></article>
       </div>
       <div class="day-progress"><i id="dayBar"></i></div>
     </div>
@@ -1150,7 +1182,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
       <div class="fcall-txt">
         <p class="fcall-k">FOLLOW · @renjill_office</p>
         <h3 class="fcall-ttl" id="fcallTtl" data-t="fc.ttl">つづきは、タイムラインで。</h3>
-        <p class="fcall-lead" data-t="fc.lead">新作は毎日。フォローしておけば、見逃しません。いつものSNSをひとつ選ぶだけ。</p>
+        <p class="fcall-lead" data-t="fc.lead">新作は毎日。いつものSNSを、ひとつ選ぶだけ。</p>
       </div>
       <div class="sns-btns" data-sns="call"></div>
     </aside>
@@ -1163,7 +1195,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
     <div class="sec-head rv">
       <div class="sec-no">04</div>
       <h2 class="sec-ttl"><span data-t="game.ttl">遊べます。</span></h2>
-      <p class="sec-lead" data-t="game.lead">ブラウザでそのまま。インストール不要、無料。日本語・英語・中国語・韓国語で遊べます。</p>
+      <p class="sec-lead" data-t="game.lead">ブラウザで、すぐ。</p>
     </div>
     <div class="game-grid">
       <figure class="game-shot game-vid rv">
@@ -1174,23 +1206,22 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <figcaption class="vcap" id="promoCap"><span class="vtag">22s</span><span data-t="promo.cap">22秒でわかる、プレイ動画（音なし）</span></figcaption>
       </figure>
       <div class="rv">
-        <div class="mono" style="margin-bottom:14px;color:var(--mustard)">REN &amp; JILL PRESENTS</div>
-        <h3 class="game-big">HAY<br>DASH!</h3>
+        <div class="game-id"><img class="game-icon" src="img/game/icon.webp" width="72" height="72" alt="" loading="lazy" decoding="async"><div><div class="mono game-pre">REN &amp; JILL PRESENTS</div><h3 class="game-big">HAY DASH!</h3></div></div>
         <p class="game-news" id="gameNews" hidden><b>NEWS</b><span></span></p>
-        <p class="game-text" data-t="game.text">「レンとジルのチモシーダッシュ」は、うさぎの課長レンと部下ジルが東京の街をかけぬけるランゲーム。牧草を集めて、街の灯りをめざそう。新人のポムも走れます。</p>
-        <p class="game-feats-k" data-t="game.f.k">ゲームの新しいこと</p>
-        <ul class="game-feats">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="#D9A520" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h9v7H8l-4 3V5Z"/><path d="M13 9h7v9l-3-2h-6v-3"/></svg><span data-t="game.f.lang">中国語・韓国語でも遊べるようになりました</span></li>
-          <li id="featWinter" hidden><svg viewBox="0 0 24 24" fill="none" stroke="#D9A520" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/><circle cx="12" cy="12" r="2.2" fill="#D9A520"/></svg><span data-t="game.f.winter">クリスマス イベント開催中（12/25まで・限定の帽子つき）</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="#D9A520" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4l-5 4 3 3 2-1v10h8V10l2 1 3-3-5-4c-.5 1.6-2 2.6-4 2.6S8.5 5.6 8 4Z"/></svg><span data-t="game.f.wardrobe">ポムの着せかえができます</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="#D9A520" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18h14l1-10-5 4-3-6-3 6-5-4 1 10Z"/></svg><span data-t="game.f.legend">「伝説のうさぎ」のプレイヤーには特別な特典</span></li>
+        <p class="game-text" data-t="game.text">うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。</p>
+        <ul class="game-facts">
+          <li data-t="game.k.free">無料</li><li data-t="game.k.web">インストールなし</li><li data-t="game.k.lang">4つの言語</li><li data-t="game.k.resume">つづきから再開</li><li id="featWinter" class="hot" hidden data-t="game.f.winter">クリスマス イベント中（12/25まで）</li>
         </ul>
-        <ul class="game-chars"><li><i></i>REN</li><li><i style="background:#E8A4A0"></i>JILL</li><li><i style="background:#F6D7A8"></i>POM</li></ul>
+        <ul class="game-chars"><li><img src="img/char/ren_head.webp" width="30" height="30" alt="" loading="lazy" decoding="async">REN</li><li><img src="img/char/jill_head.webp" width="30" height="30" alt="" loading="lazy" decoding="async">JILL</li><li><img src="img/char/pom_head.webp" width="30" height="30" alt="" loading="lazy" decoding="async">POM</li></ul>
         <div class="game-go">
           <a class="btn lite" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener"><span data-t="game.cta">今すぐ遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
           <a class="game-url" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener">hay-dash.coana.co.jp</a>
         </div>
       </div>
+    </div>
+    <div class="stages rv">
+      <p class="stages-k"><b>100+</b><span data-t="game.st.k">の東京を走る</span></p>
+      <ul class="stage-row" id="stageRow" tabindex="0" aria-label="ゲームの画面（横に動かせます）" data-ta="a.stages"><li><figure><img src="img/game/asakusa.webp" width="520" height="1125" loading="lazy" decoding="async" alt="浅草のゲーム画面" data-talt="game.st.asakusa.alt"><figcaption data-t="game.st.asakusa">浅草</figcaption></figure></li><li><figure><img src="img/game/gyoen.webp" width="520" height="1125" loading="lazy" decoding="async" alt="新宿御苑のゲーム画面" data-talt="game.st.gyoen.alt"><figcaption data-t="game.st.gyoen">新宿御苑</figcaption></figure></li><li><figure><img src="img/game/kaihin.webp" width="520" height="1125" loading="lazy" decoding="async" alt="お台場のゲーム画面" data-talt="game.st.kaihin.alt"><figcaption data-t="game.st.kaihin">お台場</figcaption></figure></li><li><figure><img src="img/game/ginza.webp" width="520" height="1125" loading="lazy" decoding="async" alt="銀座のゲーム画面" data-talt="game.st.ginza.alt"><figcaption data-t="game.st.ginza">銀座</figcaption></figure></li><li><figure><img src="img/game/shibuya.webp" width="520" height="1125" loading="lazy" decoding="async" alt="渋谷のゲーム画面" data-talt="game.st.shibuya.alt"><figcaption data-t="game.st.shibuya">渋谷</figcaption></figure></li><li><figure><img src="img/game/yamanote.webp" width="520" height="1125" loading="lazy" decoding="async" alt="山手線のゲーム画面" data-talt="game.st.yamanote.alt"><figcaption data-t="game.st.yamanote">山手線</figcaption></figure></li></ul>
     </div>
   </div>
 </section>
@@ -1492,10 +1523,10 @@ const T = {
 "토끼들의 오피스 코미디 · 대사 없음"
 ],
 "hero.sub": [
-"うさぎの課長レンと、しっかり者の部下ジル。セリフはありません。しぐさと音だけで描く、ちょっとだけ平和なオフィスの毎日。",
-"Ren, a rabbit boss with floppy ears. Jill, the assistant who actually runs the place. No words — just gestures and sounds from a slightly peaceful office.",
-"垂耳兔課長 Ren，和可靠的部下 Jill。沒有台詞，只用動作和聲音，描繪一間稍微和平的辦公室的每一天。",
-"귀가 처진 토끼 과장 Ren과 야무진 부하 Jill. 대사는 없습니다. 몸짓과 소리만으로 그리는, 조금 평화로운 오피스의 하루하루."
+"セリフなし。しぐさと音だけで描く、ちょっと平和なオフィスの毎日。",
+"No words — just gestures and sounds from a slightly peaceful office.",
+"沒有台詞。只用動作和聲音，描繪稍微和平的辦公室日常。",
+"대사 없이, 몸짓과 소리만으로 그리는 조금 평화로운 오피스의 하루."
 ],
 "hero.cta1": [
 "エピソードを見る",
@@ -1612,10 +1643,10 @@ const T = {
 "과장 Ren"
 ],
 "ch.ren.text": [
-"たれ耳の課長。やる気はある。手伝うほど、なぜか仕事が増える。承認印は鼻で押す。定時のチャイムが、いちばんの楽しみ。",
-"A floppy-eared manager with good intentions. The more he helps, the more work appears. Approves documents with his nose. Lives for the 6 pm chime.",
-"垂耳的課長，很有幹勁。越幫忙，工作不知為何越多。蓋章用鼻子。最期待的是下班的鐘聲。",
-"귀가 처진 과장님. 의욕은 넘칩니다. 도와줄수록 왠지 일이 늘어나요. 결재 도장은 코로 찍습니다. 제일 기다리는 건 퇴근 종소리."
+"たれ耳の課長。手伝うほど、なぜか仕事が増える。",
+"A floppy-eared boss. The more he helps, the more work appears.",
+"垂耳的課長。越幫忙，工作不知為何越多。",
+"귀가 처진 과장님. 도와줄수록 왠지 일이 늘어나요."
 ],
 "ch.ren.t1": [
 "牧草ラバー",
@@ -1666,10 +1697,10 @@ const T = {
 "부하 Jill"
 ],
 "ch.jill.text": [
-"しっかり者の部下。メガネをかけるとスイッチが入る。課長のマグカップがどこにあるか、だいたい知っている。",
-"The one who gets things done. Glasses on, switch on. Usually knows where the boss's mug is (on his head).",
-"可靠的部下。戴上眼鏡就開啟工作模式。大概知道課長的馬克杯在哪裡（在他頭上）。",
-"야무진 부하. 안경을 쓰면 스위치가 켜집니다. 과장님 머그컵이 어디 있는지 대체로 알고 있어요(머리 위)."
+"しっかり者の部下。メガネをかけると、スイッチが入る。",
+"The one who gets things done. Glasses on, switch on.",
+"可靠的部下。戴上眼鏡，就開啟工作模式。",
+"야무진 부하. 안경을 쓰면 스위치가 켜집니다."
 ],
 "ch.jill.t1": [
 "メガネでON",
@@ -1720,10 +1751,10 @@ const T = {
 "신입 Pom"
 ],
 "ch.pom.text": [
-"11月1日に入社した新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。",
-"Joined on November 1. Stores everything in those cheeks. Three times the boss's energy. The headband is non-negotiable.",
-"11月1日入職的新人。什麼都往臉頰裡塞。幹勁是課長的3倍。頭帶是本人的堅持。",
-"11월 1일 입사한 신입. 뭐든 볼주머니에 넣어 둡니다. 의욕은 과장님의 3배. 머리띠는 본인의 고집."
+"11月に入社した新人。やる気は、課長の3倍。",
+"The rookie who joined in November. Three times the boss's energy.",
+"11月入職的新人。幹勁是課長的3倍。",
+"11월에 입사한 신입. 의욕은 과장님의 3배."
 ],
 "ch.pom.text.pre": [
 "11月1日に入社する新人。ほっぺに何でも入れておく。やる気は課長の3倍。ハチマキは本人のこだわり。",
@@ -1984,46 +2015,130 @@ const T = {
 "플레이할 수 있어요."
 ],
 "game.lead": [
-"ブラウザでそのまま。インストール不要、無料。日本語・英語・中国語・韓国語で遊べます。",
-"Right in the browser. No install, free. In Japanese, English, Chinese and Korean.",
-"直接在瀏覽器玩。免安裝、免費。支援日文、英文、中文、韓文。",
-"브라우저에서 바로. 설치 없이, 무료. 일본어·영어·중국어·한국어 지원."
+"ブラウザで、すぐ。",
+"Right in your browser.",
+"打開瀏覽器就能玩。",
+"브라우저에서 바로."
 ],
 "game.text": [
-"「レンとジルのチモシーダッシュ」は、うさぎの課長レンと部下ジルが東京の街をかけぬけるランゲーム。牧草を集めて、街の灯りをめざそう。新人のポムも走れます。",
-"Ren & Jill: Hay Dash is a run game where Ren and Jill dash through the streets of Tokyo. Grab the hay and race toward the city lights. Pom runs too.",
-"「Ren & Jill：Hay Dash」是兔子課長 Ren 和部下 Jill 奔跑穿越東京街頭的跑酷遊戲。收集牧草，朝著城市的燈火前進。新人 Pom 也能跑。",
-"‘Ren & Jill: Hay Dash’는 토끼 과장 Ren과 부하 Jill이 도쿄 거리를 달리는 런 게임. 건초를 모아 도시의 불빛을 향해 달려요. 신입 Pom도 달려요."
-],
-"game.f.k": [
-"ゲームの新しいこと",
-"WHAT'S NEW IN THE GAME",
-"遊戲新內容",
-"게임 새 소식"
-],
-"game.f.lang": [
-"中国語・韓国語でも遊べるようになりました",
-"Now playable in Chinese and Korean",
-"現在也能用中文和韓文玩",
-"이제 중국어·한국어로도 플레이"
+"うさぎの課長レンと部下ジルが、東京をかけぬけるランゲーム。",
+"A run game: Ren the boss and Jill dash across Tokyo.",
+"兔子課長 Ren 和部下 Jill 奔跑穿越東京的跑酷遊戲。",
+"토끼 과장 Ren과 부하 Jill이 도쿄를 달리는 런 게임."
 ],
 "game.f.winter": [
-"クリスマス イベント開催中（12/25まで・限定の帽子つき）",
-"Christmas event — until Dec 25 (gift hats)",
-"聖誕活動進行中（至 12/25・送限定帽子）",
-"크리스마스 이벤트 진행 중 (12/25까지 · 한정 모자)"
+"クリスマス イベント中（12/25まで）",
+"Christmas event · until Dec 25",
+"聖誕活動中（至 12/25）",
+"크리스마스 이벤트 중 (12/25까지)"
 ],
-"game.f.wardrobe": [
-"ポムの着せかえができます",
-"Dress up Pom in the new wardrobe",
-"可以幫 Pom 換裝",
-"Pom 옷 갈아입히기"
+"game.k.free": [
+"無料",
+"Free",
+"免費",
+"무료"
 ],
-"game.f.legend": [
-"「伝説のうさぎ」のプレイヤーには特別な特典",
-"Special perks for Legendary Bunny players",
-"「傳說的兔子」玩家專屬特典",
-"‘전설의 토끼’ 플레이어 특별 혜택"
+"game.k.web": [
+"インストールなし",
+"No install",
+"免安裝",
+"설치 없음"
+],
+"game.k.lang": [
+"4つの言語",
+"4 languages",
+"4 種語言",
+"4개 언어"
+],
+"game.k.resume": [
+"つづきから再開",
+"Pick up where you left off",
+"可從中途繼續",
+"이어서 플레이"
+],
+"game.st.k": [
+"の東京を走る",
+"Tokyo spots to run",
+"個東京場景",
+"곳의 도쿄를 달려요"
+],
+"a.stages": [
+"ゲームの画面（横に動かせます）",
+"Game screens (scroll sideways)",
+"遊戲畫面（可左右滑動）",
+"게임 화면 (옆으로 넘길 수 있어요)"
+],
+"game.st.asakusa": [
+"浅草",
+"Asakusa",
+"淺草",
+"아사쿠사"
+],
+"game.st.asakusa.alt": [
+"浅草のゲーム画面",
+"Game screen: Asakusa",
+"遊戲畫面：淺草",
+"게임 화면: 아사쿠사"
+],
+"game.st.gyoen": [
+"新宿御苑",
+"Shinjuku Gyoen",
+"新宿御苑",
+"신주쿠 교엔"
+],
+"game.st.gyoen.alt": [
+"新宿御苑のゲーム画面",
+"Game screen: Shinjuku Gyoen",
+"遊戲畫面：新宿御苑",
+"게임 화면: 신주쿠 교엔"
+],
+"game.st.kaihin": [
+"お台場",
+"Odaiba",
+"台場",
+"오다이바"
+],
+"game.st.kaihin.alt": [
+"お台場のゲーム画面",
+"Game screen: Odaiba",
+"遊戲畫面：台場",
+"게임 화면: 오다이바"
+],
+"game.st.ginza": [
+"銀座",
+"Ginza",
+"銀座",
+"긴자"
+],
+"game.st.ginza.alt": [
+"銀座のゲーム画面",
+"Game screen: Ginza",
+"遊戲畫面：銀座",
+"게임 화면: 긴자"
+],
+"game.st.shibuya": [
+"渋谷",
+"Shibuya",
+"澀谷",
+"시부야"
+],
+"game.st.shibuya.alt": [
+"渋谷のゲーム画面",
+"Game screen: Shibuya",
+"遊戲畫面：澀谷",
+"게임 화면: 시부야"
+],
+"game.st.yamanote": [
+"山手線",
+"Yamanote Line",
+"山手線",
+"야마노테선"
+],
+"game.st.yamanote.alt": [
+"山手線のゲーム画面",
+"Game screen: Yamanote Line",
+"遊戲畫面：山手線",
+"게임 화면: 야마노테선"
 ],
 "game.alt": [
 "「レンとジルのチモシーダッシュ」のゲーム画面",
@@ -2236,22 +2351,22 @@ const T = {
 "직급은 과장님이 위. 야무짐은 부하가 위. 그리고 의욕만큼은 가득한 신입이 들어왔습니다."
 ],
 "rel.1.d": [
-"段取りも探しものも、ジルが頼り。お礼に手伝おうとすると、なぜか書類の山が崩れる。",
-"For plans and lost things, the boss counts on Jill. When he tries to help in return, the paper pile somehow collapses.",
-"安排和找東西都靠 Jill。想幫忙回報，文件山卻不知為何倒了。",
-"계획도, 잃어버린 물건도 Jill에게 의지. 보답하려고 도우면 왠지 서류 산이 무너져요."
+"段取りも探しものも、ジルが頼り。",
+"For plans and lost things, the boss counts on Jill.",
+"安排和找東西，都靠 Jill。",
+"계획도, 잃어버린 물건도 Jill에게 의지."
 ],
 "rel.2.d": [
-"課長の探しものの場所は、だいたい知っている。マグカップは、たいてい課長の頭の上。",
-"Jill usually knows where the boss's things are. The mug is usually on his head.",
-"課長找的東西在哪裡，Jill 大概都知道。馬克杯通常在課長頭上。",
-"과장님 물건이 어디 있는지 대체로 알고 있어요. 머그컵은 대개 과장님 머리 위."
+"マグカップは、たいてい課長の頭の上。",
+"The mug is usually on the boss's head.",
+"馬克杯通常在課長頭上。",
+"머그컵은 대개 과장님 머리 위."
 ],
 "rel.3.d": [
-"11月1日に入社した新人のポム。課長のとなりで、やる気だけは課長の3倍。",
-"Pom joined on November 1 — right next to the boss, with three times the boss's energy.",
-"11月1日入職的新人 Pom。坐在課長旁邊，幹勁是課長的3倍。",
-"11월 1일 입사한 신입 Pom. 과장님 옆에서, 의욕만큼은 과장님의 3배."
+"課長のとなりで、やる気だけは3倍。",
+"Right next to the boss, with three times the energy.",
+"坐在課長旁邊，幹勁是3倍。",
+"과장님 옆에서, 의욕만큼은 3배."
 ],
 "rel.3.d.pre": [
 "11月1日に入社する新人のポム。課長のとなりで、やる気だけは課長の3倍。",
@@ -2260,10 +2375,10 @@ const T = {
 "11월 1일 입사하는 신입 Pom. 과장님 옆에서, 의욕만큼은 과장님의 3배."
 ],
 "rel.4.d": [
-"仕事の段取りは、しっかり者のジル先輩に教わり中。メモは、たぶんほっぺの中。",
-"Learning the ropes from Jill, the organized one. The notes are probably tucked in those cheeks.",
-"工作的安排，正在跟可靠的 Jill 前輩學習。筆記大概收在臉頰裡。",
-"일하는 요령은 야무진 Jill 선배에게 배우는 중. 메모는 아마 볼주머니 안에."
+"メモは、たぶん、ほっぺの中。",
+"The notes are probably tucked in those cheeks.",
+"筆記大概收在臉頰裡。",
+"메모는 아마 볼주머니 안에."
 ],
 "rel.watch": [
 "この回を見る：",
@@ -2290,10 +2405,10 @@ const T = {
 "다음 이야기는 타임라인에서."
 ],
 "fc.lead": [
-"新作は毎日。フォローしておけば、見逃しません。いつものSNSをひとつ選ぶだけ。",
-"New episodes every day. Follow on the app you already use and you won't miss one.",
-"每天都有新片。在你常用的平台追蹤，就不會錯過。",
-"신작은 매일. 평소 쓰는 SNS 하나만 팔로우하면 놓치지 않아요."
+"新作は毎日。いつものSNSを、ひとつ選ぶだけ。",
+"New episodes daily. Just pick the app you already use.",
+"每天都有新片。選一個你常用的平台就好。",
+"신작은 매일. 평소 쓰는 SNS 하나만 고르면 돼요."
 ],
 "ps.ttl": [
 "このページをシェア",
@@ -2699,7 +2814,7 @@ if (!reduce) {
 /* ───────── 7. characters: eyes + flip ───────── */
 (() => {
   /* 2026-11-15：絵を入れかえたので、目がカーソルを追う仕組みはやめ、ときどきまばたきする（動きを減らす設定では、しない） */
-  if (!reduce) $$(".char-pic").forEach((p, k) => { const go = () => { p.classList.add("blink"); setTimeout(() => p.classList.remove("blink"), 150); setTimeout(go, 2600 + Math.random() * 2800); }; setTimeout(go, 1300 + k * 700); });
+  if (!reduce) $$(".char-pic, .duo-pic").forEach((p, k) => { const go = () => { p.classList.add("blink"); setTimeout(() => p.classList.remove("blink"), 150); setTimeout(go, 2600 + Math.random() * 2800); }; setTimeout(go, 1300 + k * 700); });
   if (!fine) $$(".char-hint").forEach((h) => (h.textContent = "TAP"));
   $$("[data-char]").forEach((card) => {
     $(".char-back", card).inert = true;
