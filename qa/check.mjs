@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（51項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（52項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -31,6 +31,7 @@ def(39, '曜日の帯が「毎日」と矛盾しない'); def(40, 'PICKUP が最
 def(43, 'キーボードのフォーカスが見える'); def(44, '文字のコントラスト（主要な文 4.5:1 以上）'); def(45, 'エピソード一覧の題がその言語で出る'); def(46, '言語の保存と ?lang= が効く');
 def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見るで全部出る'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
 def(51, 'キャラクターの絵がアニメ・ゲームと同じ絵で、3 人とも読み込めている（平たい線画に戻っていない）');
+def(52, 'ゲームの紹介：本物のゲーム画面 6 枚とアイコンが読み込めている／スマホの最初の画面に 2 人がいて、題名や上の行に重ならない');
 
 // ---------- 静的な検査
 const m = (re) => (html.match(re) || [])[1];
@@ -174,6 +175,13 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
 for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(w, h, 'ja'); await p.evaluate(() => document.querySelector('#characters').scrollIntoView()); await p.waitForTimeout(1200);
   const r = await p.evaluate(() => [...document.querySelectorAll('.char-pic')].map((e) => { const im = e.querySelector('.p-open'), a = im.getBoundingClientRect(), f = e.closest('.char-face').getBoundingClientRect(); return { who: e.dataset.pic, ok: im.complete && im.naturalWidth > 100, inside: a.left >= f.left - 1 && a.right <= f.right + 1 && a.top >= f.top - 1 && a.bottom <= f.bottom + 1, h: Math.round(a.height), fh: Math.round(f.height) }; }));
   if (r.length !== 3) note(51, w + ' 絵が 3 人分でない'); for (const x of r) { if (!x.ok) note(51, w + ' ' + x.who + ' の絵が読み込めない'); if (!x.inside) note(51, w + ' ' + x.who + ' の絵が枠からはみ出す'); if (x.h < x.fh * .6) note(51, w + ' ' + x.who + ' の絵が小さすぎる'); } await ctx.close(); }
+// 52：ゲームの画面の列・アイコン・最初の画面の 2 人
+for (const [w, h, lang] of [[390, 844, 'ja'], [320, 568, 'en'], [1440, 900, 'ja']]) { const { p, ctx } = await open(w, h, lang);
+  if (w < 900) { const r = await p.evaluate(() => { const d = document.querySelector('.hero-duo'), bx = (e) => e.getBoundingClientRect(); if (!d || getComputedStyle(d).display === 'none') return { none: 1 }; const a = bx(d), k = bx(document.querySelector('.hero-kicker')), cs = [...document.querySelectorAll('.hero-title .c')].map(bx), hit = cs.filter((c) => c.right > a.left + a.width * .16 && c.bottom > a.top + 6 && c.top < a.bottom).length; const im = [...d.querySelectorAll('.p-open')]; return { ok: im.every((i) => i.complete && i.naturalWidth > 100), over: a.top < k.bottom - 2, hit, out: a.right > innerWidth + 1, w: Math.round(a.width) }; });
+    if (r.none) note(52, w + ' 最初の画面に 2 人がいない'); else { if (!r.ok) note(52, w + ' 2 人の絵が読み込めない'); if (r.over) note(52, w + ' 2 人が上の行に重なる'); if (r.hit) note(52, w + ' 2 人が題名の字に重なる ' + r.hit); if (r.out) note(52, w + ' 2 人が画面の外にはみ出す'); if (r.w < 90) note(52, w + ' 2 人が小さすぎる ' + r.w); } }
+  await p.evaluate(async () => { document.querySelector('.stages').scrollIntoView({ block: 'center' }); const row = document.querySelector('.stage-row'); for (let x = 0; x <= row.scrollWidth; x += 200) { row.scrollLeft = x; await new Promise((r) => setTimeout(r, 180)); } row.scrollLeft = 0; }); await p.waitForTimeout(1200);
+  const g = await p.evaluate(() => { const im = [...document.querySelectorAll('.stage-row img')], ic = document.querySelector('.game-icon'), row = document.querySelector('.stage-row'); return { n: im.length, bad: im.filter((i) => !(i.complete && i.naturalWidth > 100)).length, icon: ic && ic.complete && ic.naturalWidth > 50, caps: [...document.querySelectorAll('.stage-row figcaption')].filter((c) => !c.textContent.trim()).length, cut: innerWidth >= 1000 ? im.filter((i) => i.getBoundingClientRect().right > innerWidth).length : 0, scroll: row.scrollWidth > row.clientWidth + 4, pageW: document.documentElement.scrollWidth > innerWidth + 1 }; });
+  if (g.n !== 6) note(52, w + ' ゲームの画面が 6 枚でない ' + g.n); if (g.bad) note(52, w + ' ゲームの画面が読み込めない ' + g.bad); if (!g.icon) note(52, w + ' アイコンが読み込めない'); if (g.caps) note(52, w + ' 場所の名前が空'); if (g.cut) note(52, w + ' PC でゲームの画面が切れる'); if (w < 900 && !g.scroll) note(52, w + ' スマホで横に動かせない'); if (g.pageW) note(52, w + ' ページが横にはみ出す'); await ctx.close(); }
 // 47：ライトボックス
 { const { p, ctx } = await open(1440, 900, 'ja'); const ok = await p.evaluate(async () => { const { openLb } = window.__RJ || {}; if (typeof openLb !== 'function') return 'no openLb'; openLb('xxxxxxxxxxx', null); await new Promise((r) => setTimeout(r, 300)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise((r) => setTimeout(r, 400)); return document.getElementById('lb').classList.contains('open') ? 'still open' : 'ok'; }); if (ok !== 'ok') note(47, ok);
   const nav = await p.evaluate(async () => { const { EPS, openLb } = window.__RJ; const list = EPS.filter((e) => e.yt && !e.soon); if (list.length < 3) return 'ok'; openLb(list[1].yt, list[1]); await new Promise((r) => setTimeout(r, 200)); const ttl = document.querySelector('#lbInfo b').textContent; const prevOk = !document.getElementById('lbPrev').hidden, nextOk = !document.getElementById('lbNext').hidden;
