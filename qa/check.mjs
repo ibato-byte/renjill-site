@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（50項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（51項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -30,6 +30,7 @@ def(35, '画像が読めないときも枠が崩れない'); def(36, 'エピソ�
 def(39, '曜日の帯が「毎日」と矛盾しない'); def(40, 'PICKUP が最新回 or 告知期間に合う'); def(41, '動きを減らす設定でアニメーションが止まる'); def(42, 'ページ内リンク #id の行き先がある');
 def(43, 'キーボードのフォーカスが見える'); def(44, '文字のコントラスト（主要な文 4.5:1 以上）'); def(45, 'エピソード一覧の題がその言語で出る'); def(46, '言語の保存と ?lang= が効く');
 def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見るで全部出る'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
+def(51, 'キャラクターの絵がアニメ・ゲームと同じ絵で、3 人とも読み込めている（平たい線画に戻っていない）');
 
 // ---------- 静的な検査
 const m = (re) => (html.match(re) || [])[1];
@@ -59,6 +60,9 @@ const m = (re) => (html.match(re) || [])[1];
   // オーナーの指示（2026-11-10）：「COANA TOKYO合同会社のオリジナルキャラクターです」という言葉は入れない（© の表記だけ残す）
   for (const f of ['../index.html', '../llms.txt', '../404.html']) { const x = fs.readFileSync(new URL(f, import.meta.url), 'utf8'); if (/オリジナルキャラクター|original characters? by|原創角色|原創。|오리지널 캐릭터/i.test(x)) note(17, f.slice(3) + ' に「オリジナルキャラクター」の一文'); if (/トラッカーを使っていません|no analytics or ad trackers/i.test(x)) note(17, f.slice(3) + ' に「トラッカーを使っていません」の一文（オーナー：不要）');}
   if (fs.statSync(new URL('../index.html', import.meta.url)).size > 400 * 1024) note(50, 'index.html が 400KB 超');
+  // 51（2026-11-15）：キャラクターの絵。ファイルがあること・ページに 3 人分あること・目がカーソルを追う古い線画（data-eye）が残っていないこと
+  for (const w of ['ren', 'jill', 'pom']) { for (const m of ['open', 'blink', 'happy', 'head']) if (!fs.existsSync(new URL(`../img/char/${w}_${m}.webp`, import.meta.url))) note(51, `img/char/${w}_${m}.webp がない`); if (!html.includes(`data-pic="${w}"`)) note(51, w + ' のカードに絵がない'); }
+  if (/data-eye/.test(html)) note(51, '古い線画（data-eye）が残っている'); if ((html.match(/<image href="img\/char\//g) || []).length !== 3) note(51, '関係の図の絵が 3 人分でない');
   // feed.xml は Search Console にも出す：記事のリンク（alternate）はこのサイトの URL だけ（2026-11-10：YouTube へのリンクが「許可されていない URL」になった）
   try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://renjill.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
 }
@@ -166,6 +170,10 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
 { const { p, ctx } = await open(1440, 900, 'ko', { q: '' }); await p.evaluate(() => { const b = document.querySelector('#langMenu button[data-lang="ko"], [data-lang="ko"]'); if (b) b.click(); }); await p.waitForTimeout(300); await p.reload(); await p.waitForTimeout(1500); const l = await p.evaluate(() => document.documentElement.lang); if (!l.startsWith('ko')) note(46, '保存されない ' + l); await ctx.close(); }
 // 35：エピソード一覧が空（取得失敗）でも埋め込みの一覧が出る・画像が無くても枠がある
 { const { p, ctx } = await open(390, 844, 'ja', { noFeed: true }); const n = await p.evaluate(() => document.querySelectorAll('#eps [id^="ep-"]').length); if (n < 3) note(35, '一覧が空 ' + n); const zero = await p.evaluate(() => [...document.querySelectorAll('#eps .ep:not(.more-hidden) .ep-media')].filter((e) => e.getBoundingClientRect().height < 50).length); if (zero) note(35, '枠がつぶれる ' + zero); await ctx.close(); }
+// 51：絵が実際に読み込めている・カードの枠からはみ出していない
+for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(w, h, 'ja'); await p.evaluate(() => document.querySelector('#characters').scrollIntoView()); await p.waitForTimeout(1200);
+  const r = await p.evaluate(() => [...document.querySelectorAll('.char-pic')].map((e) => { const im = e.querySelector('.p-open'), a = im.getBoundingClientRect(), f = e.closest('.char-face').getBoundingClientRect(); return { who: e.dataset.pic, ok: im.complete && im.naturalWidth > 100, inside: a.left >= f.left - 1 && a.right <= f.right + 1 && a.top >= f.top - 1 && a.bottom <= f.bottom + 1, h: Math.round(a.height), fh: Math.round(f.height) }; }));
+  if (r.length !== 3) note(51, w + ' 絵が 3 人分でない'); for (const x of r) { if (!x.ok) note(51, w + ' ' + x.who + ' の絵が読み込めない'); if (!x.inside) note(51, w + ' ' + x.who + ' の絵が枠からはみ出す'); if (x.h < x.fh * .6) note(51, w + ' ' + x.who + ' の絵が小さすぎる'); } await ctx.close(); }
 // 47：ライトボックス
 { const { p, ctx } = await open(1440, 900, 'ja'); const ok = await p.evaluate(async () => { const { openLb } = window.__RJ || {}; if (typeof openLb !== 'function') return 'no openLb'; openLb('xxxxxxxxxxx', null); await new Promise((r) => setTimeout(r, 300)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise((r) => setTimeout(r, 400)); return document.getElementById('lb').classList.contains('open') ? 'still open' : 'ok'; }); if (ok !== 'ok') note(47, ok);
   const nav = await p.evaluate(async () => { const { EPS, openLb } = window.__RJ; const list = EPS.filter((e) => e.yt && !e.soon); if (list.length < 3) return 'ok'; openLb(list[1].yt, list[1]); await new Promise((r) => setTimeout(r, 200)); const ttl = document.querySelector('#lbInfo b').textContent; const prevOk = !document.getElementById('lbPrev').hidden, nextOk = !document.getElementById('lbNext').hidden;
