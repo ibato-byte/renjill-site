@@ -5,8 +5,16 @@
   <link href="https://renjill.coana.co.jp/"/>
   <link rel="self" href="https://renjill.coana.co.jp/feed.xml"/>
   <id>https://renjill.coana.co.jp/</id>
-  <updated>2026-11-13T00:00:00+09:00</updated>
+  <updated>2026-11-14T00:00:00+09:00</updated>
   <author><name>COANA TOKYO LLC.</name></author>
+  <entry>
+    <title>ウォーターサーバー｜レンとジル</title>
+    <link rel="alternate" href="https://renjill.coana.co.jp/?ep=watercooler"/>
+    <link rel="related" href="https://www.youtube.com/shorts/tU3WksIcWFQ"/>
+    <id>https://renjill.coana.co.jp/#ep-watercooler</id>
+    <updated>2026-11-14T00:00:00+09:00</updated>
+    <summary>紙コップ、マグ、バケツ。課長の「ちょっとだけ」で床が水びたしです。</summary>
+  </entry>
   <entry>
     <title>定時1分前｜レンとジル</title>
     <link rel="alternate" href="https://renjill.coana.co.jp/?ep=teiji"/>
