@@ -16,7 +16,12 @@
 body { margin: 0; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; padding: 24px 16px; background: var(--cream); color: var(--ink); font: 700 16px/1.8 "Zen Maru Gothic", "Fredoka", sans-serif; text-align: center; }
 body.en { font-family: "Fredoka", "Zen Maru Gothic", sans-serif; font-weight: 600; }
 main { width: min(100%, 460px); padding: 34px 26px 30px; border: 4px solid #fff; border-radius: 30px; background: var(--paper); box-shadow: 0 24px 44px -20px rgba(60, 36, 14, .5); }
-svg { display: block; width: 120px; height: 120px; margin: 0 auto 6px; }
+.who { position: relative; width: 250px; height: 170px; margin: 0 auto 8px; }
+.who img { position: absolute; bottom: 0; height: auto; filter: drop-shadow(0 5px 0 rgba(43, 29, 18, .14)); transform-origin: 50% 100%; }
+.who .r { left: 6px; width: 170px; animation: wig 3.2s ease-in-out infinite; } .who .j { right: 0; width: 112px; animation: wig 3.2s ease-in-out .6s infinite; }
+/* くずれた書類（文のとおり） */
+.who i { position: absolute; width: 22px; height: 28px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 2px rgba(43, 29, 18, .28), inset 0 7px 0 -5px rgba(43, 29, 18, .25), inset 0 13px 0 -11px rgba(43, 29, 18, .25); }
+.who i:nth-of-type(1) { left: -14px; bottom: 4px; transform: rotate(-24deg); } .who i:nth-of-type(2) { left: 150px; bottom: -4px; transform: rotate(18deg); } .who i:nth-of-type(3) { right: -18px; bottom: 26px; transform: rotate(40deg); }
 .no { margin: 0; font: 700 72px/1 "Fredoka", sans-serif; letter-spacing: -.03em; color: var(--paper); -webkit-text-stroke: 3px var(--brown); paint-order: stroke fill; text-shadow: 5px 5px 0 var(--brown); }
 h1 { margin: 14px 0 4px; font-size: 22px; line-height: 1.4; }
 p { margin: 0 0 22px; color: var(--ink-2); font-size: 15px; }
@@ -35,22 +40,13 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
 .langs button { min-height: 36px; padding: 0 10px; border: 0; border-radius: 10px; background: none; color: var(--ink-2); font: inherit; cursor: pointer; }
 .langs button[aria-pressed="true"] { background: var(--mustard); color: var(--ink); }
 .langs button:focus-visible { outline: 3px solid var(--mustard); }
-.ear { transform-origin: 50% 100%; animation: wig 1.6s ease-in-out infinite; }
-.ear.r { animation-delay: .2s; }
-@keyframes wig { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-@media (prefers-reduced-motion: reduce) { .ear { animation: none; } }
+@keyframes wig { 0%, 100% { transform: rotate(-1.8deg); } 50% { transform: rotate(1.8deg); } }
+@media (prefers-reduced-motion: reduce) { .who img { animation: none; } }
 </style>
 </head>
 <body>
 <main>
-  <svg viewBox="0 0 120 120" aria-hidden="true">
-    <g class="ear"><path d="M40 70 C 24 40, 30 10, 44 8 C 56 6, 58 40, 54 70 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><path d="M43 62 C 34 40, 38 20, 45 18 C 50 18, 50 44, 49 62 Z" fill="#E8A4A0"/></g>
-    <g class="ear r"><path d="M80 70 C 96 40, 90 10, 76 8 C 64 6, 62 40, 66 70 Z" fill="#C99A67" stroke="#2B1D12" stroke-width="4" stroke-linejoin="round"/><path d="M77 62 C 86 40, 82 20, 75 18 C 70 18, 70 44, 71 62 Z" fill="#E8A4A0"/></g>
-    <circle cx="60" cy="80" r="34" fill="#C99A67" stroke="#2B1D12" stroke-width="4"/>
-    <g fill="none" stroke="#8C5A37" stroke-width="3"><circle cx="47" cy="78" r="9"/><circle cx="73" cy="78" r="9"/><path d="M56 78h8"/></g>
-    <circle cx="47" cy="78" r="4" fill="#2B1D12"/><circle cx="73" cy="78" r="4" fill="#2B1D12"/>
-    <path d="M56 90 h8 l-4 5 Z" fill="#E8A4A0"/><path d="M54 101 c4 -3 8 -3 12 0" fill="none" stroke="#2B1D12" stroke-width="3" stroke-linecap="round"/>
-  </svg>
+  <div class="who" aria-hidden="true"><img class="r" src="/img/char/ren_open.webp" width="600" height="600" alt=""><img class="j" src="/img/char/jill_blink.webp" width="600" height="600" alt=""><i></i><i></i><i></i></div>
   <p class="no">404</p>
   <h1 id="h">ページが見つかりません</h1>
   <p id="m">課長が書類の山を崩してしまったようです。<br>このページは見つかりませんでした。</p>
