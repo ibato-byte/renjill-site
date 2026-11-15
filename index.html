@@ -292,6 +292,10 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
 
 /* ═══════ A DAY (horizontal) ═══════ */
 .day { background: var(--navy); color: var(--paper); overflow-x: hidden; }
+/* 色の変わり目を、まっすぐな線ではなく、紙を切ったような丸い波に */
+.day, .game { position: relative; }
+.day::before, .day::after, .game::before, .game::after { content: ""; position: absolute; left: 0; right: 0; height: 13px; z-index: 2; pointer-events: none; background: radial-gradient(circle at 13px 0, var(--cream) 12.4px, transparent 13px) 0 0 / 26px 13px repeat-x; }
+.day::before, .game::before { top: -1px; } .day::after, .game::after { bottom: -1px; transform: scaleY(-1); }
 @supports (overflow: clip) { .day { overflow-x: clip; overflow-y: visible; } }
 .day .sec-no { color: var(--mustard); -webkit-text-stroke-color: var(--paper); }
 .day .sec-head { border-bottom-color: rgba(255, 255, 255, .5); }
@@ -444,12 +448,23 @@ body.lang-en .faq-i summary { font-family: var(--f-en); font-weight: 700; }
 .sched li.on { background: var(--mustard); }
 .sched li em { font: 900 11px/1 var(--f-jp); font-style: normal; opacity: .75; }
 .sched li.on em { opacity: 1; }
+.sched li::after { content: ""; justify-self: center; width: 0; height: 0; border-left: 8px solid var(--ink); border-top: 5px solid transparent; border-bottom: 5px solid transparent; opacity: .8; }
+.sched-k { margin: 44px 0 0; font: 900 15px/1.4 var(--f-jp); display: flex; align-items: baseline; gap: 10px; }
+.sched-k b { font: 700 clamp(22px, 3vw, 30px)/1 var(--f-en); letter-spacing: -.01em; color: var(--stamp); }
+.sched-k + .sched { margin-top: 14px; }
+body.lang-en .sched li em { display: none; }
 @media (max-width: 640px) { .sns-row { grid-template-columns: 44px 1fr 28px; } .sns-handle { display: none; } .sns-row .arr { width: 28px; height: 28px; } .sched { gap: 5px; } .sched li { padding: 10px 0 8px; font-size: 12px; } }
 
 /* ═══════ FOOTER ═══════ */
 .ftr { padding: 60px 0 calc(40px + env(safe-area-inset-bottom)); border-top: var(--line); background: var(--paper-2); }
 .ftr-in { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
 .ftr-big { font: 700 clamp(40px, 7vw, 110px)/1 var(--f-en); letter-spacing: -.04em; margin: 0 0 30px; color: var(--ink); }
+/* お見送りの 3 人（ゲーム・アニメと同じ絵） */
+.ftr-crew { display: flex; align-items: flex-end; gap: clamp(2px, 1vw, 12px); margin: 0 0 clamp(4px, 1vw, 12px) -6px; height: clamp(110px, 17vw, 190px); }
+.ftr-crew img { height: 100%; width: auto; filter: drop-shadow(0 6px 0 rgba(43, 29, 18, .13)); transform-origin: 50% 100%; }
+.ftr-crew .c-pom { height: 62%; } .ftr-crew .c-jill { height: 72%; }
+@media (prefers-reduced-motion: no-preference) { .ftr-crew.in img { animation: crewSway 3.4s ease-in-out infinite; } .ftr-crew.in .c-ren { animation-delay: .5s; } .ftr-crew.in .c-jill { animation-delay: 1s; } }
+@keyframes crewSway { 0%, 100% { transform: rotate(-2.2deg); } 50% { transform: rotate(2.2deg) translateY(-2px); } }
 .ftr-big span { color: var(--mustard); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; }
 .ftr small { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; }
 .ftr a.u { text-decoration: underline; text-underline-offset: 4px; }
@@ -847,6 +862,16 @@ body:not(.lang-en) .shb .lbl { font-family: var(--f-jp); font-weight: 900; }
 .ep-share .shb svg { width: 14px; height: 14px; }
 .ep-share-k { margin-right: 2px; color: var(--fur-d); display: inline-flex; }
 .ep-share-k svg { width: 16px; height: 16px; }
+.ep-one { display: none; }
+@media (max-width: 640px) { .pshare .share-row:has(.more) .shb:not(.more):not(.copy) { display: none; } .pshare .share-row:has(.more) .shb { flex: 1 1 0; justify-content: center; } }
+@media (max-width: 640px) {
+  .ep-cap { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ep-share:has(.ep-one) { position: absolute; top: 8px; right: 8px; z-index: 3; padding: 0; }
+  .ep-share:has(.ep-one) .shb:not(.ep-one) { display: none; }
+  .ep-share .shb.ep-one { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 40px; height: 40px; min-width: 40px; padding: 0; border-radius: 50%; background: rgba(251, 246, 236, .94); box-shadow: 0 3px 0 rgba(43, 29, 18, .22); }
+  .ep-share .shb.ep-one svg { width: 17px; height: 17px; }
+  .ep:has(.ep-one) .ep-body { padding-bottom: 14px; }
+}
 @media (max-width: 640px) { .ep-share { padding: 0 10px 12px; gap: 4px; flex-wrap: nowrap; } .ep-share .shb { flex: 1 1 auto; height: 40px; min-width: 0; padding: 0 4px; font-size: 12px; letter-spacing: 0; } .ep-share .shb.line { flex-grow: 1.4; } .ep-share-k { display: none; } }
 .ep.hl { animation: ep-hl 1.2s var(--ease) 3; }
 @keyframes ep-hl { 0%, 100% { box-shadow: var(--shadow); } 50% { box-shadow: 0 0 0 6px var(--mustard), var(--shadow-lg); } }
@@ -1242,8 +1267,9 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
       <li><a class="sns-row" style="--bg:#1877F2;--fg:#fff" href="https://www.facebook.com/1358515160686321" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="#2B1D12"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></span><span class="sns-name">Facebook<small data-t="sns.fb">ページをフォロー</small></span><span class="sns-handle">Ren &amp; Jill</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
       <li><a class="sns-row" style="--bg:#D9A520;--fg:#2B1D12" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2B1D12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 12h4M9 10v4M15 11h.01M18 13h.01"/></svg></span><span class="sns-name">Hay Dash<small data-t="sns.game">チモシーダッシュ · ブラウザで無料</small></span><span class="sns-handle">hay-dash.coana.co.jp</span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
     </ul>
+    <p class="sched-k rv"><b>18:00</b><span data-t="sched.k">毎日、新作が出ます</span></p>
     <ul class="sched rv" id="sched" aria-label="新作は毎日（月〜日）" data-ta="a.sched">
-      <li class="on">MON<em data-t="d.mon">月 · 新作</em></li><li class="on">TUE<em data-t="d.tue">火 · 新作</em></li><li class="on">WED<em data-t="d.wed">水 · 新作</em></li><li class="on">THU<em data-t="d.thu">木 · 新作</em></li><li class="on">FRI<em data-t="d.fri">金 · 新作</em></li><li class="on">SAT<em data-t="d.sat">土 · 新作</em></li><li class="on">SUN<em data-t="d.sun">日 · 新作</em></li>
+      <li class="on">MON<em data-t="d.mon">月</em></li><li class="on">TUE<em data-t="d.tue">火</em></li><li class="on">WED<em data-t="d.wed">水</em></li><li class="on">THU<em data-t="d.thu">木</em></li><li class="on">FRI<em data-t="d.fri">金</em></li><li class="on">SAT<em data-t="d.sat">土</em></li><li class="on">SUN<em data-t="d.sun">日</em></li>
     </ul>
     <div class="pshare rv" role="group" aria-labelledby="pshareTtl">
       <p class="pshare-ttl" id="pshareTtl"><span data-t="ps.ttl">このページをシェア</span><small data-t="ps.lead">友だちにも、ちょっと平和をおすそ分け。</small></p>
@@ -1272,6 +1298,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 
 <footer class="ftr">
   <div class="wrap">
+    <div class="ftr-crew rv" aria-hidden="true"><img class="c-pom" src="img/char/pom_happy.webp" width="600" height="600" alt="" loading="lazy" decoding="async"><img class="c-ren" src="img/char/ren_happy.webp" width="600" height="600" alt="" loading="lazy" decoding="async"><img class="c-jill" src="img/char/jill_happy.webp" width="600" height="600" alt="" loading="lazy" decoding="async"></div>
     <p class="ftr-big rv" translate="no">SEE YOU AT <span>6 PM.</span></p>
     <nav class="ftr-follow" aria-label="SNS" data-ta="a.follow"><span class="ftr-follow-k" data-t="ff.k">フォローする</span><div class="sns-ics" data-sns="footer"></div></nav>
     <nav aria-label="このページの中" data-ta="fn.k"><ul class="ftr-nav"><li><a href="#characters" data-t="fn.chars">キャラクター</a></li><li><a href="#day" data-t="fn.day">ある一日</a></li><li><a href="#episodes" data-t="fn.eps">エピソード</a></li><li><a href="#game" data-t="fn.game">ゲーム</a></li><li><a href="#follow" data-t="fn.follow">フォロー</a></li><li><a href="#faq" data-t="fn.faq">よくある質問</a></li></ul></nav>
@@ -2140,6 +2167,12 @@ const T = {
 "遊戲畫面：山手線",
 "게임 화면: 야마노테선"
 ],
+"sched.k": [
+"毎日、新作が出ます",
+"A new episode, every day (JST)",
+"每天都有新片（日本時間）",
+"매일 신작이 올라와요 (일본 시간)"
+],
 "game.alt": [
 "「レンとジルのチモシーダッシュ」のゲーム画面",
 "Screenshot of Ren & Jill: Hay Dash",
@@ -2267,46 +2300,46 @@ const T = {
 "게임 · 브라우저에서 무료"
 ],
 "d.mon": [
-"月 · 新作",
-"new",
-"一 · 新片",
-"월 · 신작"
+"月",
+"Mon",
+"一",
+"월"
 ],
 "d.tue": [
-"火 · 新作",
-"new",
-"二 · 新片",
-"화 · 신작"
+"火",
+"Tue",
+"二",
+"화"
 ],
 "d.wed": [
-"水 · 新作",
-"new",
-"三 · 新片",
-"수 · 신작"
+"水",
+"Wed",
+"三",
+"수"
 ],
 "d.thu": [
-"木 · 新作",
-"new",
-"四 · 新片",
-"목 · 신작"
+"木",
+"Thu",
+"四",
+"목"
 ],
 "d.fri": [
-"金 · 新作",
-"new",
-"五 · 新片",
-"금 · 신작"
+"金",
+"Fri",
+"五",
+"금"
 ],
 "d.sat": [
-"土 · 新作",
-"new",
-"六 · 新片",
-"토 · 신작"
+"土",
+"Sat",
+"六",
+"토"
 ],
 "d.sun": [
-"日 · 新作",
-"new",
-"日 · 新片",
-"일 · 신작"
+"日",
+"Sun",
+"日",
+"일"
 ],
 "ch.lead.touch": [
 "カードを押すと、プロフィールが見られます。",
@@ -2914,6 +2947,7 @@ function shareLinks(e, small) {
     + a("fb", `https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl(e ? "fb_ep" : "fb", ep))}`, small ? "FB" : "Facebook", on("Facebook"))
     + (small ? "" : a("th", `https://www.threads.net/intent/post?text=${enc(text + " " + shareUrl(e ? "threads_ep" : "threads", ep))}`, "Threads", on("Threads")))
     + `<button class="shb copy" type="button" data-copy="${esc(shareUrl(e ? "copy_ep" : "copy", ep))}" aria-label="${esc(t("sh.copy"))}">${ICON.link}${small ? "" : `<span class="lbl">${esc(t(e ? "sh.copyS" : "sh.copy"))}</span>`}</button>`;
+  if (small && navigator.share) out += `<button class="shb more ep-one" type="button" data-native="${esc(shareUrl("native_ep", ep))}" data-text="${esc(text)}" aria-label="${esc(t("sh.ep").replace("{t}", tt))}">${ICON.share}</button>`;
   if (!small && navigator.share) out += `<button class="shb more" type="button" data-native="${esc(shareUrl(e ? "native_ep" : "native", ep))}" data-text="${esc(text)}">${ICON.share}<span class="lbl">${esc(t("sh.more"))}</span></button>`;
   return out;
 }

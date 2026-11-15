@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（52項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（53項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -32,6 +32,7 @@ def(43, 'キーボードのフォーカスが見える'); def(44, '文字のコ�
 def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見るで全部出る'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
 def(51, 'キャラクターの絵がアニメ・ゲームと同じ絵で、3 人とも読み込めている（平たい線画に戻っていない）');
 def(52, 'ゲームの紹介：本物のゲーム画面 6 枚とアイコンが読み込めている／スマホの最初の画面に 2 人がいて、題名や上の行に重ならない');
+def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明は 2 行まで／週の帯に「18:00」／お見送りの 3 人が読み込めている／共有用の画像の作り方に古い曜日が残っていない');
 
 // ---------- 静的な検査
 const m = (re) => (html.match(re) || [])[1];
@@ -73,7 +74,7 @@ const fixture = fs.readFileSync(new URL('./fixture-episodes.json', import.meta.u
 const b = await chromium.launch();
 async function open(w, h, lang, opts = {}) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, reducedMotion: opts.reduce ? 'reduce' : 'no-preference', hasTouch: w < 900, isMobile: w < 900, locale: lang === 'zh' ? 'zh-TW' : lang });
-  const p = await ctx.newPage(); const errs = [];
+  const p = await ctx.newPage(); const errs = []; if (opts.share) await p.addInitScript(() => { navigator.share = async () => {}; });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (mm) => { if (mm.type() === 'error' && !/Failed to load resource|ERR_/.test(mm.text())) errs.push(mm.text()); });
   await p.route(/^https?:\/\/(?!localhost)/, (r) => { const u = r.request().url(); if (u.includes('episodes.json')) return r.fulfill({ status: 200, contentType: 'application/json', body: opts.noFeed ? '[]' : fixture }); return r.abort(); });
   await p.goto(BASE + (opts.q ?? ('?lang=' + lang)), { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1800);
@@ -182,6 +183,13 @@ for (const [w, h, lang] of [[390, 844, 'ja'], [320, 568, 'en'], [1440, 900, 'ja'
   await p.evaluate(async () => { document.querySelector('.stages').scrollIntoView({ block: 'center' }); const row = document.querySelector('.stage-row'); for (let x = 0; x <= row.scrollWidth; x += 200) { row.scrollLeft = x; await new Promise((r) => setTimeout(r, 180)); } row.scrollLeft = 0; }); await p.waitForTimeout(1200);
   const g = await p.evaluate(() => { const im = [...document.querySelectorAll('.stage-row img')], ic = document.querySelector('.game-icon'), row = document.querySelector('.stage-row'); return { n: im.length, bad: im.filter((i) => !(i.complete && i.naturalWidth > 100)).length, icon: ic && ic.complete && ic.naturalWidth > 50, caps: [...document.querySelectorAll('.stage-row figcaption')].filter((c) => !c.textContent.trim()).length, cut: innerWidth >= 1000 ? im.filter((i) => i.getBoundingClientRect().right > innerWidth).length : 0, scroll: row.scrollWidth > row.clientWidth + 4, pageW: document.documentElement.scrollWidth > innerWidth + 1 }; });
   if (g.n !== 6) note(52, w + ' ゲームの画面が 6 枚でない ' + g.n); if (g.bad) note(52, w + ' ゲームの画面が読み込めない ' + g.bad); if (!g.icon) note(52, w + ' アイコンが読み込めない'); if (g.caps) note(52, w + ' 場所の名前が空'); if (g.cut) note(52, w + ' PC でゲームの画面が切れる'); if (w < 900 && !g.scroll) note(52, w + ' スマホで横に動かせない'); if (g.pageW) note(52, w + ' ページが横にはみ出す'); await ctx.close(); }
+// 53：スマホのエピソードの札・週の帯・お見送りの 3 人
+{ const { p, ctx } = await open(390, 844, 'ja', { share: true }); await p.evaluate(() => document.querySelector('#episodes').scrollIntoView()); await p.waitForTimeout(1200);
+  const r = await p.evaluate(() => { const vis = (e) => { const b = e.getBoundingClientRect(); return b.width > 2 && b.height > 2 && getComputedStyle(e).display !== 'none'; }; const cards = [...document.querySelectorAll('#eps .ep:not(.more-hidden):not(.soon)')].slice(0, 6);
+    return { n: cards.length, btn: cards.map((c) => [...c.querySelectorAll('.ep-share .shb')].filter(vis).length), tall: cards.filter((c) => { const p = c.querySelector('.ep-cap'); return p && p.getBoundingClientRect().height > parseFloat(getComputedStyle(p).lineHeight) * 2.3; }).length, small: cards.filter((c) => { const b = [...c.querySelectorAll('.ep-share .shb')].filter(vis)[0]; return b && (b.getBoundingClientRect().width < 38 || b.getBoundingClientRect().height < 38); }).length, k: (document.querySelector('.sched-k b') || {}).textContent, pageW: document.documentElement.scrollWidth > innerWidth + 1 }; });
+  if (r.n < 3) note(53, '札が少ない ' + r.n); if (r.btn.some((x) => x !== 1)) note(53, 'シェアのボタンが 1 つでない ' + r.btn.join(',')); if (r.tall) note(53, '説明が 2 行をこえる札 ' + r.tall); if (r.small) note(53, 'シェアのボタンが小さい（38px 未満）'); if (r.k !== '18:00') note(53, '週の帯に 18:00 がない'); if (r.pageW) note(53, 'ページが横にはみ出す');
+  await p.evaluate(() => document.querySelector('.ftr').scrollIntoView()); await p.waitForTimeout(1500); const c = await p.evaluate(() => [...document.querySelectorAll('.ftr-crew img')].map((i) => i.complete && i.naturalWidth > 100)); if (c.length !== 3 || c.includes(false)) note(53, 'お見送りの 3 人が読み込めない ' + c.join(','));
+  const mk = fs.readFileSync(new URL('../tools/make_og.mjs', import.meta.url), 'utf8'); if (/MON WED|4× ?\/ ?WEEK/i.test(mk) || !/EVERY DAY/.test(mk)) note(53, '共有用の画像の作り方に古い曜日が残っている'); await ctx.close(); }
 // 47：ライトボックス
 { const { p, ctx } = await open(1440, 900, 'ja'); const ok = await p.evaluate(async () => { const { openLb } = window.__RJ || {}; if (typeof openLb !== 'function') return 'no openLb'; openLb('xxxxxxxxxxx', null); await new Promise((r) => setTimeout(r, 300)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise((r) => setTimeout(r, 400)); return document.getElementById('lb').classList.contains('open') ? 'still open' : 'ok'; }); if (ok !== 'ok') note(47, ok);
   const nav = await p.evaluate(async () => { const { EPS, openLb } = window.__RJ; const list = EPS.filter((e) => e.yt && !e.soon); if (list.length < 3) return 'ok'; openLb(list[1].yt, list[1]); await new Promise((r) => setTimeout(r, 200)); const ttl = document.querySelector('#lbInfo b').textContent; const prevOk = !document.getElementById('lbPrev').hidden, nextOk = !document.getElementById('lbNext').hidden;
