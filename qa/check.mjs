@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（53項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（54項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -33,6 +33,7 @@ def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見�
 def(51, 'キャラクターの絵がアニメ・ゲームと同じ絵で、3 人とも読み込めている（平たい線画に戻っていない）');
 def(52, 'ゲームの紹介：本物のゲーム画面 6 枚とアイコンが読み込めている／スマホの最初の画面に 2 人がいて、題名や上の行に重ならない');
 def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明は 2 行まで／週の帯に「18:00」／お見送りの 3 人が読み込めている／共有用の画像の作り方に古い曜日が残っていない');
+def(54, 'キャラクターの絵は 1 枚ずつ出る（まばたき・にっこりで絵を重ねると、足もとの影が濃くなる。2026-11-15）');
 
 // ---------- 静的な検査
 const m = (re) => (html.match(re) || [])[1];
@@ -194,6 +195,17 @@ for (const [w, h, lang] of [[390, 844, 'ja'], [320, 568, 'en'], [1440, 900, 'ja'
   const shift = await p.evaluate(() => [...document.querySelectorAll('#eps .ep.in')].filter((e) => getComputedStyle(e).transform !== 'none' && !e.matches(':hover')).length); if (shift) note(53, '出てきた後も、ずれたままの札 ' + shift);
   await p.evaluate(() => document.querySelector('.ftr').scrollIntoView()); await p.waitForTimeout(1500); const c = await p.evaluate(() => [...document.querySelectorAll('.ftr-crew img')].map((i) => i.complete && i.naturalWidth > 100)); if (c.length !== 3 || c.includes(false)) note(53, 'お見送りの 3 人が読み込めない ' + c.join(','));
   const mk = fs.readFileSync(new URL('../tools/make_og.mjs', import.meta.url), 'utf8'); if (/MON WED|4× ?\/ ?WEEK/i.test(mk) || !/EVERY DAY/.test(mk)) note(53, '共有用の画像の作り方に古い曜日が残っている'); await ctx.close(); }
+// 54：まばたき・にっこりのとき、見えている絵は 1 枚だけ（重ねると半透明の影が二重になって濃く見える）
+for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(w, h, 'ja'); await p.evaluate(() => document.querySelector('.char-pic').scrollIntoView({ block: 'center' })); await p.waitForTimeout(1500);
+  const r = await p.evaluate(async () => { const out = []; const vis = (e) => [...e.querySelectorAll('img')].filter((i) => +getComputedStyle(i).opacity > .5).map((i) => i.className);
+    for (const e of document.querySelectorAll('.char-pic, .duo-pic')) { if (getComputedStyle(e).display === 'none' || !e.offsetWidth) continue; const who = e.dataset.pic || e.className;
+      if (!e.classList.contains('ready')) { out.push(who + '：絵が読み込めていない（ready でない）'); continue; }
+      e.classList.remove('blink'); let v = vis(e); if (v.length !== 1 || v[0] !== 'p-open') out.push(who + '：ふだん ' + v.join('+'));
+      e.classList.add('blink'); v = vis(e); if (v.length !== 1 || v[0] !== 'p-blink') out.push(who + '：まばたき ' + v.join('+')); e.classList.remove('blink');
+      const c = e.closest('.char'); if (c) { c.classList.add('flipped'); v = vis(e); if (v.length !== 1 || v[0] !== 'p-happy') out.push(who + '：にっこり ' + v.join('+')); e.classList.add('blink'); v = vis(e); if (v.length !== 1) out.push(who + '：にっこり中のまばたき ' + v.join('+')); e.classList.remove('blink'); c.classList.remove('flipped'); } }
+    return out; });
+  for (const x of r) note(54, `${w}px ${x}`); await ctx.close(); }
+
 // 47：ライトボックス
 { const { p, ctx } = await open(1440, 900, 'ja'); const ok = await p.evaluate(async () => { const { openLb } = window.__RJ || {}; if (typeof openLb !== 'function') return 'no openLb'; openLb('xxxxxxxxxxx', null); await new Promise((r) => setTimeout(r, 300)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise((r) => setTimeout(r, 400)); return document.getElementById('lb').classList.contains('open') ? 'still open' : 'ok'; }); if (ok !== 'ok') note(47, ok);
   const nav = await p.evaluate(async () => { const { EPS, openLb } = window.__RJ; const list = EPS.filter((e) => e.yt && !e.soon); if (list.length < 3) return 'ok'; openLb(list[1].yt, list[1]); await new Promise((r) => setTimeout(r, 200)); const ttl = document.querySelector('#lbInfo b').textContent; const prevOk = !document.getElementById('lbPrev').hidden, nextOk = !document.getElementById('lbNext').hidden;
