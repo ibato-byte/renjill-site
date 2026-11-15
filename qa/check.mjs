@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（56項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（57項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -36,6 +36,14 @@ def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明�
 def(54, 'キャラクターの絵は 1 枚ずつ出る（まばたき・にっこりで絵を重ねると、足もとの影が濃くなる。2026-11-15）');
 def(55, 'キャラクターの札に「TAP」「HOVER」の文字を出さない（2026-11-15：オーナー「タップという文字はいらない」）');
 def(56, '最初のまばたきでちかっとしない：まばたき・にっこりの絵は、展開（decode）が終わってから切り替える（2026-11-15）');
+def(57, '案内役の 3D（レンとジル）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
+{ const g = fs.existsSync(new URL('../guide3d.js', import.meta.url)) ? fs.readFileSync(new URL('../guide3d.js', import.meta.url), 'utf8') : '';
+  if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
+  if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
+  if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  if (!/\.g3d \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
+  if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
+  if (g.length > 40 * 1024) note(57, 'guide3d.js が 40KB 超'); }
 if (!/i\.decode \?/.test(html) || !/requestAnimationFrame\(\(\) => p\.classList\.add\("ready"\)\)/.test(html)) note(56, '絵の展開を待たずに切り替えている');
 if (/char-hint|>TAP<|>HOVER</.test(html)) note(55, '札に TAP / HOVER の文字が残っている');
 
@@ -77,7 +85,7 @@ const m = (re) => (html.match(re) || [])[1];
 
 // ---------- ブラウザでの検査
 const fixture = fs.readFileSync(new URL('./fixture-episodes.json', import.meta.url), 'utf8');
-const b = await chromium.launch();
+const b = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME, args: ["--no-sandbox"] } : {});
 async function open(w, h, lang, opts = {}) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, reducedMotion: opts.reduce ? 'reduce' : 'no-preference', hasTouch: w < 900, isMobile: w < 900, locale: lang === 'zh' ? 'zh-TW' : lang });
   const p = await ctx.newPage(); const errs = []; if (opts.share) await p.addInitScript(() => { navigator.share = async () => {}; });
@@ -228,6 +236,25 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   const day = await p.evaluate(async () => { const c = document.querySelectorAll('#dayTrack .day-card.has-ep'); if (c.length < 5) return 'つながったカードが ' + c.length; c[0].click(); await new Promise((r) => setTimeout(r, 300)); const ok = document.getElementById('lb').classList.contains('open') && document.querySelector('#lbInfo b').textContent === c[0].querySelector('.day-ttl').textContent; window.__RJ.closeLb(); await new Promise((r) => setTimeout(r, 400)); return ok ? 'ok' : '開いた回の題がちがう'; });
   if (day !== 'ok') note(47, 'ある一日 ' + day);
   await ctx.close(); }
+// 57：案内役の 3D。?g3d=1 で動かし、最初の画面と各見出しで、字に重ならない・はみ出さないことを確かめる（WebGL が無い検査機では、動かない＝元の絵のまま、を確かめる）
+for (const [w, h, lang] of [[390, 844, 'ja'], [320, 568, 'en'], [768, 1024, 'ko'], [1440, 900, 'ja'], [1920, 1080, 'zh']]) { const { p, ctx, errs } = await open(w, h, lang, { q: '?lang=' + lang + '&g3d=1' }); await p.waitForTimeout(4200);
+  const has = await p.evaluate(() => { const s = window.__g3d; return s ? (s.lost ? 'lost:' + (s.err || '') : 'on') : 'off'; });
+  if (has !== 'on') { const gl = await p.evaluate(() => { try { return !!document.createElement('canvas').getContext('webgl'); } catch { return false; } }); if (gl) note(57, w + ' WebGL はあるのに 3D が動いていない ' + has); if (await p.evaluate(() => document.documentElement.classList.contains('g3d-on'))) note(57, w + ' 3D が動いていないのに元の絵を隠している'); await ctx.close(); continue; }
+  const n = await p.evaluate(() => document.querySelectorAll('.g3d-spot').length);
+  for (let i = 0; i < n; i++) {
+    await p.evaluate(async ([i, h]) => { const e = document.querySelectorAll('.g3d-spot')[i]; const t = Math.max(0, e.getBoundingClientRect().bottom + scrollY - Math.round(h * .45)); const s = scrollY; for (let k = 1; k <= 12; k++) { scrollTo(0, s + (t - s) * k / 12); await new Promise((r) => setTimeout(r, 16)); } }, [i, h]); await p.waitForTimeout(2600);
+    const r = await p.evaluate((i) => { const s = window.__g3d, e = document.querySelectorAll('.g3d-spot')[i], host = e.parentElement; const boxes = s.chars.map((c) => ({ l: c.x - c.size * .34, r: c.x + c.size * .34, t: c.y - c.size * .8, b: c.y, mode: c.mode, a: c.alpha }));
+      const texts = []; const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT); let nd; while ((nd = tw.nextNode())) { if (!nd.textContent.trim() || nd.parentElement.closest('.sr, .hero-duo')) continue; const rg = document.createRange(); rg.selectNodeContents(nd); for (const q of rg.getClientRects()) if (q.width > 2) texts.push(q); }
+      const hit = boxes.filter((b) => texts.some((q) => q.right > b.l + 2 && q.left < b.r - 2 && q.bottom > b.t + 4 && q.top < b.b - 4)).length;
+      return { active: s.active, hit, out: boxes.some((b) => b.r > innerWidth + 1 || b.l < -1), modes: boxes.map((b) => b.mode + b.a).join(), small: Math.min(...s.chars.map((c) => c.size)) }; }, i);
+    const tag = w + ' ' + lang + ' 場所' + i;
+    if (r.active !== i) note(57, tag + ' に来ていない（いま ' + r.active + '）'); else { if (r.modes !== 'sit1,sit1') note(57, tag + ' 着いていない ' + r.modes); if (r.hit) note(57, tag + ' 見出しの字に重なる'); if (r.out) note(57, tag + ' 画面の外にはみ出す'); if (r.small < 40) note(57, tag + ' 小さすぎる ' + Math.round(r.small)); } }
+  // 一番上へ戻ると、最初の場所に戻る／クリックは下の要素に届く
+  await p.evaluate(() => scrollTo(0, 0)); await p.waitForTimeout(3200);
+  const back = await p.evaluate(() => { const s = window.__g3d, c = s.chars[0]; const el = document.elementFromPoint(Math.max(1, Math.min(innerWidth - 2, c.x)), Math.max(1, c.y - c.size * .4)); return { a: s.active, m: s.chars.map((c) => c.mode).join(), cv: !!el && el.id === 'g3d', ov: document.documentElement.scrollWidth - innerWidth }; });
+  if (back.a !== 0 || back.m !== 'sit,sit') note(57, w + ' 一番上に戻っても最初の場所に戻らない ' + JSON.stringify(back)); if (back.cv) note(57, w + ' 3D の画面がクリックを受けている'); if (back.ov > 1) note(57, w + ' 横にはみ出す');
+  if (errs.length) note(57, w + ' エラー ' + errs[0].slice(0, 100)); await ctx.close(); }
+{ const { p, ctx } = await open(390, 844, 'ja', { reduce: true, q: '?lang=ja&g3d=1' }); await p.waitForTimeout(1500); if (await p.evaluate(() => !!window.__g3d || !!document.querySelector('script[src*="guide3d"]') || document.documentElement.classList.contains('g3d-on'))) note(57, '動きを減らす設定でも 3D を読み込んでいる'); await ctx.close(); }
 // 40：PICKUP
 { const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'ポムの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
 await b.close();
