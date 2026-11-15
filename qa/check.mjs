@@ -51,8 +51,8 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
   if (g.length > 40 * 1024) note(57, 'guide3d.js が 40KB 超'); }
 // 17：「セリフなし」は、あえて書かない（2026-11-16 オーナー）。ページ・題名・共有文・よくある質問・llms.txt・feed・共有用の画像の作り方、どこにも戻さない
-{ const NG = /セリフなし|セリフのない|セリフがない|NO DIALOGUE|no dialogue|wordless|No words|沒有台詞|대사 없|대사가 없/; for (const f of ['index.html', 'llms.txt', 'feed.xml', 'site.webmanifest', '404.html', 'tools/prerender.mjs', 'tools/make_og.mjs']) { const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue; const bad = fs.readFileSync(u, 'utf8').split('\n').filter((l) => NG.test(l) && !/^\s*(\/\/|\/\*|\*)/.test(l)); if (bad.length) note(17, f + ' に「セリフなし」の表現が残っている：' + bad[0].match(NG)[0]); } }
-if (/class="rel-cards"|class="rel-card"/.test(html)) note(53, '関係の図の下の説明カード 4 枚が戻っている（2026-11-16 オーナー「この部分はいらない」）');
+{ const NG = /セリフなし|セリフのない|セリフがない|NO DIALOGUE|no dialogue|wordless|No words|沒有台詞|대사 없|대사가 없|しぐさと音だけ|gestures and sounds|動作和聲音|몸짓과 소리만/; /* 今後セリフが出ることがあるので「しぐさと音だけ」も書かない（2026-11-16） */ for (const f of ['index.html', 'llms.txt', 'feed.xml', 'site.webmanifest', '404.html', 'tools/prerender.mjs', 'tools/make_og.mjs']) { const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue; const bad = fs.readFileSync(u, 'utf8').split('\n').filter((l) => NG.test(l) && !/^\s*(\/\/|\/\*|\*)/.test(l)); if (bad.length) note(17, f + ' に「セリフなし」の表現が残っている：' + bad[0].match(NG)[0]); } }
+if (/class="rel-cards"|class="rel-card"|class="rel-how"/.test(html)) note(53, '関係の図の下の説明カード 4 枚／矢印の読み方の説明が戻っている（2026-11-16 オーナー「いらない」）');
 if (!/i\.decode \?/.test(html) || !/requestAnimationFrame\(\(\) => p\.classList\.add\("ready"\)\)/.test(html)) note(56, '絵の展開を待たずに切り替えている');
 if (/char-hint|>TAP<|>HOVER</.test(html)) note(55, '札に TAP / HOVER の文字が残っている');
 
