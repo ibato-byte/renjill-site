@@ -301,7 +301,7 @@ void main() { float d = length(vQ); float a = smoothstep(1.0, 0.25, d) * uCol.a;
   addEventListener("resize", () => { findSpots(); }, { passive: true });
   addEventListener("pageshow", go);
 
-  const img = new Image(); img.decoding = "async";
+  const img = new Image(); img.decoding = "async"; img.crossOrigin = "anonymous";   // 絵が別の場所（CDN）から配られても読めるように。同じ場所なら何も変わらない
   img.onload = () => { try { build(img); resize(); findSpots(); go(); } catch (e) { fail(e); } };
   img.onerror = fail;
   img.src = (document.currentScript && document.currentScript.dataset.atlas) || "img/g3d/atlas.webp";

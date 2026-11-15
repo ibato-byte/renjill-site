@@ -41,6 +41,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
   if (!/\.g3d \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
   if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
   if (g.length > 40 * 1024) note(57, 'guide3d.js が 40KB 超'); }
