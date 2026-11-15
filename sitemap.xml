@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://renjill.coana.co.jp/</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/?lang=ja"/>
@@ -14,6 +14,9 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
     <image:image>
       <image:loc>https://renjill.coana.co.jp/og.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261115_meeting_cover.jpg</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261114_watercooler_cover.jpg</image:loc>
@@ -57,6 +60,14 @@
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261023_mug2_cover.jpg</image:loc>
     </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261115_meeting_cover.jpg</video:thumbnail_loc>
+      <video:title>10分の会議｜レンとジル</video:title>
+      <video:description>「10分だけ」の会議、2時間後。ジルはコーヒー3杯目で寝落ちです。</video:description>
+      <video:player_loc>https://www.youtube.com/embed/681B5lJ7xzc</video:player_loc>
+      <video:publication_date>2026-11-15</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
     <video:video>
       <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261114_watercooler_cover.jpg</video:thumbnail_loc>
       <video:title>ウォーターサーバー｜レンとジル</video:title>
