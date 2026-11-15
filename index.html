@@ -258,14 +258,17 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
   .duo-pic.ren { left: 0; width: 72%; aspect-ratio: 1; }
   .duo-pic.jill { right: 0; width: 50%; aspect-ratio: 1; }
   .duo-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; }
-  .duo-pic .p-open { filter: drop-shadow(0 5px 0 rgba(43, 29, 18, .16)); }
-  .duo-pic .p-blink { opacity: 0; } .duo-pic.blink .p-blink { opacity: 1; }
+  .duo-pic img { filter: drop-shadow(0 5px 0 rgba(43, 29, 18, .16)); }
+  .duo-pic .p-blink { opacity: 0; } .duo-pic.blink .p-blink { opacity: 1; } .duo-pic.blink .p-open { opacity: 0; }
   .hero .hero-duo { opacity: 0; transform: translateY(14px) scale(.94); transform-origin: 50% 100%; }
   .hero.go .hero-duo { opacity: 1; transform: none; transition: opacity .6s var(--ease) .5s, transform .7s cubic-bezier(.2, 1.3, .4, 1) .5s; }
 }
 @media (max-width: 900px) and (prefers-reduced-motion: no-preference) { .hero.go .duo-pic.ren { animation: duoBob 3.6s ease-in-out 1.4s infinite; } .hero.go .duo-pic.jill { animation: duoBob 3.6s ease-in-out 1.9s infinite; } }
 @keyframes duoBob { 0%, 100% { transform: none; } 50% { transform: translateY(-3px) scale(1.012, .99); } }
-.char-pic.blink .p-blink { opacity: 1; }
+/* one picture at a time: the pictures have a soft see-through ground shadow and soft fur edges, so two stacked pictures made the shadow darker for the length of a blink (2026-11-15). .ready = every picture of that character has loaded */
+.char-pic.blink .p-blink { opacity: 1; } .char-pic.blink .p-open { opacity: 0; }
+.char:hover .char-pic.ready .p-open, .char:focus-within .char-pic.ready .p-open, .char.flipped .char-pic.ready .p-open { opacity: 0; }
+.char:hover .char-pic:not(.ready) .p-happy, .char:focus-within .char-pic:not(.ready) .p-happy, .char.flipped .char-pic:not(.ready) .p-happy { opacity: 0; }
 .char:hover .char-pic .p-blink, .char:focus-within .char-pic .p-blink, .char.flipped .char-pic .p-blink { opacity: 0; }
 .char:hover .char-pic .p-happy, .char:focus-within .char-pic .p-happy, .char.flipped .char-pic .p-happy { opacity: 1; }
 @keyframes picHop { 0% { transform: translateY(0) scale(1, 1); } 30% { transform: translateY(-5%) scale(.98, 1.03); } 60% { transform: translateY(0) scale(1.03, .97); } 100% { transform: none; } }
@@ -2852,7 +2855,9 @@ if (!reduce) {
 /* ───────── 7. characters: eyes + flip ───────── */
 (() => {
   /* 2026-11-15：絵を入れかえたので、目がカーソルを追う仕組みはやめ、ときどきまばたきする（動きを減らす設定では、しない） */
-  if (!reduce) $$(".char-pic, .duo-pic").forEach((p, k) => { const go = () => { p.classList.add("blink"); setTimeout(() => p.classList.remove("blink"), 150); setTimeout(go, 2600 + Math.random() * 2800); }; setTimeout(go, 1300 + k * 700); });
+  // the blink / smile pictures replace the open-eyed one (never stacked), so they must be loaded first: fetch them now, and only swap once they are in
+  $$(".char-pic, .duo-pic").forEach((p) => { const ims = [...p.querySelectorAll("img")], chk = () => { if (ims.every((i) => i.complete && i.naturalWidth)) p.classList.add("ready"); }; ims.forEach((i) => { i.loading = "eager"; i.addEventListener("load", chk); }); chk(); });
+  if (!reduce) $$(".char-pic, .duo-pic").forEach((p, k) => { const go = () => { if (p.classList.contains("ready")) { p.classList.add("blink"); setTimeout(() => p.classList.remove("blink"), 150); } setTimeout(go, 2600 + Math.random() * 2800); }; setTimeout(go, 1300 + k * 700); });
   if (!fine) $$(".char-hint").forEach((h) => (h.textContent = "TAP"));
   $$("[data-char]").forEach((card) => {
     $(".char-back", card).inert = true;
