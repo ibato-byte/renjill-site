@@ -47,7 +47,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!/float ay = clamp\(uRot\.y, -0\.6, 0\.6\)/.test(g) || /uSpin/.test(g)) note(57, '頭を回す角度を ±0.6 に限っていない／1 回転が残っている（押すと絵が大きく乱れる。2026-11-16 オーナー指摘）');
   if (!/__g3d\.hit\(e\.clientX, e\.clientY\)\) return;/.test(html)) note(57, '2 人を押したとき、ハンコも押されてしまう');
   if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
-  if (!/\.g3d \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
+  if (!/\.g3d \{[^}]*pointer-events: none/.test(html) || !/\.g3d-wrap \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
   if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
   if (g.length > 40 * 1024) note(57, 'guide3d.js が 40KB 超'); }
 // 17：「セリフなし」は、あえて書かない（2026-11-16 オーナー）。ページ・題名・共有文・よくある質問・llms.txt・feed・共有用の画像の作り方、どこにも戻さない
@@ -269,6 +269,9 @@ for (const [w, h, lang] of [[280, 653, 'ja'], [320, 568, 'en'], [390, 844, 'zh']
         return { worst: Math.round(worst / (200 / cv.clientWidth)), seen }; });
       if (!ext.seen) note(57, tag + ' 押したあと、絵が読めない（検査が効いていない）'); else if (ext.worst > 8) note(57, tag + ' 押すと絵が 2 人のまわりから ' + ext.worst + 'px はみ出す（乱れ）'); await p.waitForTimeout(1200); }
     if (r.active !== i) note(57, tag + ' に来ていない（いま ' + r.active + '）'); else { if (r.modes !== 'sit1,sit1') note(57, tag + ' 着いていない ' + r.modes); if (r.hit) note(57, tag + ' 見出しの字に重なる'); if (r.hit2) note(57, tag + ' 時計・最初の画面の絵に重なる'); if (r.bad) note(57, tag + ' 数値がおかしい（回りすぎ・つぶれすぎ）'); if (r.out) note(57, tag + ' 画面の外にはみ出す'); if (r.small < 40) note(57, tag + ' 小さすぎる ' + Math.round(r.small)); } }
+  // スマホで素早くスライドしても、2 人がページとずれない（2026-11-16 オーナー指摘）：描いたあと、次に描く前にページだけ動かしても、絵の足の位置が場所と合っている
+  { const r = await p.evaluate(async () => { await new Promise((q) => requestAnimationFrame(() => q())); const s = window.__g3d, cv = document.getElementById('g3d'), sp = document.querySelectorAll('.g3d-spot')[s.active]; const t0 = cv.getBoundingClientRect().top, foot = s.chars[0].y - t0; scrollBy(0, 160); const gap = cv.getBoundingClientRect().top + foot - sp.getBoundingClientRect().bottom; scrollBy(0, -160); return Math.round(gap); });
+    if (Math.abs(r) > 3) note(57, w + ' 素早くスライドすると 2 人がページから ' + r + 'px ずれる'); }
   // 一番上へ戻ると、最初の場所に戻る／クリックは下の要素に届く
   await p.evaluate(() => scrollTo(0, 0)); await p.waitForTimeout(3200);
   const back = await p.evaluate(() => { const s = window.__g3d, c = s.chars[0]; const el = document.elementFromPoint(Math.max(1, Math.min(innerWidth - 2, c.x)), Math.max(1, c.y - c.size * .4)); return { a: s.active, m: s.chars.map((c) => c.mode).join(), cv: !!el && el.id === 'g3d', ov: document.documentElement.scrollWidth - innerWidth }; });
