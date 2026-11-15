@@ -937,8 +937,13 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 .hero-title { position: relative; }
 .hero-title .g3d-spot { left: 2.32em; bottom: .03em; height: .8em; }
 @media (max-width: 900px) { .hero-title .g3d-spot { left: auto; right: 6px; bottom: -.04em; height: 76%; max-width: 50%; } }
+@media (max-width: 360px) { .hero-title .g3d-spot { height: 62%; right: 0; } }
 @media (max-width: 640px) { .sec-head .g3d-spot, .day-head .g3d-spot { right: 0; bottom: auto; top: -12px; height: 56px; } }
-html.g3d-on .hero-duo { visibility: hidden; }
+/* スマホの「ある一日」：見出しのすぐ上が色の変わり目（波の形）なので、2 人が前の部分にはみ出さないよう、少し小さく・下げる */
+@media (max-width: 640px) { .day-head .g3d-spot { top: 0; height: 50px; } }
+/* 3D が始まったら、元の絵（スマホの題名の右の 2 人）は、ぱっと消さずに、すっと消す */
+html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s linear 0s !important; }
+@media print { .g3d { display: none; } }
 </style>
 </head>
 <body class="lang-ja">
@@ -1010,7 +1015,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
         <span class="w" aria-hidden="true"><span class="c">R</span><span class="c">E</span><span class="c">N</span><span class="c amp">&amp;</span></span>
         <span class="w" aria-hidden="true"><span class="c">J</span><span class="c">I</span><span class="c">L</span><span class="c">L</span></span>
         <span class="hero-duo" aria-hidden="true"><span class="duo-pic ren"><img class="p-open" src="img/char/ren_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/ren_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span><span class="duo-pic jill"><img class="p-open" src="img/char/jill_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/jill_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span></span>
-        <i class="g3d-spot" aria-hidden="true"></i>
+        <i class="g3d-spot" data-act="hint" aria-hidden="true"></i>
       </h1>
       <p class="hero-sub rv" data-t="hero.sub">セリフなし。しぐさと音だけで描く、ちょっと平和なオフィスの毎日。</p>
       <div class="hero-cta rv">
@@ -1063,7 +1068,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
 <section class="sec" id="characters">
   <div class="wrap">
     <div class="sec-head rv">
-      <i class="g3d-spot" aria-hidden="true"></i>
+      <i class="g3d-spot" data-act="wave" aria-hidden="true"></i>
       <div class="sec-no">01</div>
       <h2 class="sec-ttl"><span data-t="ch.ttl">オフィスの、3人。</span></h2>
       <p class="sec-lead" data-t="ch.lead">カードを押すと、プロフィールが見られます。</p>
@@ -1175,7 +1180,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
   <div class="day-pin" id="dayPin">
     <div class="wrap">
       <div class="sec-head rv day-head">
-      <i class="g3d-spot" aria-hidden="true"></i>
+      <i class="g3d-spot" data-act="nap" aria-hidden="true"></i>
         <div class="sec-no">02</div>
         <h2 class="sec-ttl"><span data-t="day.ttl">オフィスの、ある一日。</span></h2>
         <p class="sec-lead" data-t="day.lead">9:00 から 18:00 まで。スクロールすると、時計が進みます。</p>
@@ -1207,7 +1212,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
 <section class="sec" id="episodes">
   <div class="wrap">
     <div class="sec-head rv">
-      <i class="g3d-spot" aria-hidden="true"></i>
+      <i class="g3d-spot" data-act="watch" aria-hidden="true"></i>
       <div class="sec-no">03</div>
       <h2 class="sec-ttl"><span data-t="ep.ttl">エピソード</span></h2>
       <p class="sec-lead" data-t="ep.lead">1本およそ10秒。カーソルを当てると動き出し、押すとそのまま見られます。</p>
@@ -1242,7 +1247,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
 <section class="sec game" id="game">
   <div class="wrap">
     <div class="sec-head rv">
-      <i class="g3d-spot" aria-hidden="true"></i>
+      <i class="g3d-spot" data-act="play" aria-hidden="true"></i>
       <div class="sec-no">04</div>
       <h2 class="sec-ttl"><span data-t="game.ttl">遊べます。</span></h2>
       <p class="sec-lead" data-t="game.lead">ブラウザで、すぐ。</p>
@@ -1280,7 +1285,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
 <section class="sec" id="follow">
   <div class="wrap">
     <div class="sec-head rv">
-      <i class="g3d-spot" aria-hidden="true"></i>
+      <i class="g3d-spot" data-act="follow" aria-hidden="true"></i>
       <div class="sec-no">05</div>
       <h2 class="sec-ttl"><span data-t="sns.ttl">フォローすると、毎日、ちょっと平和に。</span></h2>
       <p class="sec-lead" data-t="sns.lead">新作は毎日。どのSNSでも同じエピソードを見られます。</p>
@@ -1306,7 +1311,7 @@ html.g3d-on .hero-duo { visibility: hidden; }
 <section class="sec" id="faq">
   <div class="wrap">
     <div class="sec-head rv">
-      <i class="g3d-spot" aria-hidden="true"></i>
+      <i class="g3d-spot" data-act="ask" aria-hidden="true"></i>
       <div class="sec-no">06</div>
       <h2 class="sec-ttl"><span data-t="faq.ttl">よくある質問</span></h2>
       <p class="sec-lead" data-t="faq.lead">レンとジルについて、よく聞かれること。</p>
@@ -3283,8 +3288,10 @@ Object.defineProperty(window, "__RJ", { get: () => ({ T, EPS, jstISO, openLb, cl
 /* ═══════ 案内役の 3D：ページを読み終えてから、別ファイル guide3d.js を読む（最初の表示を遅くしない）═══════ */
 (() => {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.connection || {}).saveData || !document.getElementById("g3d")) return;
-  const run = () => { const s = document.createElement("script"); s.src = "guide3d.js?v=20261115"; s.async = true; s.dataset.atlas = "img/g3d/atlas.webp?v=20261115"; document.head.appendChild(s); };
-  if (document.readyState === "complete") run(); else addEventListener("load", run, { once: true });
+  const run = () => { const s = document.createElement("script"); s.src = "guide3d.js?v=20261116"; s.async = true; s.dataset.atlas = "img/g3d/atlas.webp?v=20261116"; document.head.appendChild(s); };
+  // 画像や動画を全部待たず、HTML を読み終えて手が空いたら始める（2 人が早く出てくる）
+  const soon = () => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 1200 }) : setTimeout(run, 300));
+  if (document.readyState === "loading") addEventListener("DOMContentLoaded", soon, { once: true }); else soon();
 })();
 </script>
 </body>

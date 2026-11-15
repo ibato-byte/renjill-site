@@ -41,6 +41,9 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  if (!/mix\(0\.45, 1\.0, smoothstep/.test(g) || !/p\.x \/= mix\(1\.0, cy/.test(g)) note(57, '横を向いたとき体が平べったくなる直し（頭を中心に回す・幅を戻す）が無い（2026-11-16 オーナー指摘）');
+  if (!/scrollY \/ H/.test(g) || !/const pin = /.test(g)) note(57, '奥行きスクロールが画面の高さに合っていない／足の位置を固定していない（横向きのスマホで大きくなりすぎ、端からはみ出した。2026-11-16）');
+  if (!/addEventListener\("change", onReduce\)/.test(g)) note(57, '途中で「動きを減らす」に変えたとき止める処理が無い');
   if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
   if (!/\.g3d \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
   if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
@@ -238,18 +241,21 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   if (day !== 'ok') note(47, 'ある一日 ' + day);
   await ctx.close(); }
 // 57：案内役の 3D。?g3d=1 で動かし、最初の画面と各見出しで、字に重ならない・はみ出さないことを確かめる（WebGL が無い検査機では、動かない＝元の絵のまま、を確かめる）
-for (const [w, h, lang] of [[390, 844, 'ja'], [320, 568, 'en'], [768, 1024, 'ko'], [1440, 900, 'ja'], [1920, 1080, 'zh']]) { const { p, ctx, errs } = await open(w, h, lang, { q: '?lang=' + lang + '&g3d=1' }); await p.waitForTimeout(4200);
+// 2026-11-16：とても小さい画面（280）・横向きのスマホ（667x375）・とても広い画面（2560）も見る（280 で題名の & に重なる／横向きで大きくなりすぎる、が実際に起きた）
+for (const [w, h, lang] of [[280, 653, 'ja'], [320, 568, 'en'], [390, 844, 'zh'], [667, 375, 'ja'], [768, 1024, 'ko'], [1024, 768, 'en'], [1440, 900, 'ja'], [1920, 1080, 'zh'], [2560, 1080, 'en']]) { const { p, ctx, errs } = await open(w, h, lang, { q: '?lang=' + lang + '&g3d=1' }); await p.waitForTimeout(4200);
   const has = await p.evaluate(() => { const s = window.__g3d; return s ? (s.lost ? 'lost:' + (s.err || '') : 'on') : 'off'; });
   if (has !== 'on') { const gl = await p.evaluate(() => { try { return !!document.createElement('canvas').getContext('webgl'); } catch { return false; } }); if (gl) note(57, w + ' WebGL はあるのに 3D が動いていない ' + has); if (await p.evaluate(() => document.documentElement.classList.contains('g3d-on'))) note(57, w + ' 3D が動いていないのに元の絵を隠している'); await ctx.close(); continue; }
   const n = await p.evaluate(() => document.querySelectorAll('.g3d-spot').length);
   for (let i = 0; i < n; i++) {
     await p.evaluate(async ([i, h]) => { const e = document.querySelectorAll('.g3d-spot')[i]; const t = Math.max(0, e.getBoundingClientRect().bottom + scrollY - Math.round(h * .45)); const s = scrollY; for (let k = 1; k <= 12; k++) { scrollTo(0, s + (t - s) * k / 12); await new Promise((r) => setTimeout(r, 16)); } }, [i, h]); await p.waitForTimeout(2600);
     const r = await p.evaluate((i) => { const s = window.__g3d, e = document.querySelectorAll('.g3d-spot')[i], host = e.parentElement; const boxes = s.chars.map((c) => ({ l: c.x - c.size * .34, r: c.x + c.size * .34, t: c.y - c.size * .8, b: c.y, mode: c.mode, a: c.alpha }));
-      const texts = []; const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT); let nd; while ((nd = tw.nextNode())) { if (!nd.textContent.trim() || nd.parentElement.closest('.sr, .hero-duo')) continue; const rg = document.createRange(); rg.selectNodeContents(nd); for (const q of rg.getClientRects()) if (q.width > 2) texts.push(q); }
+      const texts = []; const tw = document.createTreeWalker(i === 0 ? document.querySelector('.hero-copy') : host, NodeFilter.SHOW_TEXT); let nd; while ((nd = tw.nextNode())) { if (!nd.textContent.trim() || nd.parentElement.closest('.sr, .hero-duo')) continue; const rg = document.createRange(); rg.selectNodeContents(nd); for (const q of rg.getClientRects()) if (q.width > 2) texts.push(q); }
       const hit = boxes.filter((b) => texts.some((q) => q.right > b.l + 2 && q.left < b.r - 2 && q.bottom > b.t + 4 && q.top < b.b - 4)).length;
-      return { active: s.active, hit, out: boxes.some((b) => b.r > innerWidth + 1 || b.l < -1), modes: boxes.map((b) => b.mode + b.a).join(), small: Math.min(...s.chars.map((c) => c.size)) }; }, i);
+      const clock = [...document.querySelectorAll('.day-clock, .hero-art')].map((x) => x.getBoundingClientRect()).filter((q) => q.width > 2); const hit2 = boxes.filter((b) => clock.some((q) => q.right > b.l + 3 && q.left < b.r - 3 && q.bottom > b.t + 5 && q.top < b.b - 5)).length;
+      const bad = s.chars.some((c) => [c.x, c.y, c.z, c.size, c.sq, c.ry, c.rz, c.lagX, c.lagY].some((v) => !Number.isFinite(v)) || Math.abs(c.ry) > .6 || c.sq < .69 || c.sq > 1.26);
+      return { active: s.active, hit, hit2, bad, out: boxes.some((b) => b.r > innerWidth + 1 || b.l < -1), modes: boxes.map((b) => b.mode + b.a).join(), small: Math.min(...s.chars.map((c) => c.size)) }; }, i);
     const tag = w + ' ' + lang + ' 場所' + i;
-    if (r.active !== i) note(57, tag + ' に来ていない（いま ' + r.active + '）'); else { if (r.modes !== 'sit1,sit1') note(57, tag + ' 着いていない ' + r.modes); if (r.hit) note(57, tag + ' 見出しの字に重なる'); if (r.out) note(57, tag + ' 画面の外にはみ出す'); if (r.small < 40) note(57, tag + ' 小さすぎる ' + Math.round(r.small)); } }
+    if (r.active !== i) note(57, tag + ' に来ていない（いま ' + r.active + '）'); else { if (r.modes !== 'sit1,sit1') note(57, tag + ' 着いていない ' + r.modes); if (r.hit) note(57, tag + ' 見出しの字に重なる'); if (r.hit2) note(57, tag + ' 時計・最初の画面の絵に重なる'); if (r.bad) note(57, tag + ' 数値がおかしい（回りすぎ・つぶれすぎ）'); if (r.out) note(57, tag + ' 画面の外にはみ出す'); if (r.small < 40) note(57, tag + ' 小さすぎる ' + Math.round(r.small)); } }
   // 一番上へ戻ると、最初の場所に戻る／クリックは下の要素に届く
   await p.evaluate(() => scrollTo(0, 0)); await p.waitForTimeout(3200);
   const back = await p.evaluate(() => { const s = window.__g3d, c = s.chars[0]; const el = document.elementFromPoint(Math.max(1, Math.min(innerWidth - 2, c.x)), Math.max(1, c.y - c.size * .4)); return { a: s.active, m: s.chars.map((c) => c.mode).join(), cv: !!el && el.id === 'g3d', ov: document.documentElement.scrollWidth - innerWidth }; });
