@@ -28,7 +28,13 @@
   } catch (e) { gl = null; }
   if (!gl) return;
 
-  const root = document.documentElement;
+  const root = document.documentElement, wrap = document.getElementById("g3dWrap");
+  // 3D の画面はページの中に置き、描いたときのスクロール位置へ動かす（素早いスライドでもページとずれない。2026-11-16）
+  let docH = 0; const ftr = document.querySelector("footer");
+  // ページの終わり（フッターの下）を測る。画面の高さで測ると、この画面自身の高さが入って縮まなくなる
+  const docEnd = () => ftr ? Math.ceil(ftr.getBoundingClientRect().bottom + scrollY) : root.scrollHeight;
+  const fitWrap = () => { if (!wrap) return; docH = docEnd(); wrap.style.height = docH + "px"; };
+  let placedY = -1; const place = (y) => { if (!wrap) return; const yy = Math.max(0, Math.min(y, docH - (cv.clientHeight || innerHeight))); if (yy !== placedY) { placedY = yy; cv.style.transform = "translate3d(0," + yy + "px,0)"; } return yy; };
   const state = { ready: false, lost: false, frames: 0, active: -1, chars: [], bubbles: [], quality: 1 };
   window.__g3d = state;
 
@@ -126,6 +132,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     return c;
   };
 
+  let offY = 0;
   let progChar, progBlob, progIcon, tex, texIcon, quadBuf, idxBuf, idxCount, meshes = [], cleared = false;
   const proj = new Float32Array(16);
   let W = 1, H = 1, DPR = 1, camD = 1;
@@ -272,6 +279,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (state.lost) return;
     const now = ms / 1000, rawDt = last ? now - last : 0.016, dt = Math.min(0.05, rawDt); last = now;
     resize();
+    if (wrap && (state.frames & 15) === 0 && Math.abs(docEnd() - docH) > 2) fitWrap();
     const sy = scrollY, dy = sy - lastY, v = dy / Math.max(dt, 0.001); lastY = sy; vel += (v - vel) * Math.min(1, dt * 10);
     if (Math.abs(dy) > 0.5) lastScrollAt = now;
     if (!spots.length) findSpots();
@@ -360,6 +368,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (let i = bubbles.length - 1; i >= 0; i--) { const b = bubbles[i]; if (now > b.until || b.c.mode !== "sit") bubbles.splice(i, 1); }
     for (const m of motes) { m.a += m.va * dt; m.ph += dt; }
     const heroK = state.active === 0 && introDone ? clamp(1 - sy / (H * 0.9), 0, 1) : 0;
+    offY = wrap ? sy - place(sy) : 0;   // 下の端で画面を動かしきれないぶんは、絵のほうをずらす
     draw(now, visible, heroK);
     state.frames++;
     if (visible) {
@@ -373,7 +382,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const draw = (now, visible, heroK) => {
     if (!visible) { if (!cleared) { gl.clear(gl.COLOR_BUFFER_BIT); cleared = true; } return; }
     cleared = false; gl.clear(gl.COLOR_BUFFER_BIT);
-    const wx = (x) => x - W / 2, wy = (y) => H / 2 - y, dark = Math.max(tone[0], tone[1]);
+    const wx = (x) => x - W / 2, wy = (y) => H / 2 - y - offY, dark = Math.max(tone[0], tone[1]);
     // 手前（z>0）に来ると遠近で外へずれる。着いているときは足の位置が HTML とずれないよう打ち消す（画面の端からはみ出さない）
     const pin = (c) => 1 - c.comp * c.z / camD, cx = (c, x) => wx(x) * pin(c), cy = (c, y) => wy(y) * pin(c);
     gl.useProgram(progBlob.p); const ub = progBlob.u; gl.uniformMatrix4fv(ub.uP, false, proj);
@@ -436,17 +445,17 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   /* ───────── 始める・止める ───────── */
   const stop = () => { cancelAnimationFrame(raf); raf = 0; last = 0; };
   const go = () => { if (!raf && !document.hidden && !state.lost && progChar) { lastY = scrollY; raf = requestAnimationFrame(frame); } };
-  const fail = (e) => { state.lost = true; state.err = e && e.message ? String(e.message).slice(0, 300) : (e && e.type) || ""; stop(); root.classList.remove("g3d-on"); cv.style.display = "none"; };
+  const fail = (e) => { state.lost = true; if (wrap) wrap.style.display = "none"; state.err = e && e.message ? String(e.message).slice(0, 300) : (e && e.type) || ""; stop(); root.classList.remove("g3d-on"); cv.style.display = "none"; };
   cv.addEventListener("webglcontextlost", (e) => { e.preventDefault(); fail(e); });
   document.addEventListener("visibilitychange", () => (document.hidden ? stop() : go()));
-  addEventListener("resize", findSpots, { passive: true });
+  addEventListener("resize", () => { findSpots(); fitWrap(); }, { passive: true });
   addEventListener("orientationchange", () => setTimeout(findSpots, 300), { passive: true });
   addEventListener("pageshow", go);
   const onReduce = () => { if (mqReduce.matches) fail({ message: "reduced-motion" }); };   // 途中で「動きを減らす」に変えたら、すぐ止める
   if (mqReduce.addEventListener) mqReduce.addEventListener("change", onReduce); else if (mqReduce.addListener) mqReduce.addListener(onReduce);
 
   const img = new Image(); img.decoding = "async"; img.crossOrigin = "anonymous";   // 絵が別の場所（CDN）から配られても読めるように。同じ場所なら何も変わらない
-  img.onload = () => { try { build(img); resize(true); findSpots(); go(); } catch (e) { fail(e); } };
+  img.onload = () => { try { fitWrap(); build(img); resize(true); findSpots(); go(); } catch (e) { fail(e); } };
   img.onerror = fail;
   img.src = (document.currentScript && document.currentScript.dataset.atlas) || "img/g3d/atlas.webp";
 })();
