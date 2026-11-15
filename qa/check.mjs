@@ -64,6 +64,7 @@ const m = (re) => (html.match(re) || [])[1];
   if (fs.statSync(new URL('../index.html', import.meta.url)).size > 400 * 1024) note(50, 'index.html が 400KB 超');
   // 51（2026-11-15）：キャラクターの絵。ファイルがあること・ページに 3 人分あること・目がカーソルを追う古い線画（data-eye）が残っていないこと
   for (const w of ['ren', 'jill', 'pom']) { for (const m of ['open', 'blink', 'happy', 'head']) if (!fs.existsSync(new URL(`../img/char/${w}_${m}.webp`, import.meta.url))) note(51, `img/char/${w}_${m}.webp がない`); if (!html.includes(`data-pic="${w}"`)) note(51, w + ' のカードに絵がない'); }
+  if (/(^|[\s,}])\.game::(before|after)/m.test(html)) note(51, '「.game::before/after」は右の列のゲームのボタンにもかかる（section.game に限る）');
   if (/data-eye/.test(html)) note(51, '古い線画（data-eye）が残っている'); if ((html.match(/<image href="img\/char\//g) || []).length !== 3) note(51, '関係の図の絵が 3 人分でない');
   // feed.xml は Search Console にも出す：記事のリンク（alternate）はこのサイトの URL だけ（2026-11-10：YouTube へのリンクが「許可されていない URL」になった）
   try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://renjill.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
