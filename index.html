@@ -295,9 +295,10 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
 /* ═══════ A DAY (horizontal) ═══════ */
 .day { background: var(--navy); color: var(--paper); overflow-x: hidden; }
 /* 色の変わり目を、まっすぐな線ではなく、紙を切ったような丸い波に */
-.day, .game { position: relative; }
-.day::before, .day::after, .game::before, .game::after { content: ""; position: absolute; left: 0; right: 0; height: 13px; z-index: 2; pointer-events: none; background: radial-gradient(circle at 13px 0, var(--cream) 12.4px, transparent 13px) 0 0 / 26px 13px repeat-x; }
-.day::before, .game::before { top: -1px; } .day::after, .game::after { bottom: -1px; transform: scaleY(-1); }
+/* 「.game」はゲームの欄だけ（右の列のゲームのボタンも class に game を持つので、section に限る。2026-11-15：ボタンに丸い波がかかって見づらかった） */
+.day, section.game { position: relative; }
+.day::before, .day::after, section.game::before, section.game::after { content: ""; position: absolute; left: 0; right: 0; height: 13px; z-index: 2; pointer-events: none; background: radial-gradient(circle at 13px 0, var(--cream) 12.4px, transparent 13px) 0 0 / 26px 13px repeat-x; }
+.day::before, section.game::before { top: -1px; } .day::after, section.game::after { bottom: -1px; transform: scaleY(-1); }
 @supports (overflow: clip) { .day { overflow-x: clip; overflow-y: visible; } }
 .day .sec-no { color: var(--mustard); -webkit-text-stroke-color: var(--paper); }
 .day .sec-head { border-bottom-color: rgba(255, 255, 255, .5); }
@@ -504,6 +505,8 @@ body.lang-en .sched li em { display: none; }
 .rail-btn svg { width: 18px; height: 18px; }
 .rail-btn:hover { transform: translate(-3px, -3px) rotate(-8deg); background: var(--mustard); }
 .rail-btn.game { background: var(--navy); color: #fff; }
+/* 2026-11-15 オーナー：細い白線のゲーム機の絵が見づらい → ほかの SNS の印と同じ「塗りの太い形」に。ゲームだと分かるよう、地は黄色 */
+.rail-btn.game { background: var(--mustard); color: var(--ink); } .rail-btn.game svg { width: 22px; height: 22px; }
 .rail-prog { width: 2px; height: 90px; margin-top: 8px; background: rgba(43, 29, 18, .18); border-radius: 2px; overflow: hidden; }
 .rail-prog i { display: block; width: 100%; height: 100%; background: var(--ink); transform: scaleY(0); transform-origin: top; }
 @media (min-width: 1180px) { .rail { display: flex; } }
@@ -967,7 +970,7 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
   <a class="rail-btn" href="https://www.tiktok.com/@renjill_office" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2h-3.2v13.2a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.1a6.2 6.2 0 1 0 5.2 6.1V8.6a7.4 7.4 0 0 0 4.3 1.4V6.8A4.3 4.3 0 0 1 16.5 2Z"/></svg></a>
       <a class="rail-btn" href="https://www.threads.net/@renjill_office" target="_blank" rel="noopener" aria-label="Threads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-3.5 7.1"/></svg></a>
   <a class="rail-btn" href="https://www.facebook.com/1358515160686321" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></a>
-  <a class="rail-btn game" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener" aria-label="レンとジルのチモシーダッシュ（ゲーム）" data-ta="a.game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 12h4M9 10v4M15 11h.01M18 13h.01"/></svg></a>
+  <a class="rail-btn game" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener" aria-label="レンとジルのチモシーダッシュ（ゲーム）" data-ta="a.game"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 6.5h10a5 5 0 0 1 4.9 6l-.9 4.4a2.6 2.6 0 0 1-4.6 1l-1.9-2.4H9.5l-1.9 2.4a2.6 2.6 0 0 1-4.6-1l-.9-4.4A5 5 0 0 1 7 6.5Z"/><path d="M6.2 11.3h3.4M7.9 9.6V13" stroke="#D9A520" stroke-width="1.9" stroke-linecap="round"/><circle cx="15.6" cy="10.4" r="1.2" fill="#D9A520"/><circle cx="17.6" cy="12.6" r="1.2" fill="#D9A520"/></svg></a>
   <span class="rail-prog" aria-hidden="true"><i id="prog"></i></span>
 </aside>
 <button class="totop" id="totop" type="button" aria-label="ページの先頭へ" data-ta="a.top">
