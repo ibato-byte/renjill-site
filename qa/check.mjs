@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（56項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（57項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -36,6 +36,20 @@ def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明�
 def(54, 'キャラクターの絵は 1 枚ずつ出る（まばたき・にっこりで絵を重ねると、足もとの影が濃くなる。2026-11-15）');
 def(55, 'キャラクターの札に「TAP」「HOVER」の文字を出さない（2026-11-15：オーナー「タップという文字はいらない」）');
 def(56, '最初のまばたきでちかっとしない：まばたき・にっこりの絵は、展開（decode）が終わってから切り替える（2026-11-15）');
+def(57, '案内役の 3D（レンとジル）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
+{ const g = fs.existsSync(new URL('../guide3d.js', import.meta.url)) ? fs.readFileSync(new URL('../guide3d.js', import.meta.url), 'utf8') : '';
+  if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
+  if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
+  if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  if (!/mix\(0\.45, 1\.0, smoothstep/.test(g) || !/p\.x \/= mix\(1\.0, cy/.test(g)) note(57, '横を向いたとき体が平べったくなる直し（頭を中心に回す・幅を戻す）が無い（2026-11-16 オーナー指摘）');
+  if (!/scrollY \/ H/.test(g) || !/const pin = /.test(g)) note(57, '奥行きスクロールが画面の高さに合っていない／足の位置を固定していない（横向きのスマホで大きくなりすぎ、端からはみ出した。2026-11-16）');
+  if (!/addEventListener\("change", onReduce\)/.test(g)) note(57, '途中で「動きを減らす」に変えたとき止める処理が無い');
+  if (!/float ay = clamp\(uRot\.y, -0\.6, 0\.6\)/.test(g) || /uSpin/.test(g)) note(57, '頭を回す角度を ±0.6 に限っていない／1 回転が残っている（押すと絵が大きく乱れる。2026-11-16 オーナー指摘）');
+  if (!/__g3d\.hit\(e\.clientX, e\.clientY\)\) return;/.test(html)) note(57, '2 人を押したとき、ハンコも押されてしまう');
+  if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
+  if (!/\.g3d \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
+  if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
+  if (g.length > 40 * 1024) note(57, 'guide3d.js が 40KB 超'); }
 if (!/i\.decode \?/.test(html) || !/requestAnimationFrame\(\(\) => p\.classList\.add\("ready"\)\)/.test(html)) note(56, '絵の展開を待たずに切り替えている');
 if (/char-hint|>TAP<|>HOVER</.test(html)) note(55, '札に TAP / HOVER の文字が残っている');
 
@@ -77,7 +91,7 @@ const m = (re) => (html.match(re) || [])[1];
 
 // ---------- ブラウザでの検査
 const fixture = fs.readFileSync(new URL('./fixture-episodes.json', import.meta.url), 'utf8');
-const b = await chromium.launch();
+const b = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME, args: ["--no-sandbox"] } : {});
 async function open(w, h, lang, opts = {}) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, reducedMotion: opts.reduce ? 'reduce' : 'no-preference', hasTouch: w < 900, isMobile: w < 900, locale: lang === 'zh' ? 'zh-TW' : lang });
   const p = await ctx.newPage(); const errs = []; if (opts.share) await p.addInitScript(() => { navigator.share = async () => {}; });
@@ -228,6 +242,36 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   const day = await p.evaluate(async () => { const c = document.querySelectorAll('#dayTrack .day-card.has-ep'); if (c.length < 5) return 'つながったカードが ' + c.length; c[0].click(); await new Promise((r) => setTimeout(r, 300)); const ok = document.getElementById('lb').classList.contains('open') && document.querySelector('#lbInfo b').textContent === c[0].querySelector('.day-ttl').textContent; window.__RJ.closeLb(); await new Promise((r) => setTimeout(r, 400)); return ok ? 'ok' : '開いた回の題がちがう'; });
   if (day !== 'ok') note(47, 'ある一日 ' + day);
   await ctx.close(); }
+// 57：案内役の 3D。?g3d=1 で動かし、最初の画面と各見出しで、字に重ならない・はみ出さないことを確かめる（WebGL が無い検査機では、動かない＝元の絵のまま、を確かめる）
+// 2026-11-16：とても小さい画面（280）・横向きのスマホ（667x375）・とても広い画面（2560）も見る（280 で題名の & に重なる／横向きで大きくなりすぎる、が実際に起きた）
+for (const [w, h, lang] of [[280, 653, 'ja'], [320, 568, 'en'], [390, 844, 'zh'], [667, 375, 'ja'], [768, 1024, 'ko'], [1024, 768, 'en'], [1440, 900, 'ja'], [1920, 1080, 'zh'], [2560, 1080, 'en']]) { const { p, ctx, errs } = await open(w, h, lang, { q: '?lang=' + lang + '&g3d=1' }); await p.waitForTimeout(4200);
+  const has = await p.evaluate(() => { const s = window.__g3d; return s ? (s.lost ? 'lost:' + (s.err || '') : 'on') : 'off'; });
+  if (has !== 'on') { const gl = await p.evaluate(() => { try { return !!document.createElement('canvas').getContext('webgl'); } catch { return false; } }); if (gl) note(57, w + ' WebGL はあるのに 3D が動いていない ' + has); if (await p.evaluate(() => document.documentElement.classList.contains('g3d-on'))) note(57, w + ' 3D が動いていないのに元の絵を隠している'); await ctx.close(); continue; }
+  const n = await p.evaluate(() => document.querySelectorAll('.g3d-spot').length);
+  for (let i = 0; i < n; i++) {
+    await p.evaluate(async ([i, h]) => { const e = document.querySelectorAll('.g3d-spot')[i]; const t = Math.max(0, e.getBoundingClientRect().bottom + scrollY - Math.round(h * .45)); const s = scrollY; for (let k = 1; k <= 12; k++) { scrollTo(0, s + (t - s) * k / 12); await new Promise((r) => setTimeout(r, 16)); } }, [i, h]); await p.waitForTimeout(2600);
+    const r = await p.evaluate((i) => { const s = window.__g3d, e = document.querySelectorAll('.g3d-spot')[i], host = e.parentElement; const boxes = s.chars.map((c) => ({ l: c.x - c.size * .34, r: c.x + c.size * .34, t: c.y - c.size * .8, b: c.y, mode: c.mode, a: c.alpha }));
+      const texts = []; const tw = document.createTreeWalker(i === 0 ? document.querySelector('.hero-copy') : host, NodeFilter.SHOW_TEXT); let nd; while ((nd = tw.nextNode())) { if (!nd.textContent.trim() || nd.parentElement.closest('.sr, .hero-duo')) continue; const rg = document.createRange(); rg.selectNodeContents(nd); for (const q of rg.getClientRects()) if (q.width > 2) texts.push(q); }
+      const hit = boxes.filter((b) => texts.some((q) => q.right > b.l + 2 && q.left < b.r - 2 && q.bottom > b.t + 4 && q.top < b.b - 4)).length;
+      const clock = [...document.querySelectorAll('.day-clock, .hero-art')].map((x) => x.getBoundingClientRect()).filter((q) => q.width > 2); const hit2 = boxes.filter((b) => clock.some((q) => q.right > b.l + 3 && q.left < b.r - 3 && q.bottom > b.t + 5 && q.top < b.b - 5)).length;
+      const bad = s.chars.some((c) => [c.x, c.y, c.z, c.size, c.sq, c.ry, c.rz, c.lagX, c.lagY].some((v) => !Number.isFinite(v)) || Math.abs(c.ry) > .6 || c.sq < .69 || c.sq > 1.26);
+      return { active: s.active, hit, hit2, bad, out: boxes.some((b) => b.r > innerWidth + 1 || b.l < -1), modes: boxes.map((b) => b.mode + b.a).join(), small: Math.min(...s.chars.map((c) => c.size)) }; }, i);
+    const tag = w + ' ' + lang + ' 場所' + i;
+    // 押した直後の絵が、2 人のまわりからはみ出さない（2026-11-16：押すと絵が引きのばされて大きく乱れた）。3D の画面を 6 コマ読んで、絵のある範囲を測る
+    if (i === 1 && r.active === 1) { const pt = await p.evaluate(() => { const c = window.__g3d.chars[0]; return [c.x, c.y - c.size * .4]; }); if (w < 900) await p.touchscreen.tap(pt[0], pt[1]); else await p.mouse.click(pt[0], pt[1]);
+      const ext = await p.evaluate(async () => { const cv = document.getElementById('g3d'), s = window.__g3d, k = 200 / cv.width, c2 = document.createElement('canvas'); c2.width = 200; c2.height = Math.round(cv.height * k); const g = c2.getContext('2d', { willReadFrequently: true }); let worst = 0, seen = 0;
+        for (let f = 0; f < 6; f++) { await new Promise((r) => requestAnimationFrame(r)); g.clearRect(0, 0, c2.width, c2.height); g.drawImage(cv, 0, 0, c2.width, c2.height); const d = g.getImageData(0, 0, c2.width, c2.height).data; const sc = c2.width / cv.clientWidth;
+          const L = Math.min(...s.chars.map((c) => c.x - c.size * .8)) * sc, R = Math.max(...s.chars.map((c) => c.x + c.size * .8)) * sc, T = Math.min(...s.chars.map((c) => c.y - c.size * 1.6)) * sc, B = Math.max(...s.chars.map((c) => c.y + c.size * .25)) * sc;
+          for (let y = 0; y < c2.height; y++) for (let x = 0; x < c2.width; x++) if (d[(y * c2.width + x) * 4 + 3] > 40) { seen++; worst = Math.max(worst, L - x, x - R, T - y, y - B); } await new Promise((r) => setTimeout(r, 60)); }
+        return { worst: Math.round(worst / (200 / cv.clientWidth)), seen }; });
+      if (!ext.seen) note(57, tag + ' 押したあと、絵が読めない（検査が効いていない）'); else if (ext.worst > 8) note(57, tag + ' 押すと絵が 2 人のまわりから ' + ext.worst + 'px はみ出す（乱れ）'); await p.waitForTimeout(1200); }
+    if (r.active !== i) note(57, tag + ' に来ていない（いま ' + r.active + '）'); else { if (r.modes !== 'sit1,sit1') note(57, tag + ' 着いていない ' + r.modes); if (r.hit) note(57, tag + ' 見出しの字に重なる'); if (r.hit2) note(57, tag + ' 時計・最初の画面の絵に重なる'); if (r.bad) note(57, tag + ' 数値がおかしい（回りすぎ・つぶれすぎ）'); if (r.out) note(57, tag + ' 画面の外にはみ出す'); if (r.small < 40) note(57, tag + ' 小さすぎる ' + Math.round(r.small)); } }
+  // 一番上へ戻ると、最初の場所に戻る／クリックは下の要素に届く
+  await p.evaluate(() => scrollTo(0, 0)); await p.waitForTimeout(3200);
+  const back = await p.evaluate(() => { const s = window.__g3d, c = s.chars[0]; const el = document.elementFromPoint(Math.max(1, Math.min(innerWidth - 2, c.x)), Math.max(1, c.y - c.size * .4)); return { a: s.active, m: s.chars.map((c) => c.mode).join(), cv: !!el && el.id === 'g3d', ov: document.documentElement.scrollWidth - innerWidth }; });
+  if (back.a !== 0 || back.m !== 'sit,sit') note(57, w + ' 一番上に戻っても最初の場所に戻らない ' + JSON.stringify(back)); if (back.cv) note(57, w + ' 3D の画面がクリックを受けている'); if (back.ov > 1) note(57, w + ' 横にはみ出す');
+  if (errs.length) note(57, w + ' エラー ' + errs[0].slice(0, 100)); await ctx.close(); }
+{ const { p, ctx } = await open(390, 844, 'ja', { reduce: true, q: '?lang=ja&g3d=1' }); await p.waitForTimeout(1500); if (await p.evaluate(() => !!window.__g3d || !!document.querySelector('script[src*="guide3d"]') || document.documentElement.classList.contains('g3d-on'))) note(57, '動きを減らす設定でも 3D を読み込んでいる'); await ctx.close(); }
 // 40：PICKUP
 { const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'ポムの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
 await b.close();
