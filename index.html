@@ -292,7 +292,6 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
 @keyframes glint { 0% { transform: translateX(-30px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(30px); opacity: 0; } }
 .char.pom:hover .cheek { animation: puff .6s var(--ease) both; transform-origin: center; }
 @keyframes puff { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
-.char-hint { position: absolute; right: 16px; top: 16px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .2em; opacity: .6; }
 @media (max-width: 860px) { .chars { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; } }
 
 /* ═══════ A DAY (horizontal) ═══════ */
@@ -1058,7 +1057,6 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <div class="char-face">
           <span class="char-no">No.01</span>
           <span class="char-pic" data-pic="ren" aria-hidden="true"><img class="p-open" src="img/char/ren_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/ren_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"><img class="p-happy" src="img/char/ren_happy.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span>
-          <span class="char-hint">HOVER</span>
         </div>
         <div class="char-role">BOSS · HOLLAND LOP</div>
         <h3 class="char-name">REN<small data-t="ch.ren.name">課長のレン</small></h3>
@@ -1081,7 +1079,6 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <div class="char-face">
           <span class="char-no">No.02</span>
           <span class="char-pic" data-pic="jill" aria-hidden="true"><img class="p-open" src="img/char/jill_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/jill_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"><img class="p-happy" src="img/char/jill_happy.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span>
-          <span class="char-hint">HOVER</span>
         </div>
         <div class="char-role">ASSISTANT · NETHERLAND DWARF</div>
         <h3 class="char-name">JILL<small data-t="ch.jill.name">部下のジル</small></h3>
@@ -1104,7 +1101,6 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
         <div class="char-face">
           <span class="char-no">No.03</span>
           <span class="char-pic" data-pic="pom" aria-hidden="true"><img class="p-open" src="img/char/pom_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/pom_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"><img class="p-happy" src="img/char/pom_happy.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span>
-          <span class="char-hint">HOVER</span>
         </div>
         <div class="char-role">ROOKIE · GOLDEN HAMSTER</div>
         <h3 class="char-name">POM<small data-t="ch.pom.name">新人のポム</small></h3>
@@ -2860,7 +2856,6 @@ if (!reduce) {
   // the blink / smile pictures replace the open-eyed one (never stacked), so they must be loaded first: fetch them now, and only swap once they are in
   $$(".char-pic, .duo-pic").forEach((p) => { const ims = [...p.querySelectorAll("img")], chk = () => { if (ims.every((i) => i.complete && i.naturalWidth)) p.classList.add("ready"); }; ims.forEach((i) => { i.loading = "eager"; i.addEventListener("load", chk); }); chk(); });
   if (!reduce) $$(".char-pic, .duo-pic").forEach((p, k) => { const go = () => { if (p.classList.contains("ready")) { p.classList.add("blink"); setTimeout(() => p.classList.remove("blink"), 150); } setTimeout(go, 2600 + Math.random() * 2800); }; setTimeout(go, 1300 + k * 700); });
-  if (!fine) $$(".char-hint").forEach((h) => (h.textContent = "TAP"));
   $$("[data-char]").forEach((card) => {
     $(".char-back", card).inert = true;
     card.addEventListener("pointerenter", blip);
