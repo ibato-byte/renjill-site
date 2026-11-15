@@ -877,7 +877,7 @@ body:not(.lang-en) .shb .lbl { font-family: var(--f-jp); font-weight: 900; }
   .ep-share .shb.ep-one svg { width: 17px; height: 17px; }
   .ep:has(.ep-one) .ep-body { padding-bottom: 14px; }
 }
-@media (max-width: 640px) { .ep-share { padding: 0 10px 12px; gap: 4px; flex-wrap: nowrap; } .ep-share .shb { flex: 1 1 auto; height: 40px; min-width: 0; padding: 0 4px; font-size: 12px; letter-spacing: 0; } .ep-share .shb.line { flex-grow: 1.4; } .ep-share-k { display: none; } }
+@media (max-width: 640px) { .ep-share { padding: 0 10px 12px; gap: 4px; flex-wrap: nowrap; } .ep-share .shb { flex: 1 1 auto; height: 40px; min-width: 40px; padding: 0 4px; font-size: 12px; letter-spacing: 0; } .ep-share { flex-wrap: wrap; } /* 2026-11-15：GitHub の機械（字の幅が広い）で 40px を切った。押しやすさは守り、入らなければ折り返す */ .ep-share .shb.line { flex-grow: 1.4; } .ep-share-k { display: none; } }
 .ep.hl { animation: ep-hl 1.2s var(--ease) 3; }
 @keyframes ep-hl { 0%, 100% { box-shadow: var(--shadow); } 50% { box-shadow: 0 0 0 6px var(--mustard), var(--shadow-lg); } }
 /* footer follow row */
