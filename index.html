@@ -2854,7 +2854,8 @@ if (!reduce) {
 (() => {
   /* 2026-11-15：絵を入れかえたので、目がカーソルを追う仕組みはやめ、ときどきまばたきする（動きを減らす設定では、しない） */
   // the blink / smile pictures replace the open-eyed one (never stacked), so they must be loaded first: fetch them now, and only swap once they are in
-  $$(".char-pic, .duo-pic").forEach((p) => { const ims = [...p.querySelectorAll("img")], chk = () => { if (ims.every((i) => i.complete && i.naturalWidth)) p.classList.add("ready"); }; ims.forEach((i) => { i.loading = "eager"; i.addEventListener("load", chk); }); chk(); });
+  // ready only once every picture is loaded AND decoded: a loaded but not yet decoded picture shows as nothing for a frame the first time it appears, which flashed on the first blink (2026-11-15)
+  $$(".char-pic, .duo-pic").forEach((p) => { const ims = [...p.querySelectorAll("img")]; let busy = 0; const chk = () => { if (busy || p.classList.contains("ready") || !ims.every((i) => i.complete && i.naturalWidth)) return; busy = 1; Promise.all(ims.map((i) => (i.decode ? i.decode().catch(() => {}) : 0))).then(() => requestAnimationFrame(() => p.classList.add("ready"))); }; ims.forEach((i) => { i.loading = "eager"; i.decoding = "sync"; i.addEventListener("load", chk); }); chk(); });
   if (!reduce) $$(".char-pic, .duo-pic").forEach((p, k) => { const go = () => { if (p.classList.contains("ready")) { p.classList.add("blink"); setTimeout(() => p.classList.remove("blink"), 150); } setTimeout(go, 2600 + Math.random() * 2800); }; setTimeout(go, 1300 + k * 700); });
   $$("[data-char]").forEach((card) => {
     $(".char-back", card).inert = true;
