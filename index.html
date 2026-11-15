@@ -1008,7 +1008,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
     <div class="hero-copy">
       <div class="hero-kicker rv">
         <span class="badge">REN &amp; JILL</span>
-        <span class="mono" data-t="hero.kicker">うさぎのオフィスコメディ · セリフなし</span>
+        <span class="mono" data-t="hero.kicker">うさぎのオフィスコメディ</span>
       </div>
       <h1 class="hero-title" translate="no">
         <span class="sr" data-t="h1">レンとジル（Ren &amp; Jill）</span>
@@ -1017,7 +1017,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
         <span class="hero-duo" aria-hidden="true"><span class="duo-pic ren"><img class="p-open" src="img/char/ren_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/ren_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span><span class="duo-pic jill"><img class="p-open" src="img/char/jill_open.webp" alt="" width="600" height="600" decoding="async"><img class="p-blink" src="img/char/jill_blink.webp" alt="" width="600" height="600" loading="lazy" decoding="async"></span></span>
         <i class="g3d-spot" data-act="hint" aria-hidden="true"></i>
       </h1>
-      <p class="hero-sub rv" data-t="hero.sub">セリフなし。しぐさと音だけで描く、ちょっと平和なオフィスの毎日。</p>
+      <p class="hero-sub rv" data-t="hero.sub">しぐさと音だけで描く、ちょっと平和なオフィスの毎日。</p>
       <div class="hero-cta rv">
         <a class="btn" href="#episodes"><span data-t="hero.cta1">エピソードを見る</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn lite" href="https://hay-dash.coana.co.jp/" target="_blank" rel="noopener"><span data-t="hero.cta2">ゲームで遊ぶ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
@@ -1032,7 +1032,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
         <img src="https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261114_watercooler_cover.jpg" alt="ウォーターサーバー" width="1080" height="1920" fetchpriority="high">
         <video muted loop playsinline preload="none" src="https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261114_watercooler.mp4" aria-hidden="true"></video>
       </div>
-      <div class="hero-sticker a" data-t="hero.st1">NO DIALOGUE</div>
+      <div class="hero-sticker a" data-t="hero.st1">ABOUT 10 SEC</div>
       <div class="hero-sticker b" data-t="hero.st2">新作 · 毎日</div>
       <svg class="hero-clock" id="heroClock" viewBox="0 0 100 100" aria-hidden="true">
         <circle cx="50" cy="50" r="46" fill="#FBF6EC" stroke="#2B1D12" stroke-width="4"/>
@@ -1578,16 +1578,16 @@ const T = {
 "PLAY"
 ],
 "hero.kicker": [
-"うさぎのオフィスコメディ · セリフなし",
-"A rabbit office comedy · no dialogue",
-"兔子的辦公室喜劇 · 沒有台詞",
-"토끼들의 오피스 코미디 · 대사 없음"
+"うさぎのオフィスコメディ",
+"A rabbit office comedy",
+"兔子的辦公室喜劇",
+"토끼들의 오피스 코미디"
 ],
 "hero.sub": [
-"セリフなし。しぐさと音だけで描く、ちょっと平和なオフィスの毎日。",
-"No words — just gestures and sounds from a slightly peaceful office.",
-"沒有台詞。只用動作和聲音，描繪稍微和平的辦公室日常。",
-"대사 없이, 몸짓과 소리만으로 그리는 조금 평화로운 오피스의 하루."
+"しぐさと音だけで描く、ちょっと平和なオフィスの毎日。",
+"Just gestures and sounds from a slightly peaceful office.",
+"只用動作和聲音，描繪稍微和平的辦公室日常。",
+"몸짓과 소리만으로 그리는 조금 평화로운 오피스의 하루."
 ],
 "hero.cta1": [
 "エピソードを見る",
@@ -1602,10 +1602,10 @@ const T = {
 "게임하기"
 ],
 "hero.st1": [
-"NO DIALOGUE",
-"NO DIALOGUE",
-"NO DIALOGUE",
-"NO DIALOGUE"
+"ABOUT 10 SEC",
+"ABOUT 10 SEC",
+"ABOUT 10 SEC",
+"ABOUT 10 SEC"
 ],
 "hero.st2": [
 "新作 · 毎日",
@@ -2872,7 +2872,7 @@ if (!reduce) {
 
 /* ───────── 6. tape ───────── */
 (() => {
-  const words = { ja: ["セリフなし", "うさぎの課長レン", "しっかり者のジル", "新人のポム", "新作は毎日", "定時は 18:00", "牧草は経費"], en: ["NO DIALOGUE", "REN THE BOSS", "JILL THE ASSISTANT", "POM THE ROOKIE", "NEW · EVERY DAY", "6 PM IS SACRED", "HAY IS AN EXPENSE"], zh: ["沒有台詞", "兔子課長 REN", "可靠的 JILL", "新人 POM", "新片 每天", "18:00 是神聖的", "牧草是經費"], ko: ["대사 없음", "토끼 과장 REN", "야무진 JILL", "신입 POM", "신작 월·수·금·일", "18:00은 신성하다", "건초는 경비"] };
+  const words = { ja: ["うさぎの課長レン", "しっかり者のジル", "新人のポム", "新作は毎日", "定時は 18:00", "牧草は経費"], en: ["REN THE BOSS", "JILL THE ASSISTANT", "POM THE ROOKIE", "NEW · EVERY DAY", "6 PM IS SACRED", "HAY IS AN EXPENSE"], zh: ["兔子課長 REN", "可靠的 JILL", "新人 POM", "新片 每天", "18:00 是神聖的", "牧草是經費"], ko: ["토끼 과장 REN", "야무진 JILL", "신입 POM", "신작은 매일", "18:00은 신성하다", "건초는 경비"] };
   const track = $("#tape");
   const build = () => { const w = words[lang]; track.innerHTML = [...w, ...w].map((s) => `<span>${s}</span>`).join(""); };
   build(); langHooks.push(build);
@@ -3289,7 +3289,7 @@ Object.defineProperty(window, "__RJ", { get: () => ({ T, EPS, jstISO, openLb, cl
 /* ═══════ 案内役の 3D：ページを読み終えてから、別ファイル guide3d.js を読む（最初の表示を遅くしない）═══════ */
 (() => {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.connection || {}).saveData || !document.getElementById("g3d")) return;
-  const run = () => { const s = document.createElement("script"); s.src = "guide3d.js?v=20261116"; s.async = true; s.dataset.atlas = "img/g3d/atlas.webp?v=20261116"; document.head.appendChild(s); };
+  const run = () => { const s = document.createElement("script"); s.src = "guide3d.js?v=20261116b"; s.async = true; s.dataset.atlas = "img/g3d/atlas.webp?v=20261116"; document.head.appendChild(s); };
   // 画像や動画を全部待たず、HTML を読み終えて手が空いたら始める（2 人が早く出てくる）
   const soon = () => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 1200 }) : setTimeout(run, 300));
   if (document.readyState === "loading") addEventListener("DOMContentLoaded", soon, { once: true }); else soon();

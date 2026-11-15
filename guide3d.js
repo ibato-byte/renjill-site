@@ -41,6 +41,7 @@
   const DEPTH = 0.27;      // ふくらみの厚さ（絵の幅に対して）
   const FOV = 30 * Math.PI / 180;
   const ICONS = ["down", "note", "zz", "play", "star", "heart", "ask", "bang"];
+  const NAP_AT = 0.3;      // 居眠りの場所に着いてから、目を閉じるまでの秒数（Zz はそのあと）
   const ACTS = { hint: "down", wave: "note", nap: "zz", watch: "play", play: "star", follow: "heart", ask: "ask" };
 
   /* ───────── シェーダー ───────── */
@@ -241,7 +242,9 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (act === "play") c.hopV = 330;
     if (act === "follow") c.happyUntil = now + 2.6;
     const icon = ACTS[act];
-    if (icon && act !== "hint" && ((act === "nap") === (c.row === 0))) say(c, icon, now + 0.3, 2.4);   // 印はジルが出す（居眠りの Zz だけレン）
+    // 居眠り：レンは着いたらすぐ目を閉じ（にっこりしない）、目を閉じてから Zz を出す（2026-11-16 オーナー「Zz が出るのに、寝るのが遅い。合っていない」）
+    if (act === "nap" && c.row === 0) { c.happyUntil = 0; say(c, icon, now + NAP_AT + 0.45, 2.4); }
+    else if (icon && act !== "hint" && act !== "nap" && c.row === 1) say(c, icon, now + 0.3, 2.4);   // ほかの印はジルが出す
   };
 
   /* ───────── 入力（ポインター・スクロール） ───────── */
@@ -305,7 +308,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         // 着いたあとは、その場所に貼りつく（ページと一緒に動く）
         c.x = c.gx = T.x; c.gy = T.y; c.size = T.size; c.z = zBase(c); c.alpha = 1; c.comp = 1; c.air = 0;
         const near = fine && now - pAt < 4 && Math.hypot(px - c.x, py - (c.y - c.size * 0.4)) < c.size * 0.42;
-        const asleep = info.act === "nap" && c.row === 0 && now > c.awakeUntil && now > c.actUntil - 1.6;
+        const asleep = info.act === "nap" && c.row === 0 && now > c.awakeUntil && now > c.actUntil - 2.6 + NAP_AT;
         c.hopV -= 2600 * dt; c.hop = Math.max(0, c.hop + c.hopV * dt); if (c.hop === 0 && c.hopV < 0) { if (c.hopV < -200) c.sqV = -2.4; c.hopV = 0; }
         if (introDone && now > c.hopAt && !asleep) { c.hopAt = now + 5 + Math.random() * 6; if (onScreen(r, 0) && Math.abs(vel) < 30) c.hopV = 300; }
         if (c.act === "play" && c.hop === 0 && c.hopV === 0 && now < c.actUntil - 1.9 && now > c.actUntil - 2.2) c.hopV = 300;   // ゲームの所では 2 回跳ねる
@@ -324,6 +327,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (asleep) trz += 0.07;
         c.rz += (trz - c.rz) * Math.min(1, dt * 8);
         if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // 居眠り中は、ときどき Zz
+        if (c.asleep && !asleep) unsay(c);   // 起きたら Zz を消す
         c.asleep = asleep;
       }
       c.speed = Math.hypot(c.x - ox, c.y - oy) / Math.max(dt, 0.001);
