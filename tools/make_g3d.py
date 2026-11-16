@@ -45,7 +45,7 @@ def inflate(mask):
     im = Image.fromarray((h * 255).astype(np.uint8)).resize((INNER, INNER), Image.BICUBIC).filter(ImageFilter.GaussianBlur(6))
     return np.array(im).astype(np.float32) / 255.0
 
-atlas = np.zeros((CELL * 2, CELL * 4, 4), np.float32)
+atlas = np.zeros((CELL * 4, CELL * 4, 4), np.float32)  # 0〜1 段：ふだん（ふつう・まばたき・にっこり・奥行き）／2〜3 段：寝る姿勢（絵・奥行き）。2026-11-17 に 2 段ふやした
 for row, who in enumerate(("ren", "jill")):
     base_alpha = None
     for col, face in enumerate(("open", "blink", "happy")):
@@ -78,6 +78,17 @@ for row, who in enumerate(("ren", "jill")):
     cell = np.dstack([d, em, hm, np.ones_like(d)])
     atlas[row * CELL: (row + 1) * CELL, 3 * CELL: 4 * CELL, 3] = 1
     atlas[row * CELL + PAD: row * CELL + PAD + INNER, 3 * CELL + PAD: 3 * CELL + PAD + INNER] = cell
+for row, who in enumerate(("ren", "jill")):  # 寝る姿勢（のびて寝る）。tools/char_from_rig.py が /tmp/char_hi/*_flat.png を作る
+    fp = f"/tmp/char_hi/{who}_flat.png"
+    if not os.path.exists(fp): print("寝る姿勢の絵が無い:", fp); continue
+    a = np.array(Image.open(fp).convert("RGBA").resize((INNER, INNER), Image.LANCZOS)).astype(np.float32)
+    al = body_alpha(a[..., 3]); rgb = a[..., :3] / 255.0; solid = al > 0.6
+    _, (iy, ix) = ndimage.distance_transform_edt(~solid, return_indices=True); rgb = np.where(solid[..., None], rgb, rgb[iy, ix])
+    r0 = (2 + row) * CELL
+    atlas[r0 + PAD: r0 + PAD + INNER, PAD: PAD + INNER] = np.dstack([rgb, al])
+    d = inflate(al) * (al > 0.05)
+    atlas[r0: r0 + CELL, CELL: 2 * CELL, 3] = 1
+    atlas[r0 + PAD: r0 + PAD + INNER, CELL + PAD: CELL + PAD + INNER] = np.dstack([d, np.zeros_like(d), np.zeros_like(d), np.ones_like(d)])
 out = Image.fromarray((np.clip(atlas, 0, 1) * 255).astype(np.uint8), "RGBA")
 os.makedirs(f"{ROOT}/img/g3d", exist_ok=True)
 out.save(f"{ROOT}/img/g3d/atlas.webp", quality=88, method=6, exact=True)
