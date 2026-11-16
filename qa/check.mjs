@@ -41,6 +41,10 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  { const m = g.match(/const AW = (\d+), AH = (\d+), CELL = (\d+)/), a = fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url)) ? fs.readFileSync(new URL('../img/g3d/atlas.webp', import.meta.url)) : null;
+    const w = a && a.toString('ascii', 12, 16) === 'VP8X' ? 1 + a.readUIntLE(24, 3) : 0, h = a && w ? 1 + a.readUIntLE(27, 3) : 0; // webp（VP8X）の幅と高さ
+    if (!m || +m[3] < 1024) note(57, '案内役の 3D の絵が細かくない（1 人 1024 より小さいと、手足の指やかげがつぶれる。2026-11-16 オーナー「動くレンとジルの足が質の低いまま」）');
+    else if (w !== +m[1] || h !== +m[2]) note(57, `案内役の 3D の絵の大きさ（${w}×${h}）が guide3d.js の数字（${m[1]}×${m[2]}）と合わない（tools/make_g3d.py で作り直す）`); }
   if (!/mix\(0\.45, 1\.0, smoothstep/.test(g) || !/p\.x \/= mix\(1\.0, cy/.test(g)) note(57, '横を向いたとき体が平べったくなる直し（頭を中心に回す・幅を戻す）が無い（2026-11-16 オーナー指摘）');
   if (!/scrollY \/ H/.test(g) || !/const pin = /.test(g)) note(57, '奥行きスクロールが画面の高さに合っていない／足の位置を固定していない（横向きのスマホで大きくなりすぎ、端からはみ出した。2026-11-16）');
   if (!/addEventListener\("change", onReduce\)/.test(g)) note(57, '途中で「動きを減らす」に変えたとき止める処理が無い');
