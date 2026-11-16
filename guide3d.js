@@ -35,7 +35,7 @@
   const docEnd = () => ftr ? Math.ceil(ftr.getBoundingClientRect().bottom + scrollY) : root.scrollHeight;
   const fitWrap = () => { if (!wrap) return; docH = docEnd(); wrap.style.height = docH + "px"; };
   let placedY = -1; const place = (y) => { if (!wrap) return; const yy = Math.max(0, Math.min(y, docH - (cv.clientHeight || innerHeight))); if (yy !== placedY) { placedY = yy; cv.style.transform = "translate3d(0," + yy + "px,0)"; } return yy; };
-  const state = { ready: false, lost: false, frames: 0, active: -1, chars: [], bubbles: [], quality: 1 };
+  const state = { ready: false, lost: false, frames: 0, fixed: false, active: -1, chars: [], bubbles: [], quality: 1 };
   window.__g3d = state;
 
   /* ───────── 絵のます目（tools/make_g3d.py と同じ数字） ───────── */
@@ -219,7 +219,9 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const findSpots = () => {
     const cur = spots[state.active];
     spots = [...document.querySelectorAll(".g3d-spot")].filter((e) => e.offsetParent !== null);
-    spotInfo = spots.map((e) => { const s = e.closest("section"); return { act: e.dataset.act || "", tone: s && s.classList.contains("day") ? 1 : s && s.classList.contains("game") ? 2 : 0 }; });
+    // pin＝その場所を画面に止めておく親（position: sticky。「ある一日」）。止まっている間は、3D の画面も画面に固定する（下の stuck）
+    const pinOf = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.position === "sticky") return { el: p, top: parseFloat(cs.top) || 0 }; } return null; };
+    spotInfo = spots.map((e) => { const s = e.closest("section"); return { act: e.dataset.act || "", tone: s && s.classList.contains("day") ? 1 : s && s.classList.contains("game") ? 2 : 0, pin: pinOf(e) }; });
     if (cur) state.active = spots.indexOf(cur);
   };
   const spotRect = (i) => spots[i] ? spots[i].getBoundingClientRect() : null;
@@ -480,7 +482,13 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (let i = bubbles.length - 1; i >= 0; i--) { const b = bubbles[i]; if (now > b.until || b.c.mode !== "sit") bubbles.splice(i, 1); }
     for (const m of motes) { m.a += m.va * dt; m.ph += dt; }
     const heroK = state.active === 0 && introDone ? clamp(1 - sy / (H * 0.9), 0, 1) : 0;
-    offY = wrap ? sy - place(sy) : 0;   // 下の端で画面を動かしきれないぶんは、絵のほうをずらす
+    // 3D の画面の置き方（2026-11-17 オーナー：「ある一日でスクロールすると上下にぐらつく」）
+    //  ふつう：ページの中に置き、描くたびにスクロールの位置へ動かす（2 人がページと一緒に動く所で、ずれない）
+    //  場所が画面に止まっている間（「ある一日」の sticky）：画面に固定する。ページの中に置いたままだと、ページが先に動き、
+    //  1 コマあとで描く位置へ戻るので、2 人が上下にぐらついて見えた
+    const pin = spotInfo[state.active] && spotInfo[state.active].pin, stuck = !!(pin && Math.abs(pin.el.getBoundingClientRect().top - pin.top) < 0.75 && chars.every((c) => c.mode !== "fly"));
+    if (stuck !== state.fixed) { state.fixed = stuck; cv.style.position = stuck ? "fixed" : ""; cv.style.transform = stuck ? "none" : ""; placedY = -1; }
+    offY = stuck ? 0 : wrap ? sy - place(sy) : 0;   // 下の端で画面を動かしきれないぶんは、絵のほうをずらす
     draw(now, visible, heroK);
     state.frames++;
     if (visible) {
