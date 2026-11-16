@@ -41,6 +41,9 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  { // 読みこむ時の版（?v=）は中身の指紋（sha256 の先頭 8 文字）と同じ。古い版のまま直すと、見る人のブラウザに前のファイルが残る（2026-11-17：絵を 3 回変えても ?v=20261116 のままだった）
+    const crypto = await import('node:crypto'), h = (f) => crypto.createHash('sha256').update(fs.readFileSync(new URL('../' + f, import.meta.url))).digest('hex').slice(0, 8), html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+    for (const f of ['guide3d.js', 'img/g3d/atlas.webp']) { const m = html.match(new RegExp(f.replace(/[./]/g, (c) => '\\' + c) + '\\?v=([0-9a-z]+)')); if (!m || m[1] !== h(f)) note(57, `${f} の ?v= が中身と合わない（${m ? m[1] : 'なし'} → ${h(f)}。tools/stamp.sh で直す）`); } }
   { const m = g.match(/const AW = (\d+), AH = (\d+), CELL = (\d+)/), a = fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url)) ? fs.readFileSync(new URL('../img/g3d/atlas.webp', import.meta.url)) : null;
     const w = a && a.toString('ascii', 12, 16) === 'VP8X' ? 1 + a.readUIntLE(24, 3) : 0, h = a && w ? 1 + a.readUIntLE(27, 3) : 0; // webp（VP8X）の幅と高さ
     if (!m || +m[3] < 1024) note(57, '案内役の 3D の絵が細かくない（1 人 1024 より小さいと、手足の指やかげがつぶれる。2026-11-16 オーナー「動くレンとジルの足が質の低いまま」）');
