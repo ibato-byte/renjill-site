@@ -39,7 +39,7 @@
   window.__g3d = state;
 
   /* ───────── 絵のます目（tools/make_g3d.py と同じ数字） ───────── */
-  const AW = 2048, AH = 1024, CELL = 512, PAD = 16, INNER = CELL - PAD * 2;
+  const AW = 4096, AH = 2048, CELL = 1024, PAD = 32, INNER = CELL - PAD * 2; // 2026-11-16：512 では手足がつぶれたので 2 倍（絵の割合は前と同じ）
   const tile = (col, row) => [(col * CELL + PAD) / AW, (row * CELL + PAD) / AH, INNER / AW, INNER / AH];
   const FACE = { open: 0, blink: 1, happy: 2 };
   const FOOT = 0.058;      // 絵の下から足の裏までの割合

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """案内役の 3D（guide3d.js）用の絵を作る。使い方：python3 tools/make_g3d.py
-img/char/{ren,jill}_{open,blink,happy}.webp → img/g3d/atlas.webp（2048x1024、512 のますが 4 列 × 2 段）
+/tmp/char_hi/{ren,jill}_{open,blink,happy}.png（tools/char_from_rig.py が作る大きい絵。無ければ img/char/*.webp）→ img/g3d/atlas.webp（4096x2048、1024 のますが 4 列 × 2 段）
   列：ふだん / まばたき / にっこり / 奥行き（白いほど手前）。段：レン / ジル
 - 絵に描きこまれた足もとの影は消す（3D では影を別に描くので、跳ねたとき影がついてこないように）
 - 奥行きは、体の形をふくらませて作る（輪郭で 0、まん中ほど高い）。絵を差し替えたら、これを実行し直す
@@ -12,7 +12,7 @@ from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CELL, PAD = 512, 16
+CELL, PAD = 1024, 32  # 2026-11-16：512 では手足の指やかげがつぶれた（オーナー「LP の動くレンとジルの足が質の低いまま」）→ 2 倍に
 INNER = CELL - PAD * 2
 
 def body_alpha(a):
@@ -42,14 +42,14 @@ def inflate(mask):
             if 0 <= yy < S and 0 <= xx < S and idx[yy, xx] >= 0: A[k, idx[yy, xx]] = -1
     h = np.zeros((S, S)); h[ys, xs] = spsolve(A.tocsr(), b)
     h = np.sqrt(h / h.max())
-    im = Image.fromarray((h * 255).astype(np.uint8)).resize((INNER, INNER), Image.BICUBIC).filter(ImageFilter.GaussianBlur(3))
+    im = Image.fromarray((h * 255).astype(np.uint8)).resize((INNER, INNER), Image.BICUBIC).filter(ImageFilter.GaussianBlur(6))
     return np.array(im).astype(np.float32) / 255.0
 
 atlas = np.zeros((CELL * 2, CELL * 4, 4), np.float32)
 for row, who in enumerate(("ren", "jill")):
     base_alpha = None
     for col, face in enumerate(("open", "blink", "happy")):
-        im = Image.open(f"{ROOT}/img/char/{who}_{face}.webp").convert("RGBA").resize((INNER, INNER), Image.LANCZOS)
+        im = Image.open(f"/tmp/char_hi/{who}_{face}.png" if os.path.exists(f"/tmp/char_hi/{who}_{face}.png") else f"{ROOT}/img/char/{who}_{face}.webp").convert("RGBA").resize((INNER, INNER), Image.LANCZOS)
         a = np.array(im).astype(np.float32)
         if base_alpha is None: base_alpha = body_alpha(a[..., 3])
         rgb = a[..., :3] / 255.0
