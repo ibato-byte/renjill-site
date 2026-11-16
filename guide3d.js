@@ -436,7 +436,9 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       }
       c.speed = Math.hypot(c.x - ox, c.y - oy) / Math.max(dt, 0.001);
       // 耳・頭の遅れ（重さ）：スクロールや移動の速さに、ばねで遅れてついてくる
-      const txl = c.mode === "fly" ? -c.dir * 0.11 : 0, tyl = clamp(vel * 0.00011, -0.12, 0.12) + (c.mode === "sit" ? clamp(-c.hopV * 0.00015, -0.09, 0.09) : 0);
+      // 体がゆれるのは、立っている場所が画面の上で動いた時だけ（「ある一日」のように場所が画面に止まったままページだけ進む所では、ゆらさない。2026-11-17 オーナー：「スクロールした時に上下にぐらつく」）
+      const sv = c.mode === "sit" && c.lastSY != null && dt > 0 ? (c.gy - c.lastSY) / dt : -vel; c.lastSY = c.mode === "sit" ? c.gy : null; // gy＝立っている場所の画面の上の高さ（跳ねる分は入れない）
+      const txl = c.mode === "fly" ? -c.dir * 0.11 : 0, tyl = clamp(-sv * 0.00011, -0.12, 0.12) + (c.mode === "sit" ? clamp(-c.hopV * 0.00015, -0.09, 0.09) : 0);
       c.lagXV += ((txl - c.lagX) * 150 - c.lagXV * 9) * dt; c.lagX += c.lagXV * dt;
       c.lagYV += ((tyl - c.lagY) * 150 - c.lagYV * 9) * dt; c.lagY += c.lagYV * dt;
       // 向き：移動中は進む方向へ。止まっているときは、PC はカーソルのほう、スマホはゆっくり見回す。ときどき相手のほうを見る
