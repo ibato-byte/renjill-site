@@ -60,7 +60,15 @@ for row, who in enumerate(("ren", "jill")):
         cell = np.dstack([rgb, base_alpha])
         atlas[row * CELL + PAD: row * CELL + PAD + INNER, col * CELL + PAD: col * CELL + PAD + INNER] = cell
     d = inflate(base_alpha) * (base_alpha > 0.05)
-    cell = np.dstack([d, d, d, np.ones_like(d)])
+    # 緑＝耳の形（耳だけを動かす。前は「耳のあたりの帯」を動かしていて、レンは背中まで一緒に動き、髪の毛のように見えた。2026-11-16）
+    ep = f"/tmp/char_hi/{who}_ears.png"
+    if os.path.exists(ep):
+        ea = np.array(Image.open(ep).convert("RGBA").resize((INNER, INNER), Image.LANCZOS))[..., 3] > 60
+        ea = ndimage.binary_dilation(ea, iterations=4)
+        em = np.array(Image.fromarray((ea * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(5))).astype(np.float32) / 255.0
+    else:
+        em = np.zeros_like(d); print("耳の形が無い:", ep, "（tools/char_from_rig.py を先に）")
+    cell = np.dstack([d, em, d, np.ones_like(d)])
     atlas[row * CELL: (row + 1) * CELL, 3 * CELL: 4 * CELL, 3] = 1
     atlas[row * CELL + PAD: row * CELL + PAD + INNER, 3 * CELL + PAD: 3 * CELL + PAD + INNER] = cell
 out = Image.fromarray((np.clip(atlas, 0, 1) * 255).astype(np.uint8), "RGBA")
