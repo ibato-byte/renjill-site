@@ -12,13 +12,13 @@ src = sys.argv[1]
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NAME = {'ren': 'ren', 'jil': 'jill', 'pom': 'pom'}
 BOX = {}
-for fn in sorted(os.listdir(src), key=lambda f: f.endswith('_ears.png')):  # 耳だけの絵は、同じ子の「ふだん」の絵と同じ切り方にするので最後に
+for fn in sorted(os.listdir(src), key=lambda f: f.endswith('_ears.png') or f.endswith('_headmask.png')):  # 耳だけの絵は、同じ子の「ふだん」の絵と同じ切り方にするので最後に
     if not fn.endswith('.png'): continue
     who, mood = fn[:-4].split('_', 1)
     im = Image.open(os.path.join(src, fn)).convert('RGBA')
-    if mood == 'ears':  # 3D の案内役で耳だけを動かすための形（サイトには置かない。tools/make_g3d.py が使う）
+    if mood in ('ears', 'headmask'):  # 3D の案内役で耳だけを動かすための形（サイトには置かない。tools/make_g3d.py が使う）
         box = BOX[who]; im = im.crop(box); s = max(im.size); sq = Image.new('RGBA', (s, s), (0, 0, 0, 0)); sq.alpha_composite(im, ((s - im.size[0]) // 2, s - im.size[1]))
-        os.makedirs('/tmp/char_hi', exist_ok=True); sq.save(f'/tmp/char_hi/{NAME[who]}_ears.png'); continue
+        os.makedirs('/tmp/char_hi', exist_ok=True); sq.save(f'/tmp/char_hi/{NAME[who]}_{mood}.png'); continue
     a = im.getchannel('A').point(lambda v: 255 if v > 6 else 0)
     box = a.getbbox(); im = im.crop(box)
     if mood == 'open': BOX[who] = box

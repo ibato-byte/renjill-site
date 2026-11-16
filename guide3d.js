@@ -52,7 +52,7 @@
 
   /* ───────── シェーダー ───────── */
   const VS_CHAR = `
-attribute vec2 aUv; attribute vec2 aD; // aD.x＝奥行き、aD.y＝耳の形（1＝耳）
+attribute vec2 aUv; attribute vec3 aD; // aD.x＝奥行き、aD.y＝耳の形（1＝耳）、aD.z＝頭（耳こみ）の形
 uniform mat4 uP; uniform vec3 uPos; uniform float uSize; uniform vec3 uRot; uniform vec2 uSq; uniform vec2 uLag;
 uniform vec4 uEar; uniform vec4 uEarP; uniform vec4 uHead; uniform vec4 uNose; uniform vec4 uBelly;
 varying vec2 vUv;
@@ -74,7 +74,7 @@ void main() {
     q = rot2(q, vec2(uEarP.y, uEarP.z), uEar.y * wy * mR);
     q.y += uEar.z * wy * wy * (mL + mR) * 0.06; q.x += uEar.z * wy * (mR - mL) * 0.025;
   }
-  { float wh = smoothstep(uHead.z - 0.07, uHead.z + 0.07, q.y);
+  { float wh = aD.z; // 頭と耳をひとかたまりで（前は高さの帯で分けていて、体の前に垂れたレンの耳が途中でちぎれ、ぎざぎざに見えた。2026-11-16）
     q = rot2(q, vec2(uNose.x, uHead.z), uHead.w * wh); q += uHead.xy * wh; }
   { vec2 dn = q - uNose.xy; float wn = exp(-dot(dn, dn) / 0.0009); q.y += uNose.z * wn; q.x -= dn.x * uNose.w * wn; }
   { vec2 db = (q - uBelly.xy) / uBelly.z; float wb = exp(-dot(db, db) * 1.6) * plant; q += (q - uBelly.xy) * vec2(1.0, 0.45) * uBelly.w * wb; }
@@ -181,8 +181,8 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     const g = c2.getContext("2d", { willReadFrequently: true });
     meshes = [0, 1].map((row) => {
       g.clearRect(0, 0, N, N); g.drawImage(img, 3 * CELL + PAD, row * CELL + PAD, INNER, INNER, 0, 0, N, N);
-      const px = g.getImageData(0, 0, N, N).data, v = new Float32Array(N * N * 4);
-      for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const k = (j * N + i) * 4, o = ((N - 1 - j) * N + i) * 4; v[k] = i / GRID; v[k + 1] = j / GRID; v[k + 2] = px[o] / 255; v[k + 3] = px[o + 1] / 255; }
+      const px = g.getImageData(0, 0, N, N).data, v = new Float32Array(N * N * 5);
+      for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const k = (j * N + i) * 5, o = ((N - 1 - j) * N + i) * 4; v[k] = i / GRID; v[k + 1] = j / GRID; v[k + 2] = px[o] / 255; v[k + 3] = px[o + 1] / 255; v[k + 4] = px[o + 2] / 255; }
       const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW); return b;
     });
     const idx = new Uint16Array(GRID * GRID * 6); let q = 0;
@@ -504,7 +504,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (const c of (chars[0].z <= chars[1].z ? chars : [chars[1], chars[0]])) {
       if (c.alpha < 0.01 || c.mode === "wait") continue;
       gl.bindBuffer(gl.ARRAY_BUFFER, meshes[c.row]);
-      gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 16, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 16, 8);
+      gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 20, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 20, 8);
       const wig = c.spinT >= 0 ? Math.sin(c.spinT * Math.PI * 4) * 0.17 * (1 - c.spinT) : 0;   // 押したとき：体を左右に振る
       gl.uniform3f(u.uPos, cx(c, c.x), cy(c, c.y), c.z); gl.uniform1f(u.uSize, c.size * pin(c) + c.size * (1 - pin(c)) * 0.45);   // 近づくぶんは、少しだけ大きく見せる
       gl.uniform3f(u.uRot, c.rx, c.ry, c.rz + wig); gl.uniform1f(u.uTurn, clamp(c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq), c.sq); gl.uniform2f(u.uLag, c.lagX, c.lagY);

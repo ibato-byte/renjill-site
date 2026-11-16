@@ -64,11 +64,18 @@ for row, who in enumerate(("ren", "jill")):
     ep = f"/tmp/char_hi/{who}_ears.png"
     if os.path.exists(ep):
         ea = np.array(Image.open(ep).convert("RGBA").resize((INNER, INNER), Image.LANCZOS))[..., 3] > 60
-        ea = ndimage.binary_dilation(ea, iterations=4)
-        em = np.array(Image.fromarray((ea * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(5))).astype(np.float32) / 255.0
+        ea = ndimage.binary_dilation(ea, iterations=5)
+        em = np.array(Image.fromarray((ea * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(12))).astype(np.float32) / 255.0
     else:
         em = np.zeros_like(d); print("耳の形が無い:", ep, "（tools/char_from_rig.py を先に）")
-    cell = np.dstack([d, em, d, np.ones_like(d)])
+    # 青＝頭（耳こみ）の形。頭を回す・かしげる時は、この形のところをひとかたまりで動かす
+    hpth = f"/tmp/char_hi/{who}_headmask.png"
+    if os.path.exists(hpth):
+        ha = np.array(Image.open(hpth).convert("RGBA").resize((INNER, INNER), Image.LANCZOS))[..., 3] > 60
+        hm = np.array(Image.fromarray((ndimage.binary_dilation(ha, iterations=6) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(16))).astype(np.float32) / 255.0
+    else:
+        hm = np.zeros_like(d); print("頭の形が無い:", hpth)
+    cell = np.dstack([d, em, hm, np.ones_like(d)])
     atlas[row * CELL: (row + 1) * CELL, 3 * CELL: 4 * CELL, 3] = 1
     atlas[row * CELL + PAD: row * CELL + PAD + INNER, 3 * CELL + PAD: 3 * CELL + PAD + INNER] = cell
 out = Image.fromarray((np.clip(atlas, 0, 1) * 255).astype(np.uint8), "RGBA")
