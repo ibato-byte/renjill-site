@@ -64,8 +64,8 @@ for row, who in enumerate(("ren", "jill")):
     ep = f"/tmp/char_hi/{who}_ears.png"
     if os.path.exists(ep):
         ea = np.array(Image.open(ep).convert("RGBA").resize((INNER, INNER), Image.LANCZOS))[..., 3] > 60
-        ea = ndimage.binary_dilation(ea, iterations=5)
-        em = np.array(Image.fromarray((ea * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(12))).astype(np.float32) / 255.0
+        ea = ndimage.binary_dilation(ea, iterations=1)  # 耳の形を広げすぎない（広げると、耳のまわりの体の毛まで一緒に動き、ぎざぎざに見えた。2026-11-17）
+        em = np.array(Image.fromarray((ea * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(4))).astype(np.float32) / 255.0
     else:
         em = np.zeros_like(d); print("耳の形が無い:", ep, "（tools/char_from_rig.py を先に）")
     # 青＝頭（耳こみ）の形。頭を回す・かしげる時は、この形のところをひとかたまりで動かす

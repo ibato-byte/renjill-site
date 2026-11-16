@@ -317,12 +317,14 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     } else {
       eL = eR = clamp(-c.rz * 0.8, -0.2, 0.2) + (c.asleep ? Math.sin(c.br) * 0.02 : 0);
       fl = fly ? -cs * 0.9 : clamp(-c.hopV / 450, -1, 1) * 0.7 - (c.lope || 0) * 0.35 * c.trot;
-      c.eLV -= (c.ry - c.lastRy) * 26; c.eRV -= (c.ry - c.lastRy) * 26;
+      c.eLV -= (c.ry - c.lastRy) * 12; c.eRV -= (c.ry - c.lastRy) * 12; // 頭の向きを変えた時の耳のゆれ（26 では大きすぎ、耳先が背中・お尻の側へはみ出した。2026-11-17 オーナー指摘）
     }
     c.lastRy = c.ry;
     if (sit && !c.asleep && id !== "groom" && now > c.flickAt) { c.flickAt = now + 3.5 + Math.random() * 6; if (lop) { c.eLV += 2.2; c.eRV -= 2.2; } else if (Math.random() < 0.5) c.eLV += 7; else c.eRV -= 7; }
     if (id === "shake" && now > c.idleT0 && now < c.idleT0 + 0.05) { c.eLV += 6; c.eRV -= 6; c.flapV += 5; }
-    const k = lop ? 90 : 230, d = lop ? 4 : 10; spr(c, "eL", eL, k, d, dt); spr(c, "eR", eR, k, d, dt); spr(c, "eW", eW, 170, 12, dt); spr(c, "flap", fl, 110, 5.5, dt);
+    const k = lop ? 90 : 230, d = lop ? 8 : 10; spr(c, "eL", eL, k, d, dt); spr(c, "eR", eR, k, d, dt); spr(c, "eW", eW, 170, 12, dt); spr(c, "flap", fl, 110, 5.5, dt);
+    if (lop) { // たれ耳は重く、頭の横にそってゆれるだけ：横への振れは ±0.1 まで（それ以上は耳先が体の外へ出て、背中から生えたように見えた）
+      const L = 0.1; if (Math.abs(c.eL) > L) { c.eL = Math.sign(c.eL) * L; c.eLV *= 0.3; } if (Math.abs(c.eR) > L) { c.eR = Math.sign(c.eR) * L; c.eRV *= 0.3; } c.flap = clamp(c.flap, -0.55, 0.45); }
     if (fly) { if (hf >= 0) { hx = c.dir * 0.02 * air; hy = 0.014 * cs; ex = (c.dir ? 0.08 : 0.03) * air; } else if (c.pre > 0) hy = -0.02; }
     else {
       hy = (c.lope || 0) * 0.006 * c.trot;
