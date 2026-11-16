@@ -226,7 +226,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
 
   /* ───────── 2 人 ───────── */
   // fx：場所の箱の中での足の位置（横）／k：箱の高さに対する背の高さ／dz：手前に出す量
-  const DEF = [{ name: "ren", row: 0, fx: 0.36, k: 1.0, dz: 0, delay: 0 }, { name: "jill", row: 1, fx: 0.80, k: 0.74, dz: 26, delay: 0.14 }];
+  const DEF = [{ name: "ren", row: 0, fx: 0.31, k: 1.0, dz: 0, delay: 0 }, { name: "jill", row: 1, fx: 0.87, k: 0.74, dz: 26, delay: 0.14 }];
   const BODY = [{ ear: [0.30, 0.875, 0.80, 1], nose: [0.58, 0.49], neck: 0.44, belly: [0.60, 0.24, 0.20] },
                 { ear: [0.34, 0.525, 0.80, 0], nose: [0.43, 0.53], neck: 0.47, belly: [0.55, 0.26, 0.24] }];
   const spr = (c, k, target, stiff, damp, dt) => { c[k + "V"] += ((target - c[k]) * stiff - c[k + "V"] * damp) * dt; c[k] += c[k + "V"] * dt; };
@@ -240,7 +240,8 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   // 奥行きのある牧草（最初の画面だけ。カメラに近いほど大きく、ぼけて、速く流れる）
   const motes = Array.from({ length: 9 }, () => ({ x: (Math.random() - 0.5) * 1.7, y: Math.random(), z: 0.2 + Math.random() * 0.45, a: Math.random() * Math.PI, va: (Math.random() - 0.5) * 0.5, ph: Math.random() * 6, len: 0.03 + Math.random() * 0.03 }));
 
-  const targetOf = (c, r) => ({ x: r.left + r.width * c.fx, y: r.bottom, size: (r.height * c.k) / (1 - FOOT - 0.085) });
+  // 2 人の間：ジルの頭がレンの体に食いこまないよう広げた（0.36・0.80 → 0.31・0.87。2026-11-16）。とても細い画面（360 未満）は、見出しに重なるので元の間のまま
+  const targetOf = (c, r) => ({ x: r.left + r.width * (c.fx + (W < 360 ? (c.row ? -0.07 : 0.05) : 0)), y: r.bottom, size: (r.height * c.k) / (1 - FOOT - 0.085) });
   const onScreen = (r, m) => r.bottom > -m && r.top < H + m && r.right > -m && r.left < W + m;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const smooth = (t) => t * t * (3 - 2 * t);
@@ -442,7 +443,10 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       else if (c.asleep) { ty = 0.12; tx = 0.1; }
       else if (info.act === "nap" && c.row === 1 && !cursor) ty = Math.sign(other.x - c.x) * 0.42;   // ジルは、寝ているレンを見ている
       else if (now < c.lookUntil) ty = Math.sign(other.x - c.x) * 0.5;
-      else if (cursor) { ty = clamp((px - c.x) / W * 1.6, -0.5, 0.5); tx = clamp((py - (c.y - c.size * 0.5)) / H * 0.5, -0.16, 0.2); }
+      else if (cursor) { // カーソルを目で追う。すぐ近く（体の上）では向きを変えすぎない：前は、体の上で少し動かすだけで頭が左右に大きくふれ、となりの子に食いこんだ
+        const dxn = (px - c.x) / c.size, dyn = (py - (c.y - c.size * 0.5)) / c.size, far = smooth(clamp((Math.hypot(dxn, dyn) - 0.25) / 0.9, 0, 1));
+        ty = clamp((px - c.x) / W * 1.6, -0.5, 0.5) * (0.25 + 0.75 * far); tx = clamp((py - (c.y - c.size * 0.5)) / H * 0.5, -0.16, 0.2) * (0.3 + 0.7 * far);
+        const toward = Math.sign(other.x - c.x) * ty; if (toward > 0) ty *= 1 - 0.45 * clamp(1.6 - Math.abs(other.x - c.x) / c.size, 0, 1); } // となりの子のほうへは、近いほど回しすぎない
       else { ty = Math.sin(now * 0.55 + c.row * 1.7) * 0.2 + clamp((W * 0.5 - c.x) / W, -0.5, 0.5) * 0.35; if (c.act === "watch" && now < c.actUntil) tx = 0.16; }
       if (c.mode === "sit" && !c.asleep && now > c.lookAt && info.act !== "nap") { c.lookAt = now + 6 + Math.random() * 6; c.lookUntil = now + 1.3; }
       if (c.mode === "fly") { if (c.hopF >= 0) tx += -0.12 * Math.cos(Math.PI * c.hopF); else if (c.pre > 0) tx += 0.1; }
@@ -456,7 +460,8 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       }
       if (c.spinT >= 0) ty += Math.sin(c.spinT * Math.PI * 2) * 0.45 * c.binkDir * (1 - c.spinT);
       ty = clamp(ty, c.row ? -0.5 : -0.36, c.row ? 0.5 : 0.36);   // レンは体が横に長いので、回しすぎない
-      c.ry += (ty - c.ry) * Math.min(1, dt * 6); c.rx += (tx - c.rx) * Math.min(1, dt * 6);
+      // 向きは、ばねで追う（前は一定の割合で近づけていて、動き出しと止まり方が機械のようだった）。行きすぎないくらいの強さ
+      c.ryV = (c.ryV || 0) + ((ty - c.ry) * 70 - (c.ryV || 0) * 15) * dt; c.ry += c.ryV * dt; c.rxV = (c.rxV || 0) + ((tx - c.rx) * 70 - (c.rxV || 0) * 15) * dt; c.rx += c.rxV * dt;
       if (c.spinT >= 0) { c.spinT += dt / 0.8; if (c.spinT >= 1) c.spinT = -1; }
       life(c, now, dt, other, cursor);
       if (now > c.blinkAt) c.blinkAt = now + 4 + Math.random() * 7;
