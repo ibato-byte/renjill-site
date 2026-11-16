@@ -3267,7 +3267,7 @@ Object.defineProperty(window, "__RJ", { get: () => ({ T, EPS, jstISO, openLb, cl
 /* ═══════ 案内役の 3D：ページを読み終えてから、別ファイル guide3d.js を読む（最初の表示を遅くしない）═══════ */
 (() => {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.connection || {}).saveData || !document.getElementById("g3d")) return;
-  const run = () => { const s = document.createElement("script"); s.src = "guide3d.js?v=20261116c"; s.async = true; s.dataset.atlas = "img/g3d/atlas.webp?v=20261116"; document.head.appendChild(s); };
+  const run = () => { const s = document.createElement("script"); s.src = "guide3d.js?v=20261116d"; s.async = true; s.dataset.atlas = "img/g3d/atlas.webp?v=20261116"; document.head.appendChild(s); };
   // 画像や動画を全部待たず、HTML を読み終えて手が空いたら始める（2 人が早く出てくる）
   const soon = () => (window.requestIdleCallback ? requestIdleCallback(run, { timeout: 1200 }) : setTimeout(run, 300));
   if (document.readyState === "loading") addEventListener("DOMContentLoaded", soon, { once: true }); else soon();
