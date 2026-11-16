@@ -54,7 +54,7 @@
   const VS_CHAR = `
 attribute vec2 aUv; attribute vec3 aD; // aD.x＝奥行き、aD.y＝耳の形（1＝耳）、aD.z＝頭（耳こみ）の形
 uniform mat4 uP; uniform vec3 uPos; uniform float uSize; uniform vec3 uRot; uniform vec2 uSq; uniform vec2 uLag;
-uniform vec4 uEar; uniform vec4 uEarP; uniform vec4 uHead; uniform vec4 uNose; uniform vec4 uBelly;
+uniform vec4 uEar; uniform vec4 uEarP; uniform vec4 uHead; uniform vec4 uNose; uniform vec4 uBelly; uniform vec4 uHop; // うさぎ跳び：x＝のび、y＝ちぢみ（背中を丸める）、z＝進む向き（-1・0・1）、w＝前足の着地
 varying vec2 vUv;
 vec2 rot2(vec2 q, vec2 c, float a) { vec2 d = q - c; float cs = cos(a), sn = sin(a); return c + vec2(d.x * cs - d.y * sn, d.x * sn + d.y * cs); }
 void main() {
@@ -78,6 +78,14 @@ void main() {
     q = rot2(q, vec2(uNose.x, uHead.z), uHead.w * wh); q += uHead.xy * wh; }
   { vec2 dn = q - uNose.xy; float wn = exp(-dot(dn, dn) / 0.0009); q.y += uNose.z * wn; q.x -= dn.x * uNose.w * wn; }
   { vec2 db = (q - uBelly.xy) / uBelly.z; float wb = exp(-dot(db, db) * 1.6) * plant; q += (q - uBelly.xy) * vec2(1.0, 0.45) * uBelly.w * wb; }
+  { // うさぎ跳び（2026-11-16 オーナー：「移動もうさぎの走り方を忠実に」）。けると前足は前へ・後ろ足は後ろへのびて体が長くなり、着くと足を体の下に集めて背中（お尻の側）が丸く上がる
+    float low = 1.0 - smoothstep(0.05, 0.36, q.y), side = (q.x - 0.5) * uHop.z, fr = smoothstep(-0.06, 0.2, side), bk = smoothstep(-0.02, 0.26, -side), body = 1.0 - aD.z;
+    q.x += uHop.z * uHop.x * low * (0.085 * fr - 0.11 * bk);                 // 前足を前へ、後ろ足を後ろへ
+    q.y += uHop.x * low * (0.035 * fr + 0.05 * bk) * smoothstep(0.0, 0.12, q.y); // のびた足は床からはなれる
+    q.x -= (q.x - 0.5) * uHop.y * low * 0.3;                                  // ちぢみ：足を体の下に集める
+    q.y += uHop.y * 0.07 * bk * body * smoothstep(0.12, 0.5, q.y) * (1.0 - smoothstep(0.62, 0.9, q.y)); // ちぢみ：お尻の側の背中が丸く上がる
+    q.y -= uHop.w * 0.035 * fr * smoothstep(0.2, 0.6, q.y);                   // 前足の着地：肩（進む側）が沈む
+    q.x += uHop.z * uHop.x * 0.03 * smoothstep(0.2, 0.7, q.y) * body; }        // のび：胸が前へ出る
   vec3 p = vec3((q.x - 0.5) * uSq.x, (q.y - ${FOOT.toFixed(3)}) * uSq.y, aD.x * ${DEPTH.toFixed(2)} * uSq.x);
   p.xy += uLag * top * top * top;
   float cz = cos(uRot.z), sz = sin(uRot.z); p.xy = vec2(p.x * cz - p.y * sz, p.x * sz + p.y * cz);
@@ -226,7 +234,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     face: "open", blinkAt: 1.5 + Math.random() * 3, happyUntil: 0, ry: 0, rx: 0, rz: 0, sq: 1, sqV: 0, lagX: 0, lagXV: 0, lagY: 0, lagYV: 0, dir: 0, hopAt: 0, hop: 0, hopV: 0, seen: false,
     step: d.row * 0.5, trot: 0, hover: false, spinT: -1, lookUntil: 0, lookAt: 6 + Math.random() * 5, actUntil: 0, act: "", awakeUntil: 0, asleep: false, speed: 0, comp: 0, air: 0,
     eL: 0, eLV: 0, eR: 0, eRV: 0, eW: 0, eWV: 0, flap: 0, flapV: 0, hx: 0, hxV: 0, hy: 0, hyV: 0, ht: 0, htV: 0, ext: 0, extV: 0, nose: 0, twPh: 0, twAt: 1 + Math.random() * 2, twUntil: 0,
-    br: Math.random() * 6, exert: 0, idle: "", idleT0: 0, idleUntil: 0, idleAt: 9 + Math.random() * 6, calmAt: 0, flickAt: 3 + Math.random() * 5, alertUntil: 0, hopF: -1, binkDir: 1, lastRy: 0 });
+    br: Math.random() * 6, exert: 0, idle: "", idleT0: 0, idleUntil: 0, idleAt: 9 + Math.random() * 6, calmAt: 0, flickAt: 3 + Math.random() * 5, alertUntil: 0, hopF: -1, binkDir: 1, lastRy: 0, hopE: 0, hopG: 0, hopW: 0, hopDir: 0 });
   const chars = DEF.map(mk); state.chars = chars;
   const puffs = [], rings = [], bubbles = state.bubbles;
   // 奥行きのある牧草（最初の画面だけ。カメラに近いほど大きく、ぼけて、速く流れる）
@@ -255,12 +263,12 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.from = { x: fx, dy: fy + scrollY, z: fz, size: fs };
     const E = c.exit || T, dist = Math.hypot(E.x - fx, E.y - fy);
     c.hops = opt.intro ? 3 : clamp(Math.round(dist / 380), 1, 3);
-    c.hopH = clamp(dist / c.hops * 0.42, 34, 150) * (opt.intro ? 1.3 : 1);
+    c.hopH = clamp(dist / c.hops * 0.3, 28, 110) * (opt.intro ? 1.3 : 1);   // うさぎの跳びは低く長い（前は 0.42：高く上がりすぎて、ボールがはねるように見えた）
     c.zArc = opt.intro ? 0 : clamp(dist * 0.35, 0, 240);
     c.dur = opt.intro ? 1.5 : Math.min(1.15, 0.5 + 0.2 * c.hops + dist / 4200);   // 広い画面でも待たせない
     c.pre = opt.intro || !curOn || c.mode !== "sit" ? 0 : 0.13;                          // 跳ぶ前に、いちど沈む（ため）
     c.idle = ""; c.idNow = ""; c.env = 0; c.loafNow = false; c.calmNow = false; c.calmAt = 0;
-    c.t = -c.delay - (opt.wait || 0) - c.pre; c.mode = "fly"; c.dir = Math.sign(E.x - fx) || 0; c.seen = true; c.hop = 0; c.hopV = 0; c.spinT = -1; c.act = ""; c.hover = false; c.asleep = false;
+    c.t = -c.delay - (opt.wait || 0) - c.pre; c.mode = "fly"; c.dir = Math.sign(E.x - fx) || 0; c.hopDir = c.dir || c.hopDir; c.seen = true; c.hop = 0; c.hopV = 0; c.spinT = -1; c.act = ""; c.hover = false; c.asleep = false;
     unsay(c);
   };
 
@@ -383,10 +391,15 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         c.alpha = c.t < 0 ? (c.from.z < -10 ? 0 : c.alpha) : Math.min(1, c.alpha + dt * 5);
         const air = Math.sin(Math.PI * fa), ground = f < ST ? 1 : Math.exp(-Math.pow(Math.min(fa, 1 - fa) / 0.1, 2));
         if (c.t < 0) c.sq = 1 - 0.15 * (c.pre > 0 ? smooth(clamp(1 + c.t / c.pre, 0, 1)) : 0);   // ため
-        else c.sq = 1 + 0.10 * air - 0.16 * ground * (t > 0.02 ? 1 : 0);
-        c.rz += ((-c.dir * 0.10 * air) - c.rz) * Math.min(1, dt * 12);
+        else c.sq = 1 - 0.07 * Math.pow(air, 0.7) + 0.05 * ground * (t > 0.02 ? 1 : 0);          // 空中は体が長く低い・着いた時は背中が丸く高い（前は逆に、空中で縦にのびていた）
+        // うさぎ跳びの形：のびは、けった直後がいちばん大きい。着く少し前から前足を下ろし、前足 → 後ろ足の順に着く
+        { const pre = c.t < 0 ? (c.pre > 0 ? smooth(clamp(1 + c.t / c.pre, 0, 1)) : 0) : 0, ext = c.t < 0 ? 0 : Math.pow(Math.sin(Math.PI * Math.min(1, fa * 1.12)), 0.75) * (fa < 0.9 ? 1 : (1 - fa) / 0.1);
+          const front = c.t < 0 ? 0 : Math.exp(-Math.pow((fa - 0.9) / 0.07, 2)), gath = Math.max(pre, c.t < 0 ? 0 : ground * (t > 0.02 ? 1 : 0));
+          const k = Math.min(1, dt * 22); c.hopE += (ext - c.hopE) * k; c.hopG += (gath - c.hopG) * k; c.hopW += (front - c.hopW) * k; }
+        c.rz += ((c.dir * (0.13 * Math.cos(Math.PI * fa) - 0.03) * (c.t < 0 ? 0 : 1)) - c.rz) * Math.min(1, dt * 12); // けった時は鼻が上、着く時は鼻が下（前足から着く）
         if (t >= 1) { if (c.exit) { c.mode = "sit"; c.exit = null; c.h = 0; c.dir = 0; } else land(c, now); if (c.row === chars.length - 1) introDone = true; }
       } else {
+        { const k = Math.min(1, dt * 9); c.hopE += (0 - c.hopE) * k; c.hopG += (0 - c.hopG) * k; c.hopW += (0 - c.hopW) * k; } // 着いたあと：のび・ちぢみをゆっくり戻す（お尻が落ちて、おすわりに戻る）
         // 着いたあとは、その場所に貼りつく（ページと一緒に動く）
         c.x = c.gx = T.x; c.gy = T.y; c.size = T.size; c.z = zBase(c); c.alpha = 1; c.comp = 1; c.air = 0;
         const near = fine && now - pAt < 4 && Math.hypot(px - c.x, py - (c.y - c.size * 0.4)) < c.size * 0.42;
@@ -512,6 +525,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         gl.uniform4f(u.uEar, c.eL, c.eR, c.flap, c.eW); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]);
         gl.uniform4f(u.uHead, c.hx, c.hy, B.neck, c.ht); gl.uniform4f(u.uNose, B.nose[0], B.nose[1], c.nose, c.nose * 6);
         gl.uniform4f(u.uBelly, B.belly[0], B.belly[1], B.belly[2], breath); }
+      gl.uniform4f(u.uHop, c.hopE || 0, c.hopG || 0, c.mode === "fly" ? c.dir : (c.hopDir || 0), c.hopW || 0);
       gl.uniform4fv(u.uTile, tile(FACE[c.face], c.row)); gl.uniform4fv(u.uDTile, tile(3, c.row));
       gl.uniform1f(u.uAlpha, c.alpha); gl.uniform1f(u.uBias, clamp(Math.abs(c.z) / 420, 0, 1) * 2.2 + (c.mode === "fly" ? clamp(c.speed / 2600, 0, 1) * 1.1 : 0));   // 遠い・近い・速いときは少しぼかす
       gl.drawElements(gl.TRIANGLES, idxCount, gl.UNSIGNED_SHORT, 0);
