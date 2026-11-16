@@ -29,9 +29,9 @@
   if (!gl) return;
 
   const root = document.documentElement, wrap = document.getElementById("g3dWrap");
-  // 3D の画面はページの中に置き、描いたときのスクロール位置へ動かす（素早いスライドでもページとずれない。2026-11-16）
+  // 3D の画面はページの中に置き、描いたときのスクロール位置へ動かす（→ NOTES）
   let docH = 0; const ftr = document.querySelector("footer");
-  // ページの終わり（フッターの下）を測る。画面の高さで測ると、この画面自身の高さが入って縮まなくなる
+  // ページの終わり（→ NOTES）
   const docEnd = () => ftr ? Math.ceil(ftr.getBoundingClientRect().bottom + scrollY) : root.scrollHeight;
   const fitWrap = () => { if (!wrap) return; docH = docEnd(); wrap.style.height = docH + "px"; };
   let placedY = -1; const place = (y) => { if (!wrap) return; const yy = Math.max(0, Math.min(y, docH - (cv.clientHeight || innerHeight))); if (yy !== placedY) { placedY = yy; cv.style.transform = "translate3d(0," + yy + "px,0)"; } return yy; };
@@ -39,11 +39,13 @@
   window.__g3d = state;
 
   /* ───────── 絵のます目（tools/make_g3d.py と同じ数字） ───────── */
-  const AW = 4096, AH = 2048, CELL = 1024, PAD = 32, INNER = CELL - PAD * 2; // 2026-11-16：512 では手足がつぶれたので 2 倍（絵の割合は前と同じ）
+  const AW = 4096, AH = 4096, CELL = 1024, PAD = 32, INNER = CELL - PAD * 2; // 2026-11-16（→ NOTES）
   const tile = (col, row) => [(col * CELL + PAD) / AW, (row * CELL + PAD) / AH, INNER / AW, INNER / AH];
   const FACE = { open: 0, blink: 1, happy: 2 };
+  // 寝る姿勢（2〜3 段目）の大きさの倍（→ NOTES）
+  const POSE_R = [1.5371, 1.1691];
   const FOOT = 0.058;      // 絵の下から足の裏までの割合
-  const GRID = 72;         // 板の分割数（2026-11-16：耳の形のとおりに動かすので、40 から細かく）
+  const GRID = 72;         // 板の分割数（2026-11-16：耳（→ NOTES）
   const DEPTH = 0.27;      // ふくらみの厚さ（絵の幅に対して）
   const FOV = 30 * Math.PI / 180;
   const ICONS = ["down", "note", "zz", "play", "star", "heart", "ask", "bang"];
@@ -54,7 +56,7 @@
   const VS_CHAR = `
 attribute vec2 aUv; attribute vec3 aD; // aD.x＝奥行き、aD.y＝耳の形（1＝耳）、aD.z＝頭（耳こみ）の形
 uniform mat4 uP; uniform vec3 uPos; uniform float uSize; uniform vec3 uRot; uniform vec2 uSq; uniform vec2 uLag;
-uniform vec4 uEar; uniform vec4 uEarP; uniform vec4 uHead; uniform vec4 uNose; uniform vec4 uBelly; uniform vec4 uHop; // うさぎ跳び：x＝のび、y＝ちぢみ（背中を丸める）、z＝進む向き（-1・0・1）、w＝前足の着地
+uniform vec4 uEar; uniform vec4 uEarP; uniform vec4 uHead; uniform vec4 uNose; uniform vec4 uBelly; uniform vec4 uHop; // うさぎ跳び：x＝のび、y＝ちぢみ（背（→ NOTES）
 varying vec2 vUv;
 vec2 rot2(vec2 q, vec2 c, float a) { vec2 d = q - c; float cs = cos(a), sn = sin(a); return c + vec2(d.x * cs - d.y * sn, d.x * sn + d.y * cs); }
 void main() {
@@ -67,18 +69,18 @@ void main() {
     q = rot2(q, vec2(uEarP.x, uEarP.z), uEar.x * wy * mL);
     q = rot2(q, vec2(uEarP.y, uEarP.z), uEar.y * wy * mR);
   } else {
-    // たれ耳：付け根（上）は動かず、先ほど大きく動く。動かすのは耳の形のところだけ（前は耳のあたりの縦の帯ごと動かしていて、レンは背中まで動き、髪の毛のように見えた。2026-11-16）
+    // たれ耳：付け根（上）は動かず、先ほど大きく動く。（→ NOTES）
     float wy = smoothstep(uEarP.z, uEarP.z - 0.36, q.y), mid = 0.5 * (uEarP.x + uEarP.y);
     float mL = aD.y * (1.0 - smoothstep(mid - 0.02, mid + 0.02, q.x)), mR = aD.y * smoothstep(mid - 0.02, mid + 0.02, q.x);
     q = rot2(q, vec2(uEarP.x, uEarP.z), uEar.x * wy * mL);
     q = rot2(q, vec2(uEarP.y, uEarP.z), uEar.y * wy * mR);
     q.y += uEar.z * wy * wy * (mL + mR) * 0.06; q.x += uEar.z * wy * (mR - mL) * 0.025;
   }
-  { float wh = aD.z; // 頭と耳をひとかたまりで（前は高さの帯で分けていて、体の前に垂れたレンの耳が途中でちぎれ、ぎざぎざに見えた。2026-11-16）
+  { float wh = aD.z; // 頭と耳をひとかたまりで（→ NOTES）
     q = rot2(q, vec2(uNose.x, uHead.z), uHead.w * wh); q += uHead.xy * wh; }
   { vec2 dn = q - uNose.xy; float wn = exp(-dot(dn, dn) / 0.0009); q.y += uNose.z * wn; q.x -= dn.x * uNose.w * wn; }
   { vec2 db = (q - uBelly.xy) / uBelly.z; float wb = exp(-dot(db, db) * 1.6) * plant; q += (q - uBelly.xy) * vec2(1.0, 0.45) * uBelly.w * wb; }
-  { // うさぎ跳び（2026-11-16 オーナー：「移動もうさぎの走り方を忠実に」）。けると前足は前へ・後ろ足は後ろへのびて体が長くなり、着くと足を体の下に集めて背中（お尻の側）が丸く上がる
+  { // うさぎ跳び（2026-11-16 オーナー：「移（→ NOTES）
     float low = 1.0 - smoothstep(0.05, 0.36, q.y), side = (q.x - 0.5) * uHop.z, fr = smoothstep(-0.06, 0.2, side), bk = smoothstep(-0.02, 0.26, -side), body = 1.0 - aD.z;
     q.x += uHop.z * uHop.x * low * (0.085 * fr - 0.11 * bk);                 // 前足を前へ、後ろ足を後ろへ
     q.y += uHop.x * low * (0.035 * fr + 0.05 * bk) * smoothstep(0.0, 0.12, q.y); // のびた足は床からはなれる
@@ -90,8 +92,8 @@ void main() {
   p.xy += uLag * top * top * top;
   float cz = cos(uRot.z), sz = sin(uRot.z); p.xy = vec2(p.x * cz - p.y * sz, p.x * sz + p.y * cz);
   float cx = cos(uRot.x), sx = sin(uRot.x); p.yz = vec2(p.y * cx - p.z * sx, p.y * sx + p.z * cx);
-  // 横を向くとき：体はあまり回さず、頭（上のほう）を大きく回す。板を回すと横幅が細って平べったく見えるので、そのぶん幅を戻す（2026-11-16 オーナー「横を向いたレンが平べったい」）
-  // 幅を戻す割り算は、角度が大きいと絵を引きのばして壊すので、角度は必ず ±0.6 までに限る。押したときに 1 回転させる案は、真横を向いた瞬間に板の薄さが見えておかしいので、やめた（かわりに、高く跳ねて体を左右に振る）
+  // 横を向くとき：体はあまり回さず、頭（上のほう）を（→ NOTES）
+  // 幅を戻す割り算は、角度が大きいと絵を引きのばして壊すので、角度は必ず ±0.6 までに限る（→ NOTES）
   float ay = clamp(uRot.y, -0.6, 0.6) * mix(0.45, 1.0, smoothstep(0.22, 0.6, top));
   float cy = cos(ay), sy = sin(ay); p.x /= mix(1.0, cy, 0.85); p.xz = vec2(p.x * cy + p.z * sy, -p.x * sy + p.z * cy);
   vUv = vec2(aUv.x, 1.0 - aUv.y);
@@ -162,7 +164,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   };
 
   let offY = 0;
-  let progChar, progBlob, progIcon, tex, texIcon, quadBuf, idxBuf, idxCount, meshes = [], cleared = false;
+  let progChar, progBlob, progIcon, tex, texIcon, quadBuf, idxBuf, idxCount, meshes = [], meshesF = [], cleared = false;
   const proj = new Float32Array(16);
   let W = 1, H = 1, DPR = 1, camD = 1;
 
@@ -187,12 +189,13 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     // 奥行きを頂点に焼きこむ（頂点シェーダーで絵を読めない機械でも動くように）
     const N = GRID + 1, c2 = document.createElement("canvas"); c2.width = N; c2.height = N * 2;
     const g = c2.getContext("2d", { willReadFrequently: true });
-    meshes = [0, 1].map((row) => {
-      g.clearRect(0, 0, N, N); g.drawImage(img, 3 * CELL + PAD, row * CELL + PAD, INNER, INNER, 0, 0, N, N);
+    const mesh = (col, row) => {
+      g.clearRect(0, 0, N, N); g.drawImage(img, col * CELL + PAD, row * CELL + PAD, INNER, INNER, 0, 0, N, N);
       const px = g.getImageData(0, 0, N, N).data, v = new Float32Array(N * N * 5);
       for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const k = (j * N + i) * 5, o = ((N - 1 - j) * N + i) * 4; v[k] = i / GRID; v[k + 1] = j / GRID; v[k + 2] = px[o] / 255; v[k + 3] = px[o + 1] / 255; v[k + 4] = px[o + 2] / 255; }
       const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW); return b;
-    });
+    };
+    meshes = [mesh(3, 0), mesh(3, 1)]; meshesF = [mesh(1, 2), mesh(1, 3)];
     const idx = new Uint16Array(GRID * GRID * 6); let q = 0;
     for (let j = 0; j < GRID; j++) for (let i = 0; i < GRID; i++) { const a = j * N + i, b = a + 1, c = a + N, d = c + 1; idx[q++] = a; idx[q++] = b; idx[q++] = c; idx[q++] = b; idx[q++] = d; idx[q++] = c; }
     idxBuf = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW); idxCount = idx.length;
@@ -219,7 +222,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const findSpots = () => {
     const cur = spots[state.active];
     spots = [...document.querySelectorAll(".g3d-spot")].filter((e) => e.offsetParent !== null);
-    // pin＝その場所を画面に止めておく親（position: sticky。「ある一日」）。止まっている間は、3D の画面も画面に固定する（下の stuck）
+    // pin＝場所を画面に止める親（sticky。ある一日）
     const pinOf = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.position === "sticky") return { el: p, top: parseFloat(cs.top) || 0 }; } return null; };
     spotInfo = spots.map((e) => { const s = e.closest("section"); return { act: e.dataset.act || "", tone: s && s.classList.contains("day") ? 1 : s && s.classList.contains("game") ? 2 : 0, pin: pinOf(e) }; });
     if (cur) state.active = spots.indexOf(cur);
@@ -227,7 +230,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const spotRect = (i) => spots[i] ? spots[i].getBoundingClientRect() : null;
 
   /* ───────── 2 人 ───────── */
-  // fx：場所の箱の中での足の位置（横）／k：箱の高さに対する背の高さ／dz：手前に出す量
+  // fx：場所の箱の中での足の位置（横）（→ NOTES）
   const DEF = [{ name: "ren", row: 0, fx: 0.31, k: 1.0, dz: 0, delay: 0 }, { name: "jill", row: 1, fx: 0.87, k: 0.74, dz: 26, delay: 0.14 }];
   const BODY = [{ ear: [0.30, 0.875, 0.80, 1], nose: [0.58, 0.49], neck: 0.44, belly: [0.60, 0.24, 0.20] },
                 { ear: [0.34, 0.525, 0.80, 0], nose: [0.43, 0.53], neck: 0.47, belly: [0.55, 0.26, 0.24] }];
@@ -236,20 +239,20 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     face: "open", blinkAt: 1.5 + Math.random() * 3, happyUntil: 0, ry: 0, rx: 0, rz: 0, sq: 1, sqV: 0, lagX: 0, lagXV: 0, lagY: 0, lagYV: 0, dir: 0, hopAt: 0, hop: 0, hopV: 0, seen: false,
     step: d.row * 0.5, trot: 0, hover: false, spinT: -1, lookUntil: 0, lookAt: 6 + Math.random() * 5, actUntil: 0, act: "", awakeUntil: 0, asleep: false, speed: 0, comp: 0, air: 0,
     eL: 0, eLV: 0, eR: 0, eRV: 0, eW: 0, eWV: 0, flap: 0, flapV: 0, hx: 0, hxV: 0, hy: 0, hyV: 0, ht: 0, htV: 0, ext: 0, extV: 0, nose: 0, twPh: 0, twAt: 1 + Math.random() * 2, twUntil: 0,
-    br: Math.random() * 6, exert: 0, idle: "", idleT0: 0, idleUntil: 0, idleAt: 9 + Math.random() * 6, calmAt: 0, flickAt: 3 + Math.random() * 5, alertUntil: 0, hopF: -1, binkDir: 1, lastRy: 0, hopE: 0, hopG: 0, hopW: 0, hopDir: 0 });
+    br: Math.random() * 6, exert: 0, idle: "", idleT0: 0, idleUntil: 0, idleAt: 9 + Math.random() * 6, calmAt: 0, flickAt: 3 + Math.random() * 5, alertUntil: 0, hopF: -1, binkDir: 1, lastRy: 0, flat: false, flatGoal: false, lieT: 1, hopE: 0, hopG: 0, hopW: 0, hopDir: 0 });
   const chars = DEF.map(mk); state.chars = chars;
   const puffs = [], rings = [], bubbles = state.bubbles;
-  // 奥行きのある牧草（最初の画面だけ。カメラに近いほど大きく、ぼけて、速く流れる）
+  // 奥行きのある牧草（→ NOTES）
   const motes = Array.from({ length: 9 }, () => ({ x: (Math.random() - 0.5) * 1.7, y: Math.random(), z: 0.2 + Math.random() * 0.45, a: Math.random() * Math.PI, va: (Math.random() - 0.5) * 0.5, ph: Math.random() * 6, len: 0.03 + Math.random() * 0.03 }));
 
-  // 2 人の間：ジルの頭がレンの体に食いこまないよう広げた（0.36・0.80 → 0.31・0.87。2026-11-16）。とても細い画面（360 未満）は、見出しに重なるので元の間のまま
+  // 2 人の間：ジルの頭がレンの体に食いこまないよう（→ NOTES）
   const targetOf = (c, r) => ({ x: r.left + r.width * (c.fx + (W < 360 ? (c.row ? -0.07 : 0.05) : 0)), y: r.bottom, size: (r.height * c.k) / (1 - FOOT - 0.085) });
   const onScreen = (r, m) => r.bottom > -m && r.top < H + m && r.right > -m && r.left < W + m;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const smooth = (t) => t * t * (3 - 2 * t);
-  // 最初の画面だけ：スクロールすると 2 人がカメラのほうへ近づく（奥行きのあるスクロール）
+  // 最初の画面だけ（→ NOTES）
   const zBase = (c) => c.dz + (state.active === 0 ? clamp(scrollY / H, 0, 0.8) * camD * 0.2 : 0);   // 画面の高さに比例（横向きのスマホで大きくなりすぎない）
-  // ここを押したら 2 人に当たるか（最初の画面の「ハンコ」が、2 人の上に押されないように index.html から使う）
+  // ここを押したら 2 人に当たるか（→ NOTES）
   state.hit = (x, y) => chars.some((c) => c.mode === "sit" && c.alpha > 0.5 && Math.hypot(x - c.x, y - (c.y - c.size * 0.4)) < c.size * 0.5);
   const unsay = (c) => { for (let i = bubbles.length - 1; i >= 0; i--) if (bubbles[i].c === c) bubbles.splice(i, 1); };
   const say = (c, icon, t0, dur) => { unsay(c); bubbles.push({ c, icon, t0, until: t0 + dur }); };
@@ -266,12 +269,12 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.from = { x: fx, dy: fy + scrollY, z: fz, size: fs };
     const E = c.exit || T, dist = Math.hypot(E.x - fx, E.y - fy);
     c.hops = opt.intro ? 3 : clamp(Math.round(dist / 380), 1, 3);
-    c.hopH = clamp(dist / c.hops * 0.3, 28, 110) * (opt.intro ? 1.3 : 1);   // うさぎの跳びは低く長い（前は 0.42：高く上がりすぎて、ボールがはねるように見えた）
+    c.hopH = clamp(dist / c.hops * 0.3, 28, 110) * (opt.intro ? 1.3 : 1);   // うさぎの跳びは低く長い（→ NOTES）
     c.zArc = opt.intro ? 0 : clamp(dist * 0.35, 0, 240);
     c.dur = opt.intro ? 1.5 : Math.min(1.15, 0.5 + 0.2 * c.hops + dist / 4200);   // 広い画面でも待たせない
     c.pre = opt.intro || !curOn || c.mode !== "sit" ? 0 : 0.13;                          // 跳ぶ前に、いちど沈む（ため）
     c.idle = ""; c.idNow = ""; c.env = 0; c.loafNow = false; c.calmNow = false; c.calmAt = 0;
-    c.t = -c.delay - (opt.wait || 0) - c.pre; c.mode = "fly"; c.dir = Math.sign(E.x - fx) || 0; c.hopDir = c.dir || c.hopDir; c.seen = true; c.hop = 0; c.hopV = 0; c.spinT = -1; c.act = ""; c.hover = false; c.asleep = false;
+    c.t = -c.delay - (opt.wait || 0) - c.pre; c.flat = false; c.flatGoal = false; c.lieT = 1; c.mode = "fly"; c.dir = Math.sign(E.x - fx) || 0; c.hopDir = c.dir || c.hopDir; c.seen = true; c.hop = 0; c.hopV = 0; c.spinT = -1; c.act = ""; c.hover = false; c.asleep = false;
     unsay(c);
   };
 
@@ -289,7 +292,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (act === "play") c.hopV = 330;
     if (act === "follow") c.happyUntil = now + 2.6;
     const icon = ACTS[act];
-    // 居眠り：レンは着いたらすぐ目を閉じ（にっこりしない）、目を閉じてから Zz を出す（2026-11-16 オーナー「Zz が出るのに、寝るのが遅い。合っていない」）
+    // 居眠り：レンは着いたらすぐ目を閉じ（にっこりしな（→ NOTES）
     if (act === "nap" && c.row === 0) { c.happyUntil = 0; say(c, icon, now + NAP_AT + 0.45, 2.4); }
     else if (icon && act !== "hint" && act !== "nap" && c.row === 1) say(c, icon, now + 0.3, 2.4);   // ほかの印はジルが出す
   };
@@ -304,7 +307,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   }, { passive: true });
 
 
-  // 体の中の動き（2026-11-16。調べた動きは docs/RABBIT-MOTION-2026-11-16.md）
+  // 体の中の動き（2026-11-16。調べた動きは（→ NOTES）
   const life = (c, now, dt, other, cur) => {
     const B = BODY[c.row], sit = c.mode === "sit", lop = B.ear[3] > 0.5, id = sit ? c.idNow || "" : "", e = id ? c.env : 0, hf = c.hopF, fly = c.mode === "fly", air = fly && hf >= 0 ? Math.sin(Math.PI * hf) : 0, cs = fly && hf >= 0 ? Math.cos(Math.PI * hf) : 0;
     if (sit && c.calmNow && !c.asleep && !id && now > c.idleAt && introDone) { const r = Math.random(); c.idle = r < 0.45 ? "groom" : r < 0.8 ? "scope" : "stretch"; c.idleT0 = now; c.idleUntil = now + (r < 0.45 ? 2.6 : r < 0.8 ? 2.3 : 1.6); c.idleAt = now + 9 + Math.random() * 9; }
@@ -319,13 +322,13 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     } else {
       eL = eR = clamp(-c.rz * 0.8, -0.2, 0.2) + (c.asleep ? Math.sin(c.br) * 0.02 : 0);
       fl = fly ? -cs * 0.9 : clamp(-c.hopV / 450, -1, 1) * 0.7 - (c.lope || 0) * 0.35 * c.trot;
-      c.eLV -= (c.ry - c.lastRy) * 12; c.eRV -= (c.ry - c.lastRy) * 12; // 頭の向きを変えた時の耳のゆれ（26 では大きすぎ、耳先が背中・お尻の側へはみ出した。2026-11-17 オーナー指摘）
+      c.eLV -= (c.ry - c.lastRy) * 12; c.eRV -= (c.ry - c.lastRy) * 12; // 頭の向きを変えた時の耳のゆれ（→ NOTES）
     }
     c.lastRy = c.ry;
     if (sit && !c.asleep && id !== "groom" && now > c.flickAt) { c.flickAt = now + 3.5 + Math.random() * 6; if (lop) { c.eLV += 2.2; c.eRV -= 2.2; } else if (Math.random() < 0.5) c.eLV += 7; else c.eRV -= 7; }
     if (id === "shake" && now > c.idleT0 && now < c.idleT0 + 0.05) { c.eLV += 6; c.eRV -= 6; c.flapV += 5; }
     const k = lop ? 90 : 230, d = lop ? 8 : 10; spr(c, "eL", eL, k, d, dt); spr(c, "eR", eR, k, d, dt); spr(c, "eW", eW, 170, 12, dt); spr(c, "flap", fl, 110, 5.5, dt);
-    if (lop) { // たれ耳は重く、頭の横にそってゆれるだけ：横への振れは ±0.1 まで（それ以上は耳先が体の外へ出て、背中から生えたように見えた）
+    if (lop) { // たれ耳は重く、頭の横にそってゆれるだけ（→ NOTES）
       const L = 0.1; if (Math.abs(c.eL) > L) { c.eL = Math.sign(c.eL) * L; c.eLV *= 0.3; } if (Math.abs(c.eR) > L) { c.eR = Math.sign(c.eR) * L; c.eRV *= 0.3; } c.flap = clamp(c.flap, -0.55, 0.45); }
     if (fly) { if (hf >= 0) { hx = c.dir * 0.02 * air; hy = 0.014 * cs; ex = (c.dir ? 0.08 : 0.03) * air; } else if (c.pre > 0) hy = -0.02; }
     else {
@@ -396,8 +399,8 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         c.alpha = c.t < 0 ? (c.from.z < -10 ? 0 : c.alpha) : Math.min(1, c.alpha + dt * 5);
         const air = Math.sin(Math.PI * fa), ground = f < ST ? 1 : Math.exp(-Math.pow(Math.min(fa, 1 - fa) / 0.1, 2));
         if (c.t < 0) c.sq = 1 - 0.15 * (c.pre > 0 ? smooth(clamp(1 + c.t / c.pre, 0, 1)) : 0);   // ため
-        else c.sq = 1 - 0.07 * Math.pow(air, 0.7) + 0.05 * ground * (t > 0.02 ? 1 : 0);          // 空中は体が長く低い・着いた時は背中が丸く高い（前は逆に、空中で縦にのびていた）
-        // うさぎ跳びの形：のびは、けった直後がいちばん大きい。着く少し前から前足を下ろし、前足 → 後ろ足の順に着く
+        else c.sq = 1 - 0.07 * Math.pow(air, 0.7) + 0.05 * ground * (t > 0.02 ? 1 : 0);          // 空中は体が長く低い・着いた時は背中が丸く高い（→ NOTES）
+        // うさぎ跳びの形（→ NOTES）
         { const pre = c.t < 0 ? (c.pre > 0 ? smooth(clamp(1 + c.t / c.pre, 0, 1)) : 0) : 0, ext = c.t < 0 ? 0 : Math.pow(Math.sin(Math.PI * Math.min(1, fa * 1.12)), 0.75) * (fa < 0.9 ? 1 : (1 - fa) / 0.1);
           const front = c.t < 0 ? 0 : Math.exp(-Math.pow((fa - 0.9) / 0.07, 2)), gath = Math.max(pre, c.t < 0 ? 0 : ground * (t > 0.02 ? 1 : 0));
           const k = Math.min(1, dt * 22); c.hopE += (ext - c.hopE) * k; c.hopG += (gath - c.hopG) * k; c.hopW += (front - c.hopW) * k; }
@@ -413,11 +416,11 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (introDone && now > c.hopAt && !asleep) { c.hopAt = now + 5 + Math.random() * 6; if (onScreen(r, 0) && Math.abs(vel) < 30) c.hopV = 300; }
         if (c.act === "play" && c.hop === 0 && c.hopV === 0 && now < c.actUntil - 1.9 && now > c.actUntil - 2.2) c.hopV = 300;   // ゲームの所では 2 回跳ねる
         // ページが動いているあいだは、とことこ歩く
-        const moving = Math.abs(vel) > 60 && !asleep;
+        const moving = Math.abs(vel) > 60 && !asleep && !state.fixed;   // 場所が画面に止まっている所（→ NOTES）
         c.trot += ((moving ? 1 : 0) - c.trot) * Math.min(1, dt * 8); c.step += Math.abs(dy) / 64;
         { const ph = c.step % 1, lope = ph < 0.62 ? Math.sin(Math.PI * ph / 0.62) : 0; c.h = c.hop + lope * Math.min(7, c.size * 0.06) * c.trot; c.lope = (ph < 0.62 ? Math.cos(Math.PI * ph / 0.62) : -1) * c.trot; }
         c.y = T.y - c.h;
-        // なでる：カーソルを乗せると、にっこりして少し沈む。乗せた瞬間に 1 回だけ跳ねる
+        // なでる：カーソルを乗せると、にっこり（→ NOTES）
         if (near && !c.hover) { c.happyUntil = now + 1.2; c.awakeUntil = now + 8; if (c.hop === 0) c.hopV = 260; if (asleep) unsay(c); c.idle = ""; }
         if (near) c.happyUntil = Math.max(c.happyUntil, now + 0.3);
         c.hover = near;
@@ -435,21 +438,23 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // 居眠り中は、ときどき Zz
         if (c.asleep && !asleep) { unsay(c); c.idle = "stretch"; c.idleT0 = now; c.idleUntil = now + 1.7; }
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
+        // 居眠り：のびて横になる（一度沈み、まん中で絵を入れかえる。11-17）
+        { const want = asleep && c.hop === 0; if (want !== c.flatGoal) { c.flatGoal = want; c.lieT = 0; } if (c.lieT < 1) { const was = c.lieT; c.lieT = Math.min(1, c.lieT + dt / (want ? 0.7 : 0.45)); if (was < 0.5 && c.lieT >= 0.5) c.flat = want; } }
       }
       c.speed = Math.hypot(c.x - ox, c.y - oy) / Math.max(dt, 0.001);
       // 耳・頭の遅れ（重さ）：スクロールや移動の速さに、ばねで遅れてついてくる
-      // 体がゆれるのは、立っている場所が画面の上で動いた時だけ（「ある一日」のように場所が画面に止まったままページだけ進む所では、ゆらさない。2026-11-17 オーナー：「スクロールした時に上下にぐらつく」）
-      const sv = c.mode === "sit" && c.lastSY != null && dt > 0 ? (c.gy - c.lastSY) / dt : -vel; c.lastSY = c.mode === "sit" ? c.gy : null; // gy＝立っている場所の画面の上の高さ（跳ねる分は入れない）
+      // 体のゆれは、場所が画面で動いた時だけ（11-17）
+      const sv = c.mode === "sit" && c.lastSY != null && dt > 0 ? (c.gy - c.lastSY) / dt : -vel; c.lastSY = c.mode === "sit" ? c.gy : null;
       const txl = c.mode === "fly" ? -c.dir * 0.11 : 0, tyl = clamp(-sv * 0.00011, -0.12, 0.12) + (c.mode === "sit" ? clamp(-c.hopV * 0.00015, -0.09, 0.09) : 0);
       c.lagXV += ((txl - c.lagX) * 150 - c.lagXV * 9) * dt; c.lagX += c.lagXV * dt;
       c.lagYV += ((tyl - c.lagY) * 150 - c.lagYV * 9) * dt; c.lagY += c.lagYV * dt;
-      // 向き：移動中は進む方向へ。止まっているときは、PC はカーソルのほう、スマホはゆっくり見回す。ときどき相手のほうを見る
+      // 向き：移動中は進む方向へ。止まっているときは、P（→ NOTES）
       let ty = 0, tx = 0; const other = chars[1 - c.row], cursor = fine && now - pAt < 4;
       if (c.mode === "fly") ty = c.dir * (c.row ? 0.55 : 0.4);
       else if (c.asleep) { ty = 0.12; tx = 0.1; }
       else if (info.act === "nap" && c.row === 1 && !cursor) ty = Math.sign(other.x - c.x) * 0.42;   // ジルは、寝ているレンを見ている
       else if (now < c.lookUntil) ty = Math.sign(other.x - c.x) * 0.5;
-      else if (cursor) { // カーソルを目で追う。すぐ近く（体の上）では向きを変えすぎない：前は、体の上で少し動かすだけで頭が左右に大きくふれ、となりの子に食いこんだ
+      else if (cursor) { // カーソルを目で追う（→ NOTES）
         const dxn = (px - c.x) / c.size, dyn = (py - (c.y - c.size * 0.5)) / c.size, far = smooth(clamp((Math.hypot(dxn, dyn) - 0.25) / 0.9, 0, 1));
         ty = clamp((px - c.x) / W * 1.6, -0.5, 0.5) * (0.25 + 0.75 * far); tx = clamp((py - (c.y - c.size * 0.5)) / H * 0.5, -0.16, 0.2) * (0.3 + 0.7 * far);
         const toward = Math.sign(other.x - c.x) * ty; if (toward > 0) ty *= 1 - 0.45 * clamp(1.6 - Math.abs(other.x - c.x) / c.size, 0, 1); } // となりの子のほうへは、近いほど回しすぎない
@@ -466,7 +471,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       }
       if (c.spinT >= 0) ty += Math.sin(c.spinT * Math.PI * 2) * 0.45 * c.binkDir * (1 - c.spinT);
       ty = clamp(ty, c.row ? -0.5 : -0.36, c.row ? 0.5 : 0.36);   // レンは体が横に長いので、回しすぎない
-      // 向きは、ばねで追う（前は一定の割合で近づけていて、動き出しと止まり方が機械のようだった）。行きすぎないくらいの強さ
+      // 向きは、ばねで追う（→ NOTES）
       c.ryV = (c.ryV || 0) + ((ty - c.ry) * 70 - (c.ryV || 0) * 15) * dt; c.ry += c.ryV * dt; c.rxV = (c.rxV || 0) + ((tx - c.rx) * 70 - (c.rxV || 0) * 15) * dt; c.rx += c.rxV * dt;
       if (c.spinT >= 0) { c.spinT += dt / 0.8; if (c.spinT >= 1) c.spinT = -1; }
       life(c, now, dt, other, cursor);
@@ -482,10 +487,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (let i = bubbles.length - 1; i >= 0; i--) { const b = bubbles[i]; if (now > b.until || b.c.mode !== "sit") bubbles.splice(i, 1); }
     for (const m of motes) { m.a += m.va * dt; m.ph += dt; }
     const heroK = state.active === 0 && introDone ? clamp(1 - sy / (H * 0.9), 0, 1) : 0;
-    // 3D の画面の置き方（2026-11-17 オーナー：「ある一日でスクロールすると上下にぐらつく」）
-    //  ふつう：ページの中に置き、描くたびにスクロールの位置へ動かす（2 人がページと一緒に動く所で、ずれない）
-    //  場所が画面に止まっている間（「ある一日」の sticky）：画面に固定する。ページの中に置いたままだと、ページが先に動き、
-    //  1 コマあとで描く位置へ戻るので、2 人が上下にぐらついて見えた
+    // 場所が画面に止まっている間は 3D の画面も固定（→ NOTES）
     const pin = spotInfo[state.active] && spotInfo[state.active].pin, stuck = !!(pin && Math.abs(pin.el.getBoundingClientRect().top - pin.top) < 0.75 && chars.every((c) => c.mode !== "fly"));
     if (stuck !== state.fixed) { state.fixed = stuck; cv.style.position = stuck ? "fixed" : ""; cv.style.transform = stuck ? "none" : ""; placedY = -1; }
     offY = stuck ? 0 : wrap ? sy - place(sy) : 0;   // 下の端で画面を動かしきれないぶんは、絵のほうをずらす
@@ -503,7 +505,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (!visible) { if (!cleared) { gl.clear(gl.COLOR_BUFFER_BIT); cleared = true; } return; }
     cleared = false; gl.clear(gl.COLOR_BUFFER_BIT);
     const wx = (x) => x - W / 2, wy = (y) => H / 2 - y - offY, dark = Math.max(tone[0], tone[1]);
-    // 手前（z>0）に来ると遠近で外へずれる。着いているときは足の位置が HTML とずれないよう打ち消す（画面の端からはみ出さない）
+    // 手前（z>0）に来ると遠近で外へずれる。着いてい（→ NOTES）
     const pin = (c) => 1 - c.comp * c.z / camD, cx = (c, x) => wx(x) * pin(c), cy = (c, y) => wy(y) * pin(c);
     gl.useProgram(progBlob.p); const ub = progBlob.u; gl.uniformMatrix4fv(ub.uP, false, proj);
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf); gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.disableVertexAttribArray(1);
@@ -521,29 +523,34 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     // 2 人（奥から順に）
     gl.useProgram(progChar.p); const u = progChar.u; gl.uniformMatrix4fv(u.uP, false, proj);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(u.uT, 0);
-    // 光：登場のときは左から右へさっと流れる。PC はカーソルの方向から、スマホはページの進みぐあいでゆっくり回る
+    // 光：登場のときは左から右へさっと流れ（→ NOTES）
     const doc = Math.max(1, root.scrollHeight - H);
     let lx, ly; const sweep = now - introAt;
     if (sweep > 0 && sweep < 2.1) { lx = -1.3 + smooth(sweep / 2.1) * 2.1; ly = 0.6; }
     else if (fine && now - pAt < 6) { lx = (px / W - 0.5) * 1.6; ly = 0.55 - (py / H - 0.5) * 0.8; } else { const ang = (scrollY / doc) * Math.PI * 3 + now * 0.15; lx = Math.sin(ang) * 0.75; ly = 0.6; }
     const ll = Math.hypot(lx, ly, 0.9); gl.uniform3f(u.uL, lx / ll, ly / ll, 0.9 / ll);
-    // 場所の色に合わせる：紺の所は少し青く、こげ茶の所は少し暖かく。暗い所では、ふちを光らせる
+    // 場所の色に合わせる（→ NOTES）
     gl.uniform3f(u.uAmb, 1 - 0.06 * tone[0] - 0.02 * tone[1], 1 - 0.03 * tone[0] - 0.04 * tone[1], 1 + 0.04 * tone[0] - 0.08 * tone[1]);
     gl.uniform4f(u.uRim, 0.75 * tone[0] + 1.0 * tone[1], 0.85 * tone[0] + 0.8 * tone[1], 1.0 * tone[0] + 0.5 * tone[1], 0.34 * dark);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
     for (const c of (chars[0].z <= chars[1].z ? chars : [chars[1], chars[0]])) {
       if (c.alpha < 0.01 || c.mode === "wait") continue;
-      gl.bindBuffer(gl.ARRAY_BUFFER, meshes[c.row]);
+      const fl = !!c.flat, R = fl ? POSE_R[c.row] : 1, dip = c.lieT < 1 ? 1 - 0.16 * Math.sin(Math.PI * c.lieT) : 1;
+      gl.bindBuffer(gl.ARRAY_BUFFER, fl ? meshesF[c.row] : meshes[c.row]);
       gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 20, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 20, 8);
       const wig = c.spinT >= 0 ? Math.sin(c.spinT * Math.PI * 4) * 0.17 * (1 - c.spinT) : 0;   // 押したとき：体を左右に振る
-      gl.uniform3f(u.uPos, cx(c, c.x), cy(c, c.y), c.z); gl.uniform1f(u.uSize, c.size * pin(c) + c.size * (1 - pin(c)) * 0.45);   // 近づくぶんは、少しだけ大きく見せる
-      gl.uniform3f(u.uRot, c.rx, c.ry, c.rz + wig); gl.uniform1f(u.uTurn, clamp(c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq), c.sq); gl.uniform2f(u.uLag, c.lagX, c.lagY);
+      gl.uniform3f(u.uPos, cx(c, c.x), cy(c, c.y), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは、少しだけ大きく見せる
+      gl.uniform3f(u.uRot, fl ? c.rx * 0.3 : c.rx, fl ? c.ry * 0.25 : c.ry, c.rz + wig); gl.uniform1f(u.uTurn, clamp(fl ? c.ry * 0.25 : c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, c.lagX, c.lagY);
       { const B = BODY[c.row], breath = (c.asleep ? 0.05 : 0.03 + 0.02 * c.exert) * (0.5 + 0.5 * Math.sin(c.br));
+        if (fl) { // 寝ている：息だけ
+          gl.uniform4f(u.uEar, 0, 0, 0, 0); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]); gl.uniform4f(u.uHead, 0, 0, B.neck, 0); gl.uniform4f(u.uNose, 0.5, 0.5, 0, 0);
+          gl.uniform4f(u.uBelly, 0.5 - 0.16 * (c.row ? -1 : 1), 0.2, 0.22, breath * 1.4); }
+        else {
         gl.uniform4f(u.uEar, c.eL, c.eR, c.flap, c.eW); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]);
         gl.uniform4f(u.uHead, c.hx, c.hy, B.neck, c.ht); gl.uniform4f(u.uNose, B.nose[0], B.nose[1], c.nose, c.nose * 6);
-        gl.uniform4f(u.uBelly, B.belly[0], B.belly[1], B.belly[2], breath); }
-      gl.uniform4f(u.uHop, c.hopE || 0, c.hopG || 0, c.mode === "fly" ? c.dir : (c.hopDir || 0), c.hopW || 0);
-      gl.uniform4fv(u.uTile, tile(FACE[c.face], c.row)); gl.uniform4fv(u.uDTile, tile(3, c.row));
+        gl.uniform4f(u.uBelly, B.belly[0], B.belly[1], B.belly[2], breath); } }
+      gl.uniform4f(u.uHop, fl ? 0 : c.hopE || 0, fl ? 0 : c.hopG || 0, c.mode === "fly" ? c.dir : (c.hopDir || 0), fl ? 0 : c.hopW || 0);
+      gl.uniform4fv(u.uTile, fl ? tile(0, 2 + c.row) : tile(FACE[c.face], c.row)); gl.uniform4fv(u.uDTile, fl ? tile(1, 2 + c.row) : tile(3, c.row));
       gl.uniform1f(u.uAlpha, c.alpha); gl.uniform1f(u.uBias, clamp(Math.abs(c.z) / 420, 0, 1) * 2.2 + (c.mode === "fly" ? clamp(c.speed / 2600, 0, 1) * 1.1 : 0));   // 遠い・近い・速いときは少しぼかす
       gl.drawElements(gl.TRIANGLES, idxCount, gl.UNSIGNED_SHORT, 0);
     }
@@ -554,7 +561,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       for (const b of bubbles) {
         const t = now - b.t0; if (t < 0) continue; const c = b.c, out = clamp((b.until - now) / 0.25, 0, 1);
         const pop = t < 0.35 ? 1 + Math.sin(t / 0.35 * Math.PI) * 0.25 - Math.pow(1 - t / 0.35, 3) : 1, s = clamp(c.size * 0.2, 17, 34) * pop * (0.6 + 0.4 * out);
-        const bx = c.x + c.size * (c.row ? 0.2 : -0.06), by = c.y - c.size * (c.row ? 0.93 : 0.9) - s - Math.sin(t * 3) * 2;
+        const bx = c.x + c.size * (c.row ? 0.2 : -0.06), by = c.y - c.size * (c.row ? 0.93 : c.flat ? 0.8 : 0.9) - s - Math.sin(t * 3) * 2;
         gl.uniform3f(ui.uPos, wx(clamp(bx, s + 4, W - s - 4)), wy(Math.max(by, s + 4)), c.z + 30); gl.uniform2f(ui.uSz, s, s); gl.uniform1f(ui.uAng, Math.sin(t * 2.2) * 0.07);
         gl.uniform4f(ui.uTile, ICONS.indexOf(b.icon) / ICONS.length, 0, 1 / ICONS.length, 1); gl.uniform1f(ui.uAlpha, out); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
@@ -579,7 +586,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const onReduce = () => { if (mqReduce.matches) fail({ message: "reduced-motion" }); };   // 途中で「動きを減らす」に変えたら、すぐ止める
   if (mqReduce.addEventListener) mqReduce.addEventListener("change", onReduce); else if (mqReduce.addListener) mqReduce.addListener(onReduce);
 
-  const img = new Image(); img.decoding = "async"; img.crossOrigin = "anonymous";   // 絵が別の場所（CDN）から配られても読めるように。同じ場所なら何も変わらない
+  const img = new Image(); img.decoding = "async"; img.crossOrigin = "anonymous";   // 絵が別の場所（→ NOTES）
   img.onload = () => { try { fitWrap(); build(img); resize(true); findSpots(); go(); } catch (e) { fail(e); } };
   img.onerror = fail;
   img.src = (document.currentScript && document.currentScript.dataset.atlas) || "img/g3d/atlas.webp";
