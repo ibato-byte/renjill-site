@@ -42,8 +42,10 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
   { // 行のとちゅうの「//」のあとに命令が続いていない（説明を書き足した時に、後ろの命令が消えていた。2026-11-17）
-    const bad = g.split('\n').filter((l) => { const i = l.indexOf('// '); return i > 0 && !/["'`]/.test(l.slice(0, i).replace(/"[^"]*"|'[^']*'|`[^`]*`/g, '')) && /\bgl\.\w+\(|\bc\.\w+ = /.test(l.slice(i)); });
+    const bad = g.split('\n').filter((l) => { const i = l.indexOf('// '); return i > 0 && !/["'`]/.test(l.slice(0, i).replace(/"[^"]*"|'[^']*'|`[^`]*`/g, '')) && /[A-Za-z_$][\w$.]*\s*\(|[\w$.\]]\s*[-+*/]?=[^=]/.test(l.slice(i).replace(/（[^）]*）/g, '').replace(/[^\x00-\x7f]+/g, ' ')); });
     if (bad.length) note(57, '説明（//）のあとに命令がある行：' + bad.length + ' 行（' + bad[0].trim().slice(0, 60) + '）'); }
+  { // 向き（2026-11-17 オーナー：左へ行く時は左を向いて走る）：絵の左右反転（uM）と、向きを変えるしくみ（tA）が消えていない
+    if (!/p\.x \*= uM/.test(g) || !/c\.dir \* \(c\.row \? -1 : 1\)/.test(g) || !/c\.tA = /.test(g)) note(57, '進む方を向いて走るしくみ（uM・tA）が見つからない'); }
   { // 寝る姿勢の大きさの倍率（guide3d.js の POSE_R）は img/g3d/poses.json と同じ（違うと、横になった時に体の大きさが変わる）
     const pj = JSON.parse(fs.readFileSync(new URL('../img/g3d/poses.json', import.meta.url), 'utf8')), m = g.match(/const POSE_R = \[([0-9.]+), ([0-9.]+)\], POSE_X = \[(-?[0-9.]+), (-?[0-9.]+)\]/);
     if (!m || +m[1] !== pj.flat.ren || +m[2] !== pj.flat.jill || +m[3] !== pj.flatX.ren || +m[4] !== pj.flatX.jill) note(57, `寝る姿勢の倍率・ずれが poses.json と合わない（${m ? m.slice(1).join(',') : 'なし'}）`); }
@@ -62,7 +64,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
   if (!/\.g3d \{[^}]*pointer-events: none/.test(html) || !/\.g3d-wrap \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
   if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
-  if (g.length > 48 * 1024) note(57, 'guide3d.js が 48KB 超'); } // 2026-11-16：うさぎの体の中の動き（耳・鼻・息など）を足して 40→48KB。ページを読み終えてから読むので、最初の表示は遅くならない
+  if (g.length > 56 * 1024) note(57, 'guide3d.js が 56KB 超'); } // 2026-11-17 オーナー了承で 48→56KB（走り方の作り込み。絵 510KB に比べて小さい）。 // 2026-11-16：うさぎの体の中の動き（耳・鼻・息など）を足して 40→48KB。ページを読み終えてから読むので、最初の表示は遅くならない
 // 17：「セリフなし」は、あえて書かない（2026-11-16 オーナー）。ページ・題名・共有文・よくある質問・llms.txt・feed・共有用の画像の作り方、どこにも戻さない
 { const NG = /セリフなし|セリフのない|セリフがない|NO DIALOGUE|no dialogue|wordless|No words|沒有台詞|대사 없|대사가 없|しぐさと音だけ|gestures and sounds|動作和聲音|몸짓과 소리만/; /* 今後セリフが出ることがあるので「しぐさと音だけ」も書かない（2026-11-16） */ for (const f of ['index.html', 'llms.txt', 'feed.xml', 'site.webmanifest', '404.html', 'tools/prerender.mjs', 'tools/make_og.mjs']) { const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue; const bad = fs.readFileSync(u, 'utf8').split('\n').filter((l) => NG.test(l) && !/^\s*(\/\/|\/\*|\*)/.test(l)); if (bad.length) note(17, f + ' に「セリフなし」の表現が残っている：' + bad[0].match(NG)[0]); } }
 if (/class="rel-cards"|class="rel-card"|class="rel-how"/.test(html)) note(53, '関係の図の下の説明カード 4 枚／矢印の読み方の説明が戻っている（2026-11-16 オーナー「いらない」）');
