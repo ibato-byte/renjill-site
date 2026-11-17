@@ -45,7 +45,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
     const bad = g.split('\n').filter((l) => { const i = l.indexOf('// '); return i > 0 && !/["'`]/.test(l.slice(0, i).replace(/"[^"]*"|'[^']*'|`[^`]*`/g, '')) && /[A-Za-z_$][\w$.]*\s*\(|[\w$.\]]\s*[-+*/]?=[^=]/.test(l.slice(i).replace(/（[^）]*）/g, '').replace(/[^\x00-\x7f]+/g, ' ')); });
     if (bad.length) note(57, '説明（//）のあとに命令がある行：' + bad.length + ' 行（' + bad[0].trim().slice(0, 60) + '）'); }
   { // 向き（2026-11-17 オーナー：左へ行く時は左を向いて走る）：絵の左右反転（uM）と、向きを変えるしくみ（tA）が消えていない
-    if (!/p\.x \*= uM/.test(g) || !/c\.dir \* \(c\.row \? -1 : 1\)/.test(g) || !/c\.tA = /.test(g)) note(57, '進む方を向いて走るしくみ（uM・tA）が見つからない'); }
+    if (!/uM > 1\.5708/.test(g) || !/c\.dir \* \(c\.row \? -1 : 1\)/.test(g) || !/c\.tA = /.test(g)) note(57, '進む方を向いて走るしくみ（uM・tA）が見つからない'); }
   { // 寝る姿勢の大きさの倍率（guide3d.js の POSE_R）は img/g3d/poses.json と同じ（違うと、横になった時に体の大きさが変わる）
     const pj = JSON.parse(fs.readFileSync(new URL('../img/g3d/poses.json', import.meta.url), 'utf8')), m = g.match(/const POSE_R = \[([0-9.]+), ([0-9.]+)\], POSE_X = \[(-?[0-9.]+), (-?[0-9.]+)\]/);
     if (!m || +m[1] !== pj.flat.ren || +m[2] !== pj.flat.jill || +m[3] !== pj.flatX.ren || +m[4] !== pj.flatX.jill) note(57, `寝る姿勢の倍率・ずれが poses.json と合わない（${m ? m.slice(1).join(',') : 'なし'}）`); }
