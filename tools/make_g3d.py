@@ -78,6 +78,17 @@ for row, who in enumerate(("ren", "jill")):
     cell = np.dstack([d, em, hm, np.ones_like(d)])
     atlas[row * CELL: (row + 1) * CELL, 3 * CELL: 4 * CELL, 3] = 1
     atlas[row * CELL + PAD: row * CELL + PAD + INNER, 3 * CELL + PAD: 3 * CELL + PAD + INNER] = cell
+for row, who in enumerate(("ren", "jill")):  # 前のび（伸び＋あくび）：寝る姿勢の段の、空いている 3・4 列目（2026-11-17）
+    fp = f"/tmp/char_hi/{who}_bow.png"
+    if not os.path.exists(fp): print("伸びの絵が無い:", fp); continue
+    a = np.array(Image.open(fp).convert("RGBA").resize((INNER, INNER), Image.LANCZOS)).astype(np.float32)
+    al = body_alpha(a[..., 3]); rgb = a[..., :3] / 255.0; solid = al > 0.6
+    _, (iy, ix) = ndimage.distance_transform_edt(~solid, return_indices=True); rgb = np.where(solid[..., None], rgb, rgb[iy, ix])
+    r0 = (2 + row) * CELL
+    atlas[r0 + PAD: r0 + PAD + INNER, 2 * CELL + PAD: 2 * CELL + PAD + INNER] = np.dstack([rgb, al])
+    d = inflate(al) * (al > 0.05)
+    atlas[r0: r0 + CELL, 3 * CELL: 4 * CELL, 3] = 1
+    atlas[r0 + PAD: r0 + PAD + INNER, 3 * CELL + PAD: 3 * CELL + PAD + INNER] = np.dstack([d, np.zeros_like(d), np.zeros_like(d), np.ones_like(d)])
 for row, who in enumerate(("ren", "jill")):  # 寝る姿勢（のびて寝る）。tools/char_from_rig.py が /tmp/char_hi/*_flat.png を作る
     fp = f"/tmp/char_hi/{who}_flat.png"
     if not os.path.exists(fp): print("寝る姿勢の絵が無い:", fp); continue
@@ -93,3 +104,22 @@ out = Image.fromarray((np.clip(atlas, 0, 1) * 255).astype(np.uint8), "RGBA")
 os.makedirs(f"{ROOT}/img/g3d", exist_ok=True)
 out.save(f"{ROOT}/img/g3d/atlas.webp", quality=88, method=6, exact=True)
 print("img/g3d/atlas.webp", out.size, os.path.getsize(f"{ROOT}/img/g3d/atlas.webp") // 1024, "KB")
+
+# ---- 2 枚目の絵 atlas2.webp（2048×2048）：ばたん（フロップ）。1 枚目はもう空きが無く、4096 より大きい絵は読めないスマホがあるので、別の 1 枚にする（2026-11-17）
+# 段 0＝レン、段 1＝ジル。列 0＝絵、列 1＝奥行き（R）
+a2 = np.zeros((CELL * 2, CELL * 2, 4), np.float32)
+for row, who in enumerate(("ren", "jill")):
+    fp = f"/tmp/char_hi/{who}_flop.png"
+    if not os.path.exists(fp): print("ばたんの絵が無い:", fp); continue
+    a = np.array(Image.open(fp).convert("RGBA").resize((INNER, INNER), Image.LANCZOS)).astype(np.float32)
+    al = body_alpha(a[..., 3]); rgb = a[..., :3] / 255.0; solid = al > 0.6
+    _, (iy, ix) = ndimage.distance_transform_edt(~solid, return_indices=True); rgb = np.where(solid[..., None], rgb, rgb[iy, ix])
+    r0 = row * CELL
+    a2[r0 + PAD: r0 + PAD + INNER, PAD: PAD + INNER] = np.dstack([rgb, al])
+    d = inflate(al) * (al > 0.05) * 0.8
+    a2[r0: r0 + CELL, CELL: 2 * CELL, 3] = 1
+    a2[r0 + PAD: r0 + PAD + INNER, CELL + PAD: CELL + PAD + INNER] = np.dstack([d, np.zeros_like(d), np.zeros_like(d), np.ones_like(d)])
+o2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "img", "g3d", "atlas2.webp")
+Image.fromarray((np.clip(a2, 0, 1) * 255).astype(np.uint8), "RGBA").save(o2, "WEBP", quality=88, method=6, exact=True)
+print("img/g3d/atlas2.webp", (CELL * 2, CELL * 2), os.path.getsize(o2) // 1024, "KB")
+
