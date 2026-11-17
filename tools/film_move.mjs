@@ -20,10 +20,10 @@ for (let i = 1; i < ys.length && !got; i++) {
   for (let k = 0; k < 140; k++) { await p.clock.runFor(33); const v = await st(); const c = v[0];
     if (c.m === 'fly' && c.d === want) seen = true;
     if (!seen) { if (k > 40) break; continue; }
-    if (c.m !== 'fly') after++; if (after > 30) break;
+    if (c.m !== 'fly') after++; if (after > (+process.env.AFTER || 30)) break;
     const gy = Math.max(...v.map(q => q.gy || q.y)), top = Math.min(...v.map(q => q.y - q.s * 1.15));
     const y0 = Math.max(0, Math.min(top, gy - v[0].s * 1.5)), y1 = Math.min(H, gy + v[0].s * 0.15);
     if (n < 40) await p.screenshot({ path: `/tmp/${tag}_${n}.png`, clip: { x: 0, y: y0, width: W, height: Math.max(40, y1 - y0) } });
     log.push(`${n}:${c.m[0]}t${(+c.t).toFixed(2)}a${(+c.tA).toFixed(2)}h${(+c.h).toFixed(0)}`); n++; }
   if (seen) got = n; }
-console.log('frames', got, log.slice(0, 40).join(' ')); await b.close();
+console.log('frames', got, log.slice(0, 40).join(' '), ' ... LAST ', log.slice(-3).join(' ')); await b.close();
