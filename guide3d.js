@@ -298,10 +298,10 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
 
   /* ───────── 入力（ポインター・スクロール） ───────── */
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-  let px = -1, py = -1, pAt = -10, pV = 0, leaveX = 0, leaveAt = -9, pS = 0, revs = [], lastY = scrollY, vel = 0, lastScrollAt = 0, hintAt = 0;
-  addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const t = performance.now() / 1000, dt = t - pAt; if (px >= 0 && dt > 0 && dt < 0.2) pV = pV * 0.6 + 0.4 * hypot(e.clientX - px, e.clientY - py) / dt; else pV = 0; const dx = e.clientX - px; if (abs(dx) > 4) { const sg = sign(dx); if (pS && sg !== pS) revs.push(t); pS = sg; } px = e.clientX; py = e.clientY; pAt = t; }, { passive: true });   // N59
+  let px = -1, py = -1, pAt = -10, pV = 0, welT = -9, leaveX = 0, leaveAt = -9, pS = 0, revs = [], lastY = scrollY, vel = 0, lastScrollAt = 0, hintAt = 0;
+  addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const t = performance.now() / 1000, dt = t - pAt; if (px < 0 && t - leaveAt < 30 && leaveAt > 0) welT = t; if (px >= 0 && dt > 0 && dt < 0.2) pV = pV * 0.6 + 0.4 * hypot(e.clientX - px, e.clientY - py) / dt; else pV = 0; const dx = e.clientX - px; if (abs(dx) > 4) { const sg = sign(dx); if (pS && sg !== pS) revs.push(t); pS = sg; } px = e.clientX; py = e.clientY; pAt = t; }, { passive: true });   // N59
   addEventListener("pointerout", (e) => { if (!e.relatedTarget) { if (px >= 0) { leaveX = px; leaveAt = performance.now() / 1000; } px = py = -1; pV = 0; } }, { passive: true });   // N60
-  const tapBun = (c, now) => { const o = chars[1 - c.row]; if (o.mode === "sit" && !o.asleep) o.alertUntil = max(o.alertUntil, now + 0.5); if (!c.flat && !c.flatGoal) c.hopV = now - (c.tapAt || -9) < 0.4 ? 680 : 520; c.tapAt = now; c.happyUntil = now + 1.4; c.spinT = 0; c.binkDir = Math.random() < 0.5 ? -1 : 1; c.awakeUntil = now + 8; c.idle = ""; c.flapV += 3; unsay(c); };   // N61
+  const tapBun = (c, now) => { const o = chars[1 - c.row]; if (o.mode === "sit" && !o.asleep) o.alertUntil = max(o.alertUntil, now + 0.5); if (!c.flat && !c.flatGoal) c.hopV = now - (c.tapAt || -9) < 0.4 ? 680 : 520; c.tapAt = now; if (c.asleep) { c.alertUntil = now + 0.7; c.hopV = 0; } c.happyUntil = now + 1.4; c.spinT = 0; c.binkDir = Math.random() < 0.5 ? -1 : 1; c.awakeUntil = now + 8; c.idle = ""; c.flapV += 3; unsay(c); };   // N61
   let tDown = null;   // N62
   addEventListener("pointerdown", (e) => {
     const now = performance.now() / 1000, touch = e.pointerType === "touch";
@@ -310,7 +310,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (const c of chars) if (c.mode === "sit" && !c.flat && hypot(e.clientX - c.x, e.clientY - (c.gy - c.size * 0.4)) < c.size * 0.6) { c.taps = (c.taps || []).filter((t) => now - t < 2.2).concat(now); if (c.taps.length >= 3) { c.taps = []; c.thumpAt = now; c.happyUntil = 0; } }   // N63
     if (!state.hit(e.clientX, e.clientY)) for (const c of chars) if (c.mode === "sit" && !c.asleep && abs(e.clientX - c.x) < c.size * 4 && abs(e.clientY - c.y) < c.size * 1.5) { c.peekX = e.clientX; c.peekUntil = now + 1.2; c.alertUntil = now + 0.4; }   // N64
   }, { passive: true });
-  addEventListener("pointermove", (e) => { if (e.pointerType === "touch" && tDown) { px = e.clientX; py = e.clientY; pAt = performance.now() / 1000; } }, { passive: true });
+  addEventListener("pointermove", (e) => { if (e.pointerType === "touch" && tDown) { const t = performance.now() / 1000, dt = t - pAt; pV = dt > 0 && dt < 0.2 ? pV * 0.6 + 0.4 * hypot(e.clientX - px, e.clientY - py) / dt : 0; px = e.clientX; py = e.clientY; pAt = t; } }, { passive: true });
   const tUp = (e) => { if (e.pointerType !== "touch" || !tDown) return; const now = performance.now() / 1000; if (now - tDown.t < 0.35 && e.type === "pointerup") tapBun(tDown.c, now); tDown = null; px = py = -1; };   // N65
   addEventListener("pointerup", tUp, { passive: true }); addEventListener("pointercancel", tUp, { passive: true });
 
@@ -325,14 +325,14 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (!lop) {
       eL = 0.05; eR = -0.05; if (cur && sit) { if (px < c.x) eL = 0.2; else eR = -0.2; }
       if ((c.tq ?? 1) < 0.6) { const tf = (c.tG > 1.5 ? -1 : 1) * fc(c), k = 0.22 * sin(PI * min(1, c.tq / 0.6)); eL -= tf * k; eR -= tf * k; }   // N68
-      if (c.asleep || c.hover || c.loafNow || id === "groom" || c.face === "happy") { eL = 0.24; eR = -0.24; eW = 0.22; }
+      if (c.asleep || c.hover || c.loafNow || id === "groom" || c.face === "happy") { eL = 0.24; eR = -0.24; eW = 0.22 + (c.hover ? 0.14 * clamp((c.petT || 0) / 3, 0, 1) : 0); }
       if (now < c.alertUntil || id === "scope") { eL = -0.02; eR = 0.02; eW = -0.07; }
       if (now < (c.backUntil || 0) || now < (c.dodgeUntil || 0) || now - (c.duckT || -9) < 0.6) { eL = 0.16; eR = -0.16; eW = 0.3; }
       if (now - (c.curT || -9) < 0.6) { eL = -0.08; eR = 0.08; eW = -0.08; }   // N69
       if (fly) { const fw = c.dir * (cA(c) < 0 ? -1 : 1); eW = 0.32 * air + (cs > 0 ? 0.1 : 0); eL = 0.08 + fw * (0.22 * air + (c.t < 0 ? 0.1 : 0)); eR = -0.08 + fw * (0.22 * air + (c.t < 0 ? 0.1 : 0)); }   // N70
       eW += 0.12 * c.trot + (sit && c.hop > 0 ? clamp(c.hopV / 2000, -0.1, 0.2) : 0);
     } else {
-      eL = eR = clamp(-c.rz * 0.8, -0.2, 0.2) + (c.asleep ? sin(c.br) * 0.02 : 0);
+      eL = eR = clamp(-c.rz * 0.8, -0.2, 0.2) + (c.asleep ? sin(c.br) * 0.02 : 0); if (c.hover) { eL = 0.07; eR = -0.07; }
       fl = fly ? -cs * 0.9 : clamp(-c.hopV / 450, -1, 1) * 0.32 - (c.lope || 0) * 0.35 * c.trot;   // N71
       c.eLV -= (c.ry - c.lastRy) * 12; c.eRV -= (c.ry - c.lastRy) * 12; // N72
     }
@@ -365,7 +365,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (const [n, m] of [["eL", 0.45], ["eR", 0.45], ["flap", 1.2], ["hx", 0.06], ["hy", 0.06], ["ht", 0.25]]) c[n] = clamp(c[n], -m, m);
     c.eW = clamp(c.eW, -0.12, 0.42); c.ext = clamp(c.ext, -0.05, 0.18);
     if (now > c.twAt && now > c.twUntil) { c.twUntil = now + 1 + Math.random() * 2.2; c.twAt = c.twUntil + 0.8 + Math.random() * 3; }
-    c.twPh += dt * (c.sniff ? 8 : 5 + 2 * c.exert) * 6.283;
+    const exc = now < c.happyUntil && now - (c.tapAt || -9) < 2.2; if (exc) c.twUntil = max(c.twUntil, now + 0.2); c.twPh += dt * (c.sniff || exc ? 8 : 5 + 2 * c.exert) * 6.283;   // 押されて喜んだ後は、鼻のひくひくが速い
     c.nose = !(c.asleep || c.hover || id === "groom" || fly) && (c.sniff || now < c.twUntil) ? Math.pow(max(0, sin(c.twPh)), 2) * (c.sniff ? 0.007 : 0.0045) : c.nose * max(0, 1 - dt * 12);
     { // N74
       const mT = fly && c.dir && !c.shortMv ? c.dir * (c.row ? -1 : 1) : c.faceM || 1; if (fly && c.dir && !c.shortMv) c.faceM = mT;   // N75
@@ -436,7 +436,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         { const k = min(1, dt * 9); c.hopE += (0 - c.hopE) * k; c.hopG += (0 - c.hopG) * k; c.hopW += (0 - c.hopW) * k; } // N89
         // N90
         c.x = c.gx = T.x; c.gy = T.y; c.size = T.size; c.z = zBase(c); c.alpha = 1; c.comp = 1; c.air = 0;
-        const near = (fine && now - pAt < 4 || (tDown && tDown.c === c && now - tDown.t > 0.35)) && onBun(c, px, py, 0.42) && !(c.flat && !other0(c).flat && onBun(other0(c), px, py, 0.42));   // N91
+        const hasP = fine && now - pAt < 4 || !!tDown, near = (fine && now - pAt < 4 || (tDown && tDown.c === c && now - tDown.t > 0.35)) && (onBun(c, px, py, 0.42) || !c.flat && hypot(px - (c.x - fc(c) * c.size * 0.18), py - (c.y - c.size * 0.3)) < c.size * 0.2) && !(c.flat && !other0(c).flat && onBun(other0(c), px, py, 0.42));   // N91
         const asleep = info.act === "nap" && c.row === 0 && now > c.awakeUntil && now > c.actUntil - 2.6 + NAP_AT;
         c.hopV -= 2600 * dt; c.hop = max(0, c.hop + c.hopV * dt); if (c.hop === 0 && c.hopV < 0) { if (c.hopV < -200) c.sqV = -2.4; c.hopV = 0; }
         if (introDone && now > c.hopAt && !asleep) { c.hopAt = now + 5 + Math.random() * 6; if (onScreen(r, 0) && abs(vel) < 30) c.hopV = 300; }
@@ -447,18 +447,18 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         { const ph = c.step % 1, lope = ph < 0.62 ? sin(PI * ph / 0.62) : 0; c.h = c.hop + lope * min(7, c.size * 0.06) * c.trot; c.lope = (ph < 0.62 ? cos(PI * ph / 0.62) : -1) * c.trot; }
         c.y = T.y - c.h;
         // N95
-        if (near && !c.hover) { if (asleep && pV < 250) c.sigh = 1; else { if (!(BODY[c.row].ear[3] > 0.5)) { if (px < c.x) c.eLV += 6; else c.eRV -= 6; } c.happyUntil = now + 1.2; c.awakeUntil = now + 8; if (c.hop === 0 && !c.flat && !c.flatGoal && !tDown) c.hopV = 260; if (asleep) unsay(c); } c.idle = ""; }   // N96
+        if (near && !c.hover) { if (asleep && pV < 250) c.sigh = 1; else { if (!(BODY[c.row].ear[3] > 0.5)) { if (px < c.x) c.eLV += 6; else c.eRV -= 6; } c.happyUntil = now + 1.2; c.awakeUntil = now + 8; if (c.hop === 0 && !c.flat && !c.flatGoal && !tDown && !asleep) c.hopV = 260; if (asleep) { unsay(c); c.alertUntil = now + 0.6; } } if (!(c.idNow === "stretch" && c.env > 0.2)) c.idle = ""; }   // N96
         if (near) c.happyUntil = max(c.happyUntil, now + 0.3);
         if (!near && c.hover && (c.petT || 0) > 0.8 && pV > 600 && !asleep) c.nudgeT = now;   // N97
-        if (near && !((c.chinT || 0) > 0.6)) c.petT = (c.petT || 0) + dt; else if (c.hover && (c.petT || 0) > 1.6 && !asleep) { c.likeUntil = now + 20; const g = Math.random() < 0.5; c.idle = g ? "shake" : "groom"; c.idleT0 = now + 0.35; c.idleUntil = now + (g ? 0.85 : 2.4); c.petT = 0; } else if (!near) c.petT = 0;   // N98
-        const fF = fc(c), live = fine && now - pAt < 0.15;
+        if (near && !((c.chinT || 0) > 0.6)) { c.petT = (c.petT || 0) + dt; if (asleep && c.petT % 4 < dt) c.sigh = 1; } else if (c.hover && (c.petT || 0) > 1.6 && !asleep) { c.likeUntil = now + 20; const g = Math.random() < 0.5; c.idle = g ? "shake" : "groom"; c.idleT0 = now + 0.35; c.idleUntil = now + (g ? 0.85 : 2.4); c.petT = 0; } else if (!near) c.petT = 0;   // N98
+        const fF = fc(c), live = (fine || tDown) && now - pAt < 0.15;
         if (asleep && live && pV > 150 && hypot(px - c.x, py - c.y) < c.size * 1.6 && now > (c.eflAt || 0)) { c.eflAt = now + 1.5; c.eLV += 4; c.eRV -= 4; }   // N99
-        c.upT = !asleep && !near && fine && now - pAt < 4 && abs(px - c.x) < c.size * 0.6 && py < c.y - c.size * 1.25 && py > c.y - c.size * 2.8 ? (c.upT || 0) + dt : 0;
+        c.upT = !asleep && !near && hasP && abs(px - c.x) < c.size * 0.6 && py < c.y - c.size * 1.25 && py > c.y - c.size * 2.8 ? (c.upT || 0) + dt : 0;
         if (c.upT > 0.8 && !c.idle && c.hop === 0) { c.idle = "scope"; c.idleT0 = now; c.idleUntil = now + 2.3; c.upT = -3; }   // N100
         if (near && live && pV > 1600) { c.dodgeUntil = now + 0.6; c.petT = 0; c.happyUntil = 0; }   // N101
-        const rear = !near && !asleep && fine && now - pAt < 4 && hypot(px - (c.x - fF * c.size * 0.45), py - (c.y - c.size * 0.25)) < c.size * 0.3;
+        const rear = !near && !asleep && hasP && hypot(px - (c.x - fF * c.size * 0.45), py - (c.y - c.size * 0.25)) < c.size * 0.3;
         if (rear && !c.rear) { c.backUntil = now + 1.2; c.happyUntil = 0; } c.rear = rear;   // N102
-        if (c.thumpAt && c.hop === 0 && abs(c.hopV) < 1) { c.thumpAt = 0; c.thumpT = now; c.happyUntil = 0; c.alertUntil = now + 1; { const o = chars[1 - c.row]; if (!o.asleep) { o.alertUntil = now + 1.4; o.lookUntil = now + 1.4; o.happyUntil = 0; o.idle = ""; } } c.dust = 0.9; c.dX = c.x - fF * c.size * 0.4; c.dY = c.gy; c.dK = 0.8; c.dDir = 0; }   // N103
+        if (c.thumpAt && c.hop === 0 && abs(c.hopV) < 1) { c.thumpAt = 0; c.thumpT = now; c.happyUntil = 0; c.alertUntil = now + 1; { const o = chars[1 - c.row]; if (!o.asleep) { o.alertUntil = now + 1.4; o.lookUntil = now + 1.4; o.happyUntil = 0; o.idle = ""; if (!c.relay && Math.random() < 0.33) o.relayAt = now + 0.7; } } c.relay = 0; c.dust = 0.9; c.dX = c.x - fF * c.size * 0.4; c.dY = c.gy; c.dK = 0.8; c.dDir = 0; }   // N103
         const nX = c.x + fF * c.size * 0.55, nY = c.y - c.size * 0.42;
         if (live && !near && pV < 300 && hypot(px - nX, py - nY) < c.size * 0.16 && now > (c.boopAt || 0) && !asleep) { c.boopAt = now + 2.5; c.boopT = now; c.happyUntil = now + 0.8; }   // N104
         while (revs.length && now - revs[0] > 1.2) revs.shift();
@@ -466,13 +466,15 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         { const d = hypot(px - c.x, py - (c.y - c.size * 0.4)); if (live && !near && !asleep && c.pd != null && (c.pd - d) / max(dt, 1e-3) > 1500 && d < c.size * 2) c.flinchT = now; c.pd = live ? d : null; }   // N106
         const earZ = live && !asleep && abs(px - c.x) < c.size * (c.row ? 0.3 : 0.62) && py < c.y - c.size * (c.row ? 0.82 : 0.45) && py > c.y - c.size * (c.row ? 1.25 : 0.95) && (c.row || abs(px - c.x) > c.size * 0.3);
         if (earZ && now > (c.earAt || 0)) { c.earAt = now + 3; if (c.row) { c.eLV += 7; c.eRV -= 7; c.eWV = (c.eWV || 0) + 4; } else { c.idle = "shake"; c.idleT0 = now; c.idleUntil = now + 0.5; } }   // N107
-        c.chinT = fine && now - pAt < 4 && near && !asleep && pV < 120 && abs(px - c.x) < c.size * 0.22 && py > c.y - c.size * 0.26 ? (c.chinT || 0) + dt : 0;   // N108
+        c.chinT = hasP && near && !asleep && pV < 120 && abs(px - c.x) < c.size * 0.22 && py > c.y - c.size * 0.26 ? (c.chinT || 0) + dt : 0;   // N108
         { const d = hypot(px - c.x, py - (c.y - c.size * 0.4)); if (live && !near && !asleep && c.pd2 != null && pV < 260 && c.pd2 - d > 0.4 && d < c.size * 1.8) c.curT = now; c.pd2 = live ? d : null; }   // N109
         if (asleep && live && hypot(px - c.x, py - c.y) < c.size * 1.4 && now > (c.peepAt || 0)) { c.peepAt = now + 4; c.peepT = now; }   // N110
         if (other0(c).hover && (other0(c).petT || 0) > 3 && !c.hover && !asleep && c.hop === 0 && now > (c.jealAt || 0)) { c.jealAt = now + 8; c.hopV = 240; c.lookUntil = now + 1.5; }   // N111
         if (live && pV > 1800 && abs(px - c.x) < c.size * 0.7 && py < c.y - c.size * 0.9 && py > c.y - c.size * 2 && !asleep && now > (c.duckAt || 0)) { c.duckAt = now + 2; c.duckT = now; }   // N112
-        c.floorT = fine && now - pAt < 4 && !near && !asleep && pV < 120 && abs(py - c.y) < c.size * 0.12 && (px - c.x) * fF > c.size * 0.3 && (px - c.x) * fF < c.size * 0.9 ? (c.floorT || 0) + dt : 0;   // N113
+        c.floorT = hasP && !near && !asleep && pV < 120 && abs(py - c.y) < c.size * 0.12 && (px - c.x) * fF > c.size * 0.3 && (px - c.x) * fF < c.size * 0.9 ? (c.floorT || 0) + dt : 0;   // N113
         if (c.row && live && pV > 2400 && !asleep && hypot(px - c.x, py - c.y) > c.size * 2.2 && hypot(px - c.x, py - c.y) < c.size * 5 && now > (c.earAt2 || 0)) { c.earAt2 = now + 1.5; if (px < c.x) c.eLV += 5; else c.eRV -= 5; }   // N114
+        if (now - welT < 0.1 && c.welT !== welT && !asleep) { c.welT = welT; c.alertUntil = now + 0.6; c.flapV -= 2; }   // カーソルがもどると「おかえり」
+        if (c.relayAt && now > c.relayAt) { c.relayAt = 0; c.thumpAt = now; c.relay = 1; }
         c.hover = near;
         const calm = !near && abs(vel) < 30 && c.hop === 0 && now > c.actUntil; if (!calm || c.calmAt === 0) c.calmAt = calm ? (c.calmAt || now) : 0;
         const loaf = calm && c.calmAt > 0 && now - c.calmAt > 25 && !asleep;
@@ -489,7 +491,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (id === "shake" && now > c.idleT0) { const k = clamp((now - c.idleT0) / 0.5, 0, 1); trz += sin(k * PI * 9) * 0.1 * (1 - k); c.rz = trz; }
         c.rz += (trz - c.rz) * min(1, dt * 8);
         if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // N116
-        if (c.asleep && !asleep) { unsay(c); c.idle = "stretch"; c.idleT0 = now + (c.hop > 0 || c.hopV ? 1 : 0); c.idleUntil = c.idleT0 + 1.7; }   // N117
+        if (c.asleep && !asleep) { unsay(c); c.hopAt = now + 4; c.idle = "stretch"; c.idleT0 = now + (c.hop > 0 || c.hopV ? 1 : 0); c.idleUntil = c.idleT0 + 1.7; }   // N117
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
         { const wb = c.mode === "sit" && c.idNow === "stretch" && c.env > 0.3 && !c.flat && c.hop === 0 && !c.hopV; if (wb !== c.bwG) { c.bwG = wb; c.bwT = 0; } if ((c.bwT ?? 1) < 1) { const w0 = c.bwT; c.bwT = min(1, c.bwT + dt / 0.32); if (w0 < 0.5 && c.bwT >= 0.5) c.bw = wb; } }   // N118
         // N119
@@ -510,6 +512,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       else if (c.asleep) { ty = 0.12; tx = 0.1; }
       else if (info.act === "nap" && c.row === 1 && !cursor) ty = sign(other.x - c.x) * 0.42;   // N126
       else if (now < c.lookUntil) ty = sign(other.x - c.x) * 0.5;
+      else if (now < c.alertUntil && px >= 0) ty = clamp((px - c.x) / W * 2, -0.5, 0.5);
       else if (now < (c.backUntil || 0)) { ty = -(fc(c)) * 0.5; tx = 0.06; }
       else if (now - (c.duckT || -9) < 1.6 && now - c.duckT > 0.4) { tx = -0.14; ty = c.ry; }   // N127
       else if (now - leaveAt < 1) ty = clamp((leaveX - c.x) / W * 2, -0.5, 0.5);   // N128
