@@ -93,7 +93,7 @@ const m = (re) => (html.match(re) || [])[1];
   for (const im of html.matchAll(/<img\b[^>]*>/g)) { const s = im[0]; if (!/\balt=/.test(s)) note(19, 'alt なし ' + s.slice(0, 60)); if (!/\bwidth=/.test(s) || !/\bheight=/.test(s)) note(19, 'width/height なし ' + s.slice(0, 60)); }
   for (const a of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)) if (!/rel="[^"]*noopener/.test(a[0])) note(20, a[0].slice(0, 80));
   // 事実の矛盾（17）
-  const FACT = [[/30\s?秒|30 seconds|30-second|約30秒|30초/, '1話は10〜20秒なのに「30秒」'], [/いちばん早く、新作が出ます|first to get new episodes/i, 'TikTok が最速と書いている（TikTok は手動で同じ日か遅い）'], [/新作は毎日|新作 · 毎日|毎日、新作|new episodes? (?:every day|daily)|每天都有新片|新片 · 每天|신작은 매일/i, '投稿は毎週 月・木・土なのに「毎日」（2026-11-17 から週3回）']];
+  const FACT = [[/30\s?秒|30 seconds|30-second|約30秒|30초/, '1話は10〜20秒なのに「30秒」'], [/いちばん早く、新作が出ます|first to get new episodes/i, 'TikTok が最速と書いている（TikTok は手動で同じ日か遅い）'], [/新作は毎日|新作 · 毎日|毎日、新作|new episodes? (?:every day|daily)|每天都有新片|新片 · 每天|신작은 매일/i, '投稿は毎週 月・木・土なのに「毎日」（2026-11-17 から週3回）'], [/3話で1つ|three parts to a story|三集一個故事|3화로 한 이야기/i, '「3話で1つのお話」とは書かない（2026-11-17 オーナー。プロフィールと同じ）']];
   for (const [re, msg] of FACT) if (re.test(html.replace(/<!--[\s\S]*?-->/g, ''))) note(17, msg);
   if (/Lenis \+ GSAP/.test(html)) note(17, 'コメントに使っていない GSAP/Lenis');
   // オーナーの指示（2026-11-10）：「COANA TOKYO合同会社のオリジナルキャラクターです」という言葉は入れない（© の表記だけ残す）
