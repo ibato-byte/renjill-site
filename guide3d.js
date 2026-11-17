@@ -35,6 +35,7 @@
   const FLOP_R = [1.2992, 1.0677], FLOP_X = [-0.2872, 0.1832], t2 = (col, row) => [(col * CELL + PAD) / 2048, (row * CELL + PAD) / 2048, INNER / 2048, INNER / 2048];   // ばたん（2 枚目の絵 atlas2.webp）
   const BOW_R = [1.408, 1.125], BOW_X = [-0.1528, 0.0938];   // 前のび（伸び＋あくび）の（→ NOTES）
   const flatOff = (c) => { const X = c.fp ? FLOP_X : POSE_X, Rr = c.fp ? FLOP_R : POSE_R; return Math.cos(c.tA || 0) >= 0 ? X[c.row] + (c.row ? 0.16 : -0.16) : (c.row ? -1 : 1) * (0.3 - Rr[c.row] / 2); };   // 寝る絵のまん中のずれ（→ NOTES）
+  const onBun = (c, x, y, k) => c.flat ? ((x - c.x - c.size * flatOff(c)) / (c.size * (c.fp ? FLOP_R : POSE_R)[c.row] * 0.62)) ** 2 + ((y - c.y + c.size * 0.2) / (c.size * 0.32)) ** 2 < 1 : Math.hypot(x - c.x, y - (c.y - c.size * 0.4)) < c.size * k;   // カーソル・指が体の上か（寝ている時は、寝ている体の形で見る。前は座った時の頭の所の空中で反応した。2026-11-18）
   const FOOT = 0.058;      // 絵の下から足の裏までの割合
   const GRID = 72;         // 板の分割数（2026-11-16：耳（→ NOTES）
   const DEPTH = 0.27;      // ふくらみの厚さ（絵の幅に対して）
@@ -247,7 +248,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   // 最初の画面だけ（→ NOTES）
   const zBase = (c) => c.dz + (state.active === 0 ? clamp(scrollY / H, 0, 0.8) * camD * 0.2 : 0);   // 画面の高さに比例（→ NOTES）
   // ここを押したら 2 人に当たるか（→ NOTES）
-  state.hit = (x, y) => chars.some((c) => c.mode === "sit" && c.alpha > 0.5 && Math.hypot(x - c.x, y - (c.y - c.size * 0.4)) < c.size * 0.5);
+  state.hit = (x, y) => chars.some((c) => c.mode === "sit" && c.alpha > 0.5 && onBun(c, x, y, 0.5));
   const unsay = (c) => { for (let i = bubbles.length - 1; i >= 0; i--) if (bubbles[i].c === c) bubbles.splice(i, 1); };
   const say = (c, icon, t0, dur) => { unsay(c); bubbles.push({ c, icon, t0, until: t0 + dur }); };
 
@@ -295,11 +296,12 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
 
   /* ───────── 入力（ポインター・スクロール） ───────── */
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-  let px = -1, py = -1, pAt = -10, lastY = scrollY, vel = 0, lastScrollAt = 0, hintAt = 0;
-  addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; px = e.clientX; py = e.clientY; pAt = performance.now() / 1000; }, { passive: true });
+  let px = -1, py = -1, pAt = -10, pV = 0, lastY = scrollY, vel = 0, lastScrollAt = 0, hintAt = 0;
+  addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const t = performance.now() / 1000, dt = t - pAt; if (px >= 0 && dt > 0 && dt < 0.2) pV = pV * 0.6 + 0.4 * Math.hypot(e.clientX - px, e.clientY - py) / dt; else pV = 0; px = e.clientX; py = e.clientY; pAt = t; }, { passive: true });   // pV：カーソルの速さ（すばやい動きにおどろく）
   addEventListener("pointerdown", (e) => {
     const now = performance.now() / 1000;
-    for (const c of chars) if (c.mode === "sit" && c.alpha > 0.5 && Math.hypot(e.clientX - c.x, e.clientY - (c.y - c.size * 0.4)) < c.size * 0.5) { c.hopV = 520; c.happyUntil = now + 1.4; c.spinT = 0; c.binkDir = Math.random() < 0.5 ? -1 : 1; c.awakeUntil = now + 8; c.idle = ""; c.flapV += 3; unsay(c); }
+    for (const c of chars) if (c.mode === "sit" && c.alpha > 0.5 && onBun(c, e.clientX, e.clientY, 0.5)) { if (!c.flat && !c.flatGoal) c.hopV = 520;   // 寝ている時は跳ねず、まず起き上がる（横になった絵のまま宙に浮かないように）
+      c.happyUntil = now + 1.4; c.spinT = 0; c.binkDir = Math.random() < 0.5 ? -1 : 1; c.awakeUntil = now + 8; c.idle = ""; c.flapV += 3; unsay(c); }
   }, { passive: true });
 
 
@@ -308,6 +310,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     const B = BODY[c.row], sit = c.mode === "sit", lop = B.ear[3] > 0.5, id = sit ? c.idNow || "" : "", e = id ? c.env : 0, hf = c.hopF, fly = c.mode === "fly", air = fly && hf >= 0 ? Math.sin(Math.PI * hf) : 0, cs = fly && hf >= 0 ? Math.cos(Math.PI * hf) : 0;
     if (sit && c.calmNow && !c.asleep && !id && now > c.idleAt && introDone) { const r = Math.random(); c.idle = r < 0.45 ? "groom" : r < 0.8 ? "scope" : "stretch"; c.idleT0 = now; c.idleUntil = now + (r < 0.45 ? 2.6 : r < 0.8 ? 2.3 : 1.6); c.idleAt = now + 9 + Math.random() * 9; }
     if (sit && Math.abs(vel) > 1100 && c.calmNow) c.alertUntil = now + 0.7;
+    if (sit && !c.hover && !c.asleep && !c.flat && now - pAt < 0.1 && pV > 2400 && Math.hypot(px - c.x, py - (c.y - c.size * 0.45)) < c.size * 2.2 && now > (c.startleAt || 0)) { c.alertUntil = now + 0.6; c.startleAt = now + 4; c.idle = ""; c.flapV -= 2; }   // 近くでカーソルをすばやく動かすと、ぴたっと止まって耳を立てる（うさぎのフリーズ。何度もはしない）
     let eL = 0, eR = 0, eW = 0, fl = 0, hx = 0, hy = 0, ht = 0, ex = 0;
     if (!lop) {
       eL = 0.05; eR = -0.05; if (cur && sit) { if (px < c.x) eL = 0.2; else eR = -0.2; }
@@ -416,7 +419,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         { const k = Math.min(1, dt * 9); c.hopE += (0 - c.hopE) * k; c.hopG += (0 - c.hopG) * k; c.hopW += (0 - c.hopW) * k; } // 着いたあと（→ NOTES）
         // 着いたあとは（→ NOTES）
         c.x = c.gx = T.x; c.gy = T.y; c.size = T.size; c.z = zBase(c); c.alpha = 1; c.comp = 1; c.air = 0;
-        const near = fine && now - pAt < 4 && Math.hypot(px - c.x, py - (c.y - c.size * 0.4)) < c.size * 0.42;
+        const near = fine && now - pAt < 4 && onBun(c, px, py, 0.42);
         const asleep = info.act === "nap" && c.row === 0 && now > c.awakeUntil && now > c.actUntil - 2.6 + NAP_AT;
         c.hopV -= 2600 * dt; c.hop = Math.max(0, c.hop + c.hopV * dt); if (c.hop === 0 && c.hopV < 0) { if (c.hopV < -200) c.sqV = -2.4; c.hopV = 0; }
         if (introDone && now > c.hopAt && !asleep) { c.hopAt = now + 5 + Math.random() * 6; if (onScreen(r, 0) && Math.abs(vel) < 30) c.hopV = 300; }
@@ -427,13 +430,13 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         { const ph = c.step % 1, lope = ph < 0.62 ? Math.sin(Math.PI * ph / 0.62) : 0; c.h = c.hop + lope * Math.min(7, c.size * 0.06) * c.trot; c.lope = (ph < 0.62 ? Math.cos(Math.PI * ph / 0.62) : -1) * c.trot; }
         c.y = T.y - c.h;
         // なでる：カーソルを乗せると、にっこり（→ NOTES）
-        if (near && !c.hover) { c.happyUntil = now + 1.2; c.awakeUntil = now + 8; if (c.hop === 0) c.hopV = 260; if (asleep) unsay(c); c.idle = ""; }
+        if (near && !c.hover) { c.happyUntil = now + 1.2; c.awakeUntil = now + 8; if (c.hop === 0 && !c.flat && !c.flatGoal) c.hopV = 260; if (asleep) unsay(c); c.idle = ""; }
         if (near) c.happyUntil = Math.max(c.happyUntil, now + 0.3);
         c.hover = near;
         const calm = !near && Math.abs(vel) < 30 && c.hop === 0 && now > c.actUntil; if (!calm || c.calmAt === 0) c.calmAt = calm ? (c.calmAt || now) : 0;
         const loaf = calm && c.calmAt > 0 && now - c.calmAt > 25 && !asleep;
         const id = c.idle && now < c.idleUntil ? c.idle : "", ik = id ? clamp((now - c.idleT0) / (c.idleUntil - c.idleT0), 0, 1) : 0, env = Math.sin(Math.PI * ik);
-        const rest = (c.hop > 2 ? 1.05 : near ? 0.94 : loaf ? 0.95 : 1) + (id === "scope" ? 0.11 * env : 0) - (id === "stretch" ? 0.08 * env : 0) - (id === "groom" ? 0.03 * env : 0) + Math.sin(c.br) * (asleep ? 0.009 : 0.004);
+        const rest = (now < c.alertUntil ? 1.04 : c.hop > 2 ? 1.05 : near ? 0.94 : loaf ? 0.95 : 1) + (id === "scope" ? 0.11 * env : 0) - (id === "stretch" ? 0.08 * env : 0) - (id === "groom" ? 0.03 * env : 0) + Math.sin(c.br) * (asleep ? 0.009 : 0.004);
         c.sqV += (-(c.sq - rest) * 190 - c.sqV * 13) * dt; c.sq += c.sqV * dt; c.sq = clamp(c.sq, 0.7, 1.25);
         let trz = clamp(-vel * 0.00004, -0.12, 0.12);
         if (now < c.actUntil && c.hop === 0) { const k = c.actUntil - now; if (c.act === "wave") trz += Math.sin(k * 11) * 0.09 * clamp(k / 1.2, 0, 1); if (c.act === "ask") trz += (c.row ? -0.16 : 0.12) * clamp(k / 1.0, 0, 1); }
@@ -485,7 +488,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       if (c.spinT >= 0) { c.spinT += dt / 0.8; if (c.spinT >= 1) c.spinT = -1; }
       life(c, now, dt, other, cursor);
       if (now > c.blinkAt) c.blinkAt = now + 4 + Math.random() * 7;
-      c.face = c.asleep || (c.mode === "sit" && (c.idNow === "groom" || (c.idNow === "stretch" && c.env > 0.5))) ? "blink" : now < c.happyUntil ? "happy" : (c.blinkAt - now < 0.13 && c.mode !== "fly" ? "blink" : "open");   // 跳んでいる間は（→ NOTES）
+      c.face = c.asleep || (c.mode === "sit" && (c.idNow === "groom" || (c.idNow === "stretch" && c.env > 0.5))) ? "blink" : now < c.happyUntil && now >= c.alertUntil ? "happy" : (c.blinkAt - now < 0.13 && c.mode !== "fly" ? "blink" : "open");   // 跳んでいる間は（→ NOTES）
       if (c.alpha > 0.01 && c.y > -20 && c.y - c.size * 1.3 < H + 20 && c.x > -c.size && c.x < W + c.size) visible = true;
     }
     // 最初の画面で止まっていたら（→ NOTES）
