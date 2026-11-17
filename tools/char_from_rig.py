@@ -19,13 +19,12 @@ def flat_cut(who, src):
     ref = Image.open(os.path.join(src, f'{who}_flatref.png')).convert('RGBA'); flat = Image.open(os.path.join(src, f'{who}_flat.png')).convert('RGBA')
     x0, y0, x1, y1 = ref.getchannel('A').point(lambda v: 255 if v > 6 else 0).getbbox(); w, h = x1 - x0, y1 - y0; s = max(w, h)
     cx = x0 - (s - w) // 2 + s / 2; yf = y1 - FOOT * s  # ふだんの絵の正方形のまん中と、足の線
-    fx0, fy0, fx1, fy1 = flat.getchannel('A').point(lambda v: 255 if v > 6 else 0).getbbox(); S = s
-    while True:
-        b = yf + FOOT * S
-        if cx - S / 2 <= fx0 and cx + S / 2 >= fx1 and b - S <= fy0 and b >= fy1: break
-        S += 2
-    sq = Image.new('RGBA', (int(S), int(S)), (0, 0, 0, 0)); sq.alpha_composite(flat.crop((int(cx - S / 2), int(b - S), int(cx - S / 2) + int(S), int(b - S) + int(S))))
-    os.makedirs('/tmp/char_hi', exist_ok=True); sq.save(f'/tmp/char_hi/{NAME[who]}_flat.png'); return round(S / s, 4)
+    fx0, fy0, fx1, fy1 = flat.getchannel('A').point(lambda v: 255 if v > 6 else 0).getbbox(); pad = 12
+    # 寝る絵は横に長く、頭（ふだんの絵のまん中）から片側へだけのびる。頭を中心にすると正方形の半分が空になり、絵があらくなった（2026-11-17）
+    # → 体にぴったり合わせて切り、まん中のずれ（ふだんの絵の大きさを 1 とした数）を返す。足の線はふだんの絵と同じ
+    S = max(fx1 - fx0 + 2 * pad, (yf - fy0 + pad) / (1 - FOOT), s); bc = (fx0 + fx1) / 2; b = yf + FOOT * S
+    sq = Image.new('RGBA', (int(S), int(S)), (0, 0, 0, 0)); sq.alpha_composite(flat.crop((int(bc - S / 2), int(b - S), int(bc - S / 2) + int(S), int(b - S) + int(S))))
+    os.makedirs('/tmp/char_hi', exist_ok=True); sq.save(f'/tmp/char_hi/{NAME[who]}_flat.png'); return [round(S / s, 4), round((bc - cx) / s, 4)]
 POSES = {}
 for fn in sorted(os.listdir(src), key=lambda f: f.endswith('_ears.png') or f.endswith('_headmask.png')):
     if fn.endswith('_flat.png'): POSES[NAME[fn.split('_')[0]]] = flat_cut(fn.split('_')[0], src); continue
@@ -45,4 +44,4 @@ for fn in sorted(os.listdir(src), key=lambda f: f.endswith('_ears.png') or f.end
     os.makedirs('/tmp/char_hi', exist_ok=True); sq.save(f'/tmp/char_hi/{NAME[who]}_{mood}.png')  # 3D の案内役用の大きい絵（tools/make_g3d.py が使う。サイトには置かない）
     print(out)
 if POSES:
-    import json; json.dump({'flat': POSES}, open(os.path.join(ROOT, 'img', 'g3d', 'poses.json'), 'w')); print('poses', POSES)
+    import json; json.dump({'flat': {k: v[0] for k, v in POSES.items()}, 'flatX': {k: v[1] for k, v in POSES.items()}}, open(os.path.join(ROOT, 'img', 'g3d', 'poses.json'), 'w')); print('poses', POSES)

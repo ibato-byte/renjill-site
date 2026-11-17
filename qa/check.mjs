@@ -41,9 +41,12 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
+  { // 行のとちゅうの「//」のあとに命令が続いていない（説明を書き足した時に、後ろの命令が消えていた。2026-11-17）
+    const bad = g.split('\n').filter((l) => { const i = l.indexOf('// '); return i > 0 && !/["'`]/.test(l.slice(0, i).replace(/"[^"]*"|'[^']*'|`[^`]*`/g, '')) && /\bgl\.\w+\(|\bc\.\w+ = /.test(l.slice(i)); });
+    if (bad.length) note(57, '説明（//）のあとに命令がある行：' + bad.length + ' 行（' + bad[0].trim().slice(0, 60) + '）'); }
   { // 寝る姿勢の大きさの倍率（guide3d.js の POSE_R）は img/g3d/poses.json と同じ（違うと、横になった時に体の大きさが変わる）
-    const pj = JSON.parse(fs.readFileSync(new URL('../img/g3d/poses.json', import.meta.url), 'utf8')).flat, m = g.match(/const POSE_R = \[([0-9.]+), ([0-9.]+)\]/);
-    if (!m || +m[1] !== pj.ren || +m[2] !== pj.jill) note(57, `寝る姿勢の倍率が合わない（guide3d.js ${m ? m[1] + ',' + m[2] : 'なし'} / poses.json ${pj.ren},${pj.jill}）`); }
+    const pj = JSON.parse(fs.readFileSync(new URL('../img/g3d/poses.json', import.meta.url), 'utf8')), m = g.match(/const POSE_R = \[([0-9.]+), ([0-9.]+)\], POSE_X = \[(-?[0-9.]+), (-?[0-9.]+)\]/);
+    if (!m || +m[1] !== pj.flat.ren || +m[2] !== pj.flat.jill || +m[3] !== pj.flatX.ren || +m[4] !== pj.flatX.jill) note(57, `寝る姿勢の倍率・ずれが poses.json と合わない（${m ? m.slice(1).join(',') : 'なし'}）`); }
   { // 読みこむ時の版（?v=）は中身の指紋（sha256 の先頭 8 文字）と同じ。古い版のまま直すと、見る人のブラウザに前のファイルが残る（2026-11-17：絵を 3 回変えても ?v=20261116 のままだった）
     const crypto = await import('node:crypto'), h = (f) => crypto.createHash('sha256').update(fs.readFileSync(new URL('../' + f, import.meta.url))).digest('hex').slice(0, 8), html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
     for (const f of ['guide3d.js', 'img/g3d/atlas.webp']) { const m = html.match(new RegExp(f.replace(/[./]/g, (c) => '\\' + c) + '\\?v=([0-9a-z]+)')); if (!m || m[1] !== h(f)) note(57, `${f} の ?v= が中身と合わない（${m ? m[1] : 'なし'} → ${h(f)}。tools/stamp.sh で直す）`); } }

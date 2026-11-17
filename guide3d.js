@@ -42,8 +42,8 @@
   const AW = 4096, AH = 4096, CELL = 1024, PAD = 32, INNER = CELL - PAD * 2; // 2026-11-16（→ NOTES）
   const tile = (col, row) => [(col * CELL + PAD) / AW, (row * CELL + PAD) / AH, INNER / AW, INNER / AH];
   const FACE = { open: 0, blink: 1, happy: 2 };
-  // 寝る姿勢（2〜3 段目）の大きさの倍（→ NOTES）
-  const POSE_R = [1.5371, 1.1691];
+  // 寝る姿勢の倍率（→ NOTES）
+  const POSE_R = [1.672, 1.3819], POSE_X = [-0.3168, 0.3194];   // X＝ずれ
   const FOOT = 0.058;      // 絵の下から足の裏までの割合
   const GRID = 72;         // 板の分割数（2026-11-16：耳（→ NOTES）
   const DEPTH = 0.27;      // ふくらみの厚さ（絵の幅に対して）
@@ -539,8 +539,8 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       gl.bindBuffer(gl.ARRAY_BUFFER, fl ? meshesF[c.row] : meshes[c.row]);
       gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 20, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 20, 8);
       const wig = c.spinT >= 0 ? Math.sin(c.spinT * Math.PI * 4) * 0.17 * (1 - c.spinT) : 0;   // 押したとき：体を左右に振る
-      gl.uniform3f(u.uPos, cx(c, c.x), cy(c, c.y), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは、少しだけ大きく見せる
-      gl.uniform3f(u.uRot, fl ? c.rx * 0.3 : c.rx, fl ? c.ry * 0.25 : c.ry, c.rz + wig); gl.uniform1f(u.uTurn, clamp(fl ? c.ry * 0.25 : c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, c.lagX, c.lagY);
+      gl.uniform3f(u.uPos, cx(c, c.x) + (fl ? (POSE_X[c.row] + (c.row ? 0.16 : -0.16)) * c.size : 0), cy(c, c.y), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは少し大きく／寝る時は、となりの子から少し離す
+      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さない・ゆらさない（足が床に沈んだ）
       { const B = BODY[c.row], breath = (c.asleep ? 0.05 : 0.03 + 0.02 * c.exert) * (0.5 + 0.5 * Math.sin(c.br));
         if (fl) { // 寝ている：息だけ
           gl.uniform4f(u.uEar, 0, 0, 0, 0); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]); gl.uniform4f(u.uHead, 0, 0, B.neck, 0); gl.uniform4f(u.uNose, 0.5, 0.5, 0, 0);
