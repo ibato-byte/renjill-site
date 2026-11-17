@@ -17,7 +17,7 @@ const def = (id, name) => (CHECKS[id] = name);
 def(1, 'title の長さ（15〜70文字）'); def(2, 'meta description（50〜160文字）'); def(3, 'canonical が正しい'); def(4, 'hreflang 4言語＋x-default');
 def(5, 'OGP（title/description/image/url/type）'); def(6, 'Twitter カード'); def(7, 'JSON-LD が正しい JSON で、主要な型がある');
 def(8, 'sitemap.xml・feed.xml が正しく、このサイトの URL だけ'); def(9, 'robots.txt に sitemap'); def(10, 'site.webmanifest が正しい JSON（name・icons）');
-def(11, 'llms.txt があり、サイトと同じ事実（毎日・秒数）'); def(12, '404.html がある・noindex'); def(13, 'SNS の URL が全部の場所で同じ');
+def(11, 'llms.txt があり、サイトと同じ事実（毎週 月・木・土・秒数）'); def(12, '404.html がある・noindex'); def(13, 'SNS の URL が全部の場所で同じ');
 def(14, '文言 T：全部のキーに4言語'); def(15, 'data-t のキーが T にあり、HTML の初めの文と食い違わない'); def(16, 'エピソード EPS：4言語の題・一言');
 def(17, '事実の矛盾がない（秒数・投稿の頻度・イベント期間・TikTok が早い等の言い過ぎ）'); def(18, 'http: の読み込みがない'); def(19, 'img に alt / width・height');
 def(20, '外部リンク target=_blank に rel=noopener');
@@ -26,8 +26,8 @@ def(21, 'JS エラーがない'); def(22, '横スクロールが出ない'); def
 def(25, '見出しの順序が飛ばない（h2→h4 など）'); def(26, '同じ id が2つない'); def(27, 'ボタン・リンクに名前がある'); def(28, 'html の lang が言語と一致');
 def(29, 'title が言語に合わせて変わる'); def(30, '言語の切り替えで未翻訳の日本語が残らない（英語ページ）'); def(31, 'ボタン・タグの文字がはみ出さない');
 def(32, 'スマホでタップ領域が小さすぎない（主要ボタン 40px 以上）'); def(33, 'ヘッダーと本文が重ならない'); def(34, '本文へスキップ リンク');
-def(35, '画像が読めないときも枠が崩れない'); def(36, 'エピソードの番号が重複しない・新しい順'); def(37, '日付の書式がそろっている'); def(38, '次の新作の日付が正しい（毎日）');
-def(39, '曜日の帯が「毎日」と矛盾しない'); def(40, 'PICKUP が最新回 or 告知期間に合う'); def(41, '動きを減らす設定でアニメーションが止まる'); def(42, 'ページ内リンク #id の行き先がある');
+def(35, '画像が読めないときも枠が崩れない'); def(36, 'エピソードの番号が重複しない・新しい順'); def(37, '日付の書式がそろっている'); def(38, '次の新作の日付が正しい（毎週 月・木・土の 18:00）');
+def(39, '曜日の帯が「毎週 月・木・土」と合う（どこにも「毎日」と書かない）'); def(40, 'PICKUP が最新回 or 告知期間に合う'); def(41, '動きを減らす設定でアニメーションが止まる'); def(42, 'ページ内リンク #id の行き先がある');
 def(43, 'キーボードのフォーカスが見える'); def(44, '文字のコントラスト（主要な文 4.5:1 以上）'); def(45, 'エピソード一覧の題がその言語で出る'); def(46, '言語の保存と ?lang= が効く');
 def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見るで全部出る'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
 def(51, 'キャラクターの絵がアニメ・ゲームと同じ絵で、3 人とも読み込めている（平たい線画に戻っていない）');
@@ -85,7 +85,7 @@ const m = (re) => (html.match(re) || [])[1];
   const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); if (!sm.includes('<loc>https://renjill.coana.co.jp/</loc>') || !sm.includes('hreflang')) note(8, 'sitemap');
   if (!/Sitemap:\s*https:\/\/renjill\.coana\.co\.jp\/sitemap\.xml/.test(fs.readFileSync(new URL('../robots.txt', import.meta.url), 'utf8'))) note(9, 'robots');
   try { const w = JSON.parse(fs.readFileSync(new URL('../site.webmanifest', import.meta.url), 'utf8')); if (!w.name || !w.icons || !w.icons.length) note(10, 'manifest fields'); } catch (e) { note(10, 'manifest ' + e.message); }
-  try { const l = fs.readFileSync(new URL('../llms.txt', import.meta.url), 'utf8'); if (!/毎日|daily/i.test(l)) note(11, 'llms.txt に毎日がない'); if (/30\s?秒|30-second|30 sec/i.test(l)) note(11, 'llms.txt 30秒'); } catch { note(11, 'llms.txt なし'); }
+  try { const l = fs.readFileSync(new URL('../llms.txt', import.meta.url), 'utf8'); if (!/月・木・土/.test(l) || !/Monday, Thursday and Saturday/.test(l) || /新作は毎日|公開：毎日|new every day|every day/i.test(l)) note(11, 'llms.txt の公開日が「毎週 月・木・土」になっていない（2026-11-17 から週3回）'); if (/30\s?秒|30-second|30 sec/i.test(l)) note(11, 'llms.txt 30秒'); } catch { note(11, 'llms.txt なし'); }
   try { const n = fs.readFileSync(new URL('../404.html', import.meta.url), 'utf8'); if (!/noindex/.test(n)) note(12, '404 noindex なし'); } catch { note(12, '404 なし'); }
   for (const s of ['youtube.com/@renjill_office', 'instagram.com/renjill_office', 'tiktok.com/@renjill_office', 'threads.net/@renjill_office']) { const n = html.split(s).length - 1; if (n < 2) note(13, s + ' ' + n); }
   if (/threads\.com\/@renjill/.test(html) && /threads\.net\/@renjill/.test(html)) note(13, 'threads.net と threads.com が混在');
@@ -93,7 +93,7 @@ const m = (re) => (html.match(re) || [])[1];
   for (const im of html.matchAll(/<img\b[^>]*>/g)) { const s = im[0]; if (!/\balt=/.test(s)) note(19, 'alt なし ' + s.slice(0, 60)); if (!/\bwidth=/.test(s) || !/\bheight=/.test(s)) note(19, 'width/height なし ' + s.slice(0, 60)); }
   for (const a of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)) if (!/rel="[^"]*noopener/.test(a[0])) note(20, a[0].slice(0, 80));
   // 事実の矛盾（17）
-  const FACT = [[/30\s?秒|30 seconds|30-second|約30秒|30초/, '1話は約10秒なのに「30秒」'], [/いちばん早く、新作が出ます|first to get new episodes/i, 'TikTok が最速と書いている（TikTok は手動で同じ日か遅い）'], [/毎週|every week|weekly/i, '投稿は毎日なのに「毎週」']];
+  const FACT = [[/30\s?秒|30 seconds|30-second|約30秒|30초/, '1話は10〜20秒なのに「30秒」'], [/いちばん早く、新作が出ます|first to get new episodes/i, 'TikTok が最速と書いている（TikTok は手動で同じ日か遅い）'], [/新作は毎日|新作 · 毎日|毎日、新作|new episodes? (?:every day|daily)|每天都有新片|新片 · 每天|신작은 매일/i, '投稿は毎週 月・木・土なのに「毎日」（2026-11-17 から週3回）']];
   for (const [re, msg] of FACT) if (re.test(html.replace(/<!--[\s\S]*?-->/g, ''))) note(17, msg);
   if (/Lenis \+ GSAP/.test(html)) note(17, 'コメントに使っていない GSAP/Lenis');
   // オーナーの指示（2026-11-10）：「COANA TOKYO合同会社のオリジナルキャラクターです」という言葉は入れない（© の表記だけ残す）
@@ -153,6 +153,8 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
     const dates = [...document.querySelectorAll('#eps time, #eps .ep-date')].map((e) => e.innerText.trim()); out.dateBad = dates.filter((d) => !/^\d{4}\.\d{2}\.\d{2}$/.test(d) && !/soon|予定|預定|예정/i.test(d)).slice(0, 3);
     out.dateOrder = dates.filter((d) => /^\d{4}\.\d{2}\.\d{2}$/.test(d)).every((d, i, a) => i === 0 || a[i - 1] >= d);
     out.next = (document.getElementById('nextEp') || {}).textContent || '';
+    out.schedOn = [...document.querySelectorAll('#sched li.on')].map((x) => x.firstChild.textContent.trim()).join();
+    { const t = document.body.innerText + ' ' + (document.querySelector('meta[name=description]') || {}).content + ' ' + (document.querySelector('meta[property="og:description"]') || {}).content; const m = t.match(/新作は毎日|毎日、新作|新作 · 毎日|new episodes? (?:every day|daily)|every day \(|每天都有新片|新片 · 每天|신작은 매일|매일 신작/i); out.dailyText = m ? m[0] : ''; }
     out.days = (document.querySelector('.days, #days, .follow-days') || {}).innerText || '';
     out.pick = (document.querySelector('#pickup .pickup-t') || {}).textContent || '';
     out.small12 = [...document.querySelectorAll('main p, main li, main span, main a')].filter(vis).filter((e) => e.childElementCount === 0 && e.innerText.trim().length > 3 && parseFloat(getComputedStyle(e).fontSize) < 11.5).map((e) => e.innerText.trim().slice(0, 16) + ':' + getComputedStyle(e).fontSize).slice(0, 4);
@@ -186,9 +188,12 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
   if (lang === 'en' && r.epTitles.some((s) => /[぀-ヿ]/.test(s))) note(45, tag + ' ' + r.epTitles.filter((s) => /[぀-ヿ]/.test(s)).slice(0, 3).join(' / '));
   if (lang === 'zh' && r.epTitles.some((s) => /[぀-ゟ]/.test(s))) note(45, tag + ' ' + r.epTitles.filter((s) => /[぀-ゟ]/.test(s)).slice(0, 2).join(' / '));
   if (lang === 'ko' && r.epTitles.some((s) => /[぀-ゟ]/.test(s))) note(45, tag + ' ' + r.epTitles.filter((s) => /[぀-ゟ]/.test(s)).slice(0, 2).join(' / '));
-  if (/毎週|weekly/i.test(r.days)) note(39, tag + ' ' + r.days.slice(0, 40));
-  // 次の新作（毎日）：今日の 12時前なら今日、それ以降は明日。最初の日 11/10 より前は 11/10
-  { const now = new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000); const nx = new Date(now); nx.setHours(0, 0, 0, 0); if (now.getHours() >= 12) nx.setDate(nx.getDate() + 1); const md = `${nx.getMonth() + 1}/${nx.getDate()}`; if (!r.next.includes(md)) note(38, tag + ' 「' + r.next + '」 期待 ' + md); }
+  if (/毎日|every day|daily|每天|매일/i.test(r.days)) note(39, tag + ' ' + r.days.slice(0, 40));
+  // 2026-11-17：新作は週3回（月・木・土）。光っている曜日がちょうど月・木・土で、ページのどこにも「新作は毎日」と書いていない
+  if (r.schedOn !== 'MON,THU,SAT') note(39, tag + ' 光っている曜日が「' + r.schedOn + '」（月・木・土のはず）');
+  if (r.dailyText) note(39, tag + ' 「毎日」の言い方が残っている：' + r.dailyText);
+  // 次の新作（毎週 月・木・土の 18:00 日本時間。連載は 2026-11-19 から）：18時前ならその日から、それ以降は明日から数えて、次の 月・木・土
+  { const now = new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000); const nx = new Date(now); nx.setHours(0, 0, 0, 0); if (now.getHours() >= 18) nx.setDate(nx.getDate() + 1); const first = new Date(2026, 10, 19); if (nx < first) nx.setTime(first.getTime()); while (![1, 4, 6].includes(nx.getDay())) nx.setDate(nx.getDate() + 1); const md = `${nx.getMonth() + 1}/${nx.getDate()}`; if (!r.next.includes(md)) note(38, tag + ' 「' + r.next + '」 期待 ' + md); }
   // ヘッダーと本文：ページ途中までスクロールして、見出しがヘッダーの下に隠れないか（#episodes へ移動）
   { await p.evaluate(() => { const a = document.querySelector('a[href="#episodes"]'); const t = document.getElementById('episodes'); if (t) t.scrollIntoView(); }); await p.waitForTimeout(400);
     const ov = await p.evaluate(() => { const hdr = document.querySelector('#hdr, header'); const t = document.querySelector('#episodes h2, #episodes .sec-ttl'); if (!hdr || !t) return 0; const a = hdr.getBoundingClientRect(), b2 = t.getBoundingClientRect(); return getComputedStyle(hdr).position === 'fixed' && b2.top < a.bottom - 2 && b2.bottom > a.top ? Math.round(a.bottom - b2.top) : 0; });

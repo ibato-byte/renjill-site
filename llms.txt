@@ -1,7 +1,7 @@
 # レンとジル（Ren & Jill）
 
-> うさぎの課長レンと、しっかり者の部下ジル（と新人ハムスターのポム）が登場する、オフィスコメディのショートアニメ。1話およそ10秒、ちょっとだけ平和なオフィスの毎日。新作は毎日（日本時間の昼か夕方）。
-> An office-comedy short animation series (about 10 seconds an episode, new every day) starring Ren the floppy-eared rabbit boss, Jill his capable assistant, and Pom the rookie hamster.
+> うさぎの課長レンと、しっかり者の部下ジル（と新人ハムスターのポム）が登場する、オフィスコメディのショートアニメ。1話およそ10〜20秒、ちょっとだけ平和なオフィスの毎日。新作は毎週 月・木・土の 18:00（日本時間）。3話で1つのお話になる連載。
+> An office-comedy short animation series (10–20 seconds an episode; new episodes every Monday, Thursday and Saturday at 18:00 JST, three parts to a story) starring Ren the floppy-eared rabbit boss, Jill his capable assistant, and Pom the rookie hamster.
 
 ## キャラクター / Characters
 - レン（Ren）：うさぎの課長。ホーランドロップ（たれ耳）。承認印は鼻で押す。定時のチャイムがいちばんの楽しみ。初登場 EP.01「ハンコ」（2026-10-19）
@@ -25,5 +25,5 @@
 - [レンとジルのチモシーダッシュ（Ren & Jill: Hay Dash）](https://hay-dash.coana.co.jp/)：ブラウザで無料で遊べるランゲーム。インストール不要。日本語・英語・中国語・韓国語。
 
 ## 事実 / Facts
-- 形式：ショートアニメ（縦型）。1話およそ10秒。
-- 公開：毎日。どのSNSでも同じエピソード。
+- 形式：ショートアニメ（縦型）。1話およそ10〜20秒。3話で1つのお話（連載）。
+- 公開：毎週 月・木・土の 18:00（日本時間）。どのSNSでも同じエピソード。
