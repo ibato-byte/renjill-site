@@ -70,7 +70,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
   if (!/\.g3d \{[^}]*pointer-events: none/.test(html) || !/\.g3d-wrap \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
   if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
-  if (g.length > 56 * 1024) note(57, 'guide3d.js が 56KB 超'); } // 2026-11-17 オーナー了承で 48→56KB（走り方の作り込み。絵 510KB に比べて小さい）。 // 2026-11-16：うさぎの体の中の動き（耳・鼻・息など）を足して 40→48KB。ページを読み終えてから読むので、最初の表示は遅くならない
+  if (g.length > 64 * 1024) note(57, "guide3d.js が 64KB 超"); } // 2026-11-18 オーナー了承で 56→64KB（残りの作り込み）。2026-11-17 オーナー了承で 48→56KB（走り方の作り込み。絵 510KB に比べて小さい）。 // 2026-11-16：うさぎの体の中の動き（耳・鼻・息など）を足して 40→48KB。ページを読み終えてから読むので、最初の表示は遅くならない
 // 17：「セリフなし」は、あえて書かない（2026-11-16 オーナー）。ページ・題名・共有文・よくある質問・llms.txt・feed・共有用の画像の作り方、どこにも戻さない
 { const NG = /セリフなし|セリフのない|セリフがない|NO DIALOGUE|no dialogue|wordless|No words|沒有台詞|대사 없|대사가 없|しぐさと音だけ|gestures and sounds|動作和聲音|몸짓과 소리만/; /* 今後セリフが出ることがあるので「しぐさと音だけ」も書かない（2026-11-16） */ for (const f of ['index.html', 'llms.txt', 'feed.xml', 'site.webmanifest', '404.html', 'tools/prerender.mjs', 'tools/make_og.mjs']) { const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue; const bad = fs.readFileSync(u, 'utf8').split('\n').filter((l) => NG.test(l) && !/^\s*(\/\/|\/\*|\*)/.test(l)); if (bad.length) note(17, f + ' に「セリフなし」の表現が残っている：' + bad[0].match(NG)[0]); } }
 if (/class="rel-cards"|class="rel-card"|class="rel-how"/.test(html)) note(53, '関係の図の下の説明カード 4 枚／矢印の読み方の説明が戻っている（2026-11-16 オーナー「いらない」）');
@@ -286,11 +286,12 @@ for (const [w, h, lang] of [[280, 653, 'ja'], [320, 568, 'en'], [390, 844, 'zh']
       const bad = s.chars.some((c) => [c.x, c.y, c.z, c.size, c.sq, c.ry, c.rz, c.lagX, c.lagY].some((v) => !Number.isFinite(v)) || Math.abs(c.ry) > .6 || c.sq < .69 || c.sq > 1.26);
       return { active: s.active, hit, hit2, bad, out: boxes.some((b) => b.r > innerWidth + 1 || b.l < -1), modes: boxes.map((b) => b.mode + b.a).join(), small: Math.min(...s.chars.map((c) => c.size)) }; }, i);
     const tag = w + ' ' + lang + ' 場所' + i;
+    // 横になっている子は、寝姿の横幅（体 1.5 個分）で測る（2026-11-18：そっとなでても起きないようにしたら、寝ているレンを押すようになり、寝姿の横幅がはみ出しと数えられた。乱れの見張りは弱めない）
     // 押した直後の絵が、2 人のまわりからはみ出さない（2026-11-16：押すと絵が引きのばされて大きく乱れた）。3D の画面を 6 コマ読んで、絵のある範囲を測る
     if (i === 1 && r.active === 1) { const pt = await p.evaluate(() => { const c = window.__g3d.chars[0]; return [c.x, c.y - c.size * .4]; }); if (w < 900) await p.touchscreen.tap(pt[0], pt[1]); else await p.mouse.click(pt[0], pt[1]);
       const ext = await p.evaluate(async () => { const cv = document.getElementById('g3d'), s = window.__g3d, k = 200 / cv.width, c2 = document.createElement('canvas'); c2.width = 200; c2.height = Math.round(cv.height * k); const g = c2.getContext('2d', { willReadFrequently: true }); let worst = 0, seen = 0;
         for (let f = 0; f < 6; f++) { await new Promise((r) => requestAnimationFrame(r)); g.clearRect(0, 0, c2.width, c2.height); g.drawImage(cv, 0, 0, c2.width, c2.height); const d = g.getImageData(0, 0, c2.width, c2.height).data; const sc = c2.width / cv.clientWidth;
-          const L = Math.min(...s.chars.map((c) => c.x - c.size * .8)) * sc, R = Math.max(...s.chars.map((c) => c.x + c.size * .8)) * sc, T = Math.min(...s.chars.map((c) => c.y - c.size * 1.6)) * sc, B = Math.max(...s.chars.map((c) => c.y + c.size * .25)) * sc;
+          const wOf = (c) => c.size * (c.flat ? 1.5 : .8), L = Math.min(...s.chars.map((c) => c.x - wOf(c))) * sc, R = Math.max(...s.chars.map((c) => c.x + wOf(c))) * sc, T = Math.min(...s.chars.map((c) => c.y - c.size * 1.6)) * sc, B = Math.max(...s.chars.map((c) => c.y + c.size * .25)) * sc;
           for (let y = 0; y < c2.height; y++) for (let x = 0; x < c2.width; x++) if (d[(y * c2.width + x) * 4 + 3] > 40) { seen++; worst = Math.max(worst, L - x, x - R, T - y, y - B); } await new Promise((r) => setTimeout(r, 60)); }
         return { worst: Math.round(worst / (200 / cv.clientWidth)), seen }; });
       if (!ext.seen) note(57, tag + ' 押したあと、絵が読めない（検査が効いていない）'); else if (ext.worst > 8) note(57, tag + ' 押すと絵が 2 人のまわりから ' + ext.worst + 'px はみ出す（乱れ）'); await p.waitForTimeout(1200); }
