@@ -258,7 +258,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     const curOn = c.seen && fy > -fs && fy - fs < H + 40 && fx > -fs && fx < W + fs;
     c.exit = null;
     if (opt.intro) { fx = W * 0.5 + (c.row ? 60 : -60); fy = Math.min(T.y, H * 0.5) - 20; fz = -camD * 1.9; fs = T.size; }
-    else if (!curOn) { fx = W + T.size; fy = T.y; fz = 0; fs = T.size; }               // 画面の外にいた → 右の端から走ってくる
+    else if (!curOn) { const o = chars.find((q) => q !== c), oT = o && targetOf(o, r); fx = W + T.size + (oT && T.x > oT.x ? T.size * 0.9 : 0); fy = T.y; fz = 0; fs = T.size; }   // 右の端から入る時も、行き先の並び順で入る（同じ所から入ると、途中で相手を通りぬけた。2026-11-18）               // 画面の外にいた → 右の端から走ってくる
     if (!opt.intro && !onScreen(r, T.size)) c.exit = { x: W + fs * 1.2, y: clamp(fy, fs, H - 20) }; // 行き先が画面の外 → 右の端へ出ていく
     c.from = { x: fx, dy: fy + scrollY, z: fz, size: fs };
     const E = c.exit || T, dist = Math.hypot(E.x - fx, E.y - fy);
