@@ -299,7 +299,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; px = e.clientX; py = e.clientY; pAt = performance.now() / 1000; }, { passive: true });
   addEventListener("pointerdown", (e) => {
     const now = performance.now() / 1000;
-    for (const c of chars) if (c.mode === "sit" && c.alpha > 0.5 && Math.hypot(e.clientX - c.x, e.clientY - (c.y - c.size * 0.4)) < c.size * 0.5) { c.hopV = 520; c.happyUntil = now + 1.4; c.spinT = 0; c.binkDir = Math.random() < 0.5 ? -1 : 1; c.awakeUntil = now + 8; c.idle = ""; c.flapV += 6; unsay(c); }
+    for (const c of chars) if (c.mode === "sit" && c.alpha > 0.5 && Math.hypot(e.clientX - c.x, e.clientY - (c.y - c.size * 0.4)) < c.size * 0.5) { c.hopV = 520; c.happyUntil = now + 1.4; c.spinT = 0; c.binkDir = Math.random() < 0.5 ? -1 : 1; c.awakeUntil = now + 8; c.idle = ""; c.flapV += 3; unsay(c); }
   }, { passive: true });
 
 
@@ -318,7 +318,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       eW += 0.12 * c.trot + (sit && c.hop > 0 ? clamp(c.hopV / 2000, -0.1, 0.2) : 0);
     } else {
       eL = eR = clamp(-c.rz * 0.8, -0.2, 0.2) + (c.asleep ? Math.sin(c.br) * 0.02 : 0);
-      fl = fly ? -cs * 0.9 : clamp(-c.hopV / 450, -1, 1) * 0.7 - (c.lope || 0) * 0.35 * c.trot;
+      fl = fly ? -cs * 0.9 : clamp(-c.hopV / 450, -1, 1) * 0.32 - (c.lope || 0) * 0.35 * c.trot;   // その場で跳ねた時の耳の持ち上がりは小さく（大きいと頭のてっぺんまで引っぱられ、平らにつぶれて見えた。2026-11-18）
       c.eLV -= (c.ry - c.lastRy) * 12; c.eRV -= (c.ry - c.lastRy) * 12; // 頭の向きを変えた時の耳のゆれ（→ NOTES）
     }
     c.lastRy = c.ry;
@@ -433,7 +433,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         const calm = !near && Math.abs(vel) < 30 && c.hop === 0 && now > c.actUntil; if (!calm || c.calmAt === 0) c.calmAt = calm ? (c.calmAt || now) : 0;
         const loaf = calm && c.calmAt > 0 && now - c.calmAt > 25 && !asleep;
         const id = c.idle && now < c.idleUntil ? c.idle : "", ik = id ? clamp((now - c.idleT0) / (c.idleUntil - c.idleT0), 0, 1) : 0, env = Math.sin(Math.PI * ik);
-        const rest = (near ? 0.94 : loaf ? 0.95 : 1) + (id === "scope" ? 0.11 * env : 0) - (id === "stretch" ? 0.08 * env : 0) - (id === "groom" ? 0.03 * env : 0) + Math.sin(c.br) * (asleep ? 0.009 : 0.004);
+        const rest = (c.hop > 2 ? 1.05 : near ? 0.94 : loaf ? 0.95 : 1) + (id === "scope" ? 0.11 * env : 0) - (id === "stretch" ? 0.08 * env : 0) - (id === "groom" ? 0.03 * env : 0) + Math.sin(c.br) * (asleep ? 0.009 : 0.004);
         c.sqV += (-(c.sq - rest) * 190 - c.sqV * 13) * dt; c.sq += c.sqV * dt; c.sq = clamp(c.sq, 0.7, 1.25);
         let trz = clamp(-vel * 0.00004, -0.12, 0.12);
         if (now < c.actUntil && c.hop === 0) { const k = c.actUntil - now; if (c.act === "wave") trz += Math.sin(k * 11) * 0.09 * clamp(k / 1.2, 0, 1); if (c.act === "ask") trz += (c.row ? -0.16 : 0.12) * clamp(k / 1.0, 0, 1); }
@@ -442,9 +442,9 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (id === "shake" && now > c.idleT0) { const k = clamp((now - c.idleT0) / 0.5, 0, 1); trz += Math.sin(k * Math.PI * 9) * 0.1 * (1 - k); c.rz = trz; }
         c.rz += (trz - c.rz) * Math.min(1, dt * 8);
         if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // 居眠り中は、ときどき Zz
-        if (c.asleep && !asleep) { unsay(c); c.idle = "stretch"; c.idleT0 = now; c.idleUntil = now + 1.7; }
+        if (c.asleep && !asleep) { unsay(c); c.idle = "stretch"; c.idleT0 = now + (c.hop > 0 || c.hopV ? 1 : 0); c.idleUntil = c.idleT0 + 1.7; }   // 押されて起きた時は、着地して落ち着いてから伸びる（空中で伸びの絵になり、頭が沈んで見えた。2026-11-18）
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
-        { const wb = c.mode === "sit" && c.idNow === "stretch" && c.env > 0.3 && !c.flat; if (wb !== c.bwG) { c.bwG = wb; c.bwT = 0; } if ((c.bwT ?? 1) < 1) { const w0 = c.bwT; c.bwT = Math.min(1, c.bwT + dt / 0.32); if (w0 < 0.5 && c.bwT >= 0.5) c.bw = wb; } }   // 伸び：前足を前へ・お尻を（→ NOTES）
+        { const wb = c.mode === "sit" && c.idNow === "stretch" && c.env > 0.3 && !c.flat && c.hop === 0 && !c.hopV; if (wb !== c.bwG) { c.bwG = wb; c.bwT = 0; } if ((c.bwT ?? 1) < 1) { const w0 = c.bwT; c.bwT = Math.min(1, c.bwT + dt / 0.32); if (w0 < 0.5 && c.bwT >= 0.5) c.bw = wb; } }   // 伸び：前足を前へ・お尻を（→ NOTES）
         // 居眠り：のびて横になる（（→ NOTES）
         { const want = asleep && c.hop === 0; if (want !== c.flatGoal) { c.flatGoal = want; c.lieT = 0; if (want) c.fp = !!tex2 && Math.random() < 0.4; } if (c.lieT < 1) { const was = c.lieT; c.lieT = Math.min(1, c.lieT + dt / (want ? 0.7 : 0.45)); if (was < 0.5 && c.lieT >= 0.5) { c.flat = want; if (want) c.legIn = 0.45; if (want && c.fp) { c.dust = 0.8; c.dX = c.x; c.dY = c.gy; c.dK = 0.7; c.dDir = 0; } } }
           c.legIn = want ? (c.legIn || 0) * Math.max(0, 1 - dt * 3.2) : c.lieT < 0.5 ? c.lieT * 0.9 : 0;   // 横になると後ろ足をうしろへ少（→ NOTES）
@@ -454,7 +454,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       // 耳・頭の遅れ（重さ）：ス（→ NOTES）
       // 体のゆれは（→ NOTES）
       const sv = c.mode === "sit" && c.lastSY != null && dt > 0 ? (c.gy - c.lastSY) / dt : -vel; c.lastSY = c.mode === "sit" ? c.gy : null;
-      const txl = c.mode === "fly" ? -c.dir * 0.11 : 0, tyl = clamp(-sv * 0.00011, -0.12, 0.12) + (c.mode === "sit" ? clamp(-c.hopV * 0.00015, -0.09, 0.09) : 0);
+      const txl = c.mode === "fly" ? -c.dir * 0.11 : 0, tyl = clamp(-sv * 0.00011, -0.12, 0.12) + (c.mode === "sit" ? clamp(Math.abs(c.hopV) * 0.00008, 0, 0.05) : 0);
       c.lagXV += ((txl - c.lagX) * 150 - c.lagXV * 9) * dt; c.lagX += c.lagXV * dt;
       c.lagYV += ((tyl - c.lagY) * 150 - c.lagYV * 9) * dt; c.lagY += c.lagYV * dt;
       // 向き：移動中は進む方向へ。止まっているときは、P（→ NOTES）
