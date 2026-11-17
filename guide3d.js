@@ -256,12 +256,13 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (!opt.intro && !onScreen(r, T.size)) c.exit = { x: W + fs * 1.2, y: clamp(fy, fs, H - 20) }; // 行き先が画面の外 → 右の端へ出ていく
     c.from = { x: fx, dy: fy + scrollY, z: fz, size: fs };
     const E = c.exit || T, dist = Math.hypot(E.x - fx, E.y - fy);
+    c.shortMv = !opt.intro && Math.abs(E.x - fx) < fs * 0.5; // ほんの少しの移動は、向きを変えずに横へ一歩ずれる
     c.hops = opt.intro ? 3 : clamp(Math.round(dist / (c.row ? 300 : 380)), 1, c.row ? 4 : 3);   // ジル（小さい種類）は、小さな跳びを多く
     c.hopH = clamp(dist / c.hops * 0.22, 26, 64) * (opt.intro ? 1.3 : 1) * (c.row ? 1.08 : 0.92);   // 重いレンは低く、軽いジルは少し高く   // 長い移動でも高く跳ばない   // うさぎの跳びは低く長い（→ NOTES）
     c.zArc = opt.intro ? 0 : clamp(dist * 0.35, 0, 240);
     c.dur = opt.intro ? 1.5 : Math.min(1.15, 0.5 + 0.2 * c.hops + dist / 4200);   // 広い画面でも待たせない
     c.pre = opt.intro || !curOn || c.mode !== "sit" ? 0 : 0.13;                          // 跳ぶ前に、いちど沈む（ため）
-    { const dd = Math.sign(E.x - fx), want = dd * (c.row ? -1 : 1); if (dd && c.mode === "sit" && Math.cos(c.tA || 0) * want < 0) c.pre = Math.max(c.pre, 0.16); if (c.pre > 0 && !c.row) c.pre += 0.02; }   // 重いレンは、ためが少し長い   // 向きを変える時は、向き終わってから跳ぶ
+    { const dd = Math.sign(E.x - fx), want = dd * (c.row ? -1 : 1); if (dd && !c.shortMv && c.mode === "sit" && Math.cos(c.tA || 0) * want < 0) c.pre = Math.max(c.pre, 0.16); if (c.pre > 0 && !c.row) c.pre += 0.02; }   // 重いレンは、ためが少し長い   // 向きを変える時は、向き終わってから跳ぶ
     c.idle = ""; c.idNow = ""; c.env = 0; c.loafNow = false; c.calmNow = false; c.calmAt = 0;
     const dd0 = Math.sign(E.x - fx) || 0; c.t = -(dd0 ? (dd0 * (c.row ? 1 : -1) > 0 ? 0 : 0.12) : c.delay) - (opt.wait || 0) - c.pre; c.flat = false; c.flatGoal = false; c.lieT = 1; c.mode = "fly"; c.dir = Math.sign(E.x - fx) || 0; c.hopDir = c.dir || c.hopDir; c.seen = true; c.hop = 0; c.hopV = 0; c.spinT = -1; c.act = ""; c.hover = false; c.asleep = false;   // 進む方で前にいる子が先に出る（うしろの子が飛びこえない）
     unsay(c);
@@ -340,10 +341,8 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.twPh += dt * (c.sniff ? 8 : 5 + 2 * c.exert) * 6.283;
     c.nose = !(c.asleep || c.hover || id === "groom" || fly) && (c.sniff || now < c.twUntil) ? Math.pow(Math.max(0, Math.sin(c.twPh)), 2) * (c.sniff ? 0.007 : 0.0045) : c.nose * Math.max(0, 1 - dt * 12);
     { // 向き（2026-11-17 オーナー：左へ行く時は左を向いて走る）。ふだんは相手のほう（レンは右・ジルは左を向いた絵）。跳ぶ前にその場で向きを変え、着いて少したったら相手のほうへ戻る
-      const mT = fly && c.dir ? c.dir * (c.row ? -1 : 1) : now < (c.faceUntil || 0) ? c.faceM : 1; if (fly && c.dir) c.faceM = mT;
+      const mT = fly && c.dir && !c.shortMv ? c.dir * (c.row ? -1 : 1) : now < (c.faceUntil || 0) ? c.faceM : 1; if (fly && c.dir) c.faceM = mT;
       const d = (mT > 0 ? 0 : Math.PI) - (c.tA || 0); c.tA = (c.tA || 0) + clamp(d, -dt * (c.row ? 28 : 20), dt * (c.row ? 28 : 20));   // 小さいジルはすばやく、重いレンはゆっくり向きを変える
-      const bk = c.mode === "sit" && cur && !c.asleep && Math.abs(px - c.x) > c.size * 0.8 && Math.sign(px - c.x) !== (c.row ? -1 : 1) * Math.sign(Math.cos(c.tA || 0)); c.behT = bk ? (c.behT || 0) + dt : 0;
-      if (c.behT > 0.8 && c.behT - dt <= 0.8) c.alertUntil = now + 0.5; if (c.behT > 1.2) { c.faceM = Math.sign(px - c.x) * (c.row ? -1 : 1); c.faceUntil = now + 3; c.behT = 0; }   // 先に耳を立ててから、ふり向く   // カーソルがうしろにしばらくあると、ふり向く
       c.dust = Math.max(0, (c.dust || 0) - dt * 2.4);
       if (Math.abs(d) > 2 && !c.turning) { c.turning = 1; c.flapV -= 4; c.eWV += 2; } if (Math.abs(d) < 0.01) c.turning = 0; c.sl = (c.sl || 0) * Math.max(0, 1 - dt * 7); }   // 向きを変える時、耳がふわっと外へ
     c.exert = Math.max(0, c.exert - dt / 7); c.br += dt * (c.asleep ? 28 : c.loafNow ? 36 : 42 + 58 * c.exert) / 60 * 6.283;
