@@ -487,7 +487,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         let trz = clamp(-vel * 0.00004, -0.12, 0.12);
         if (now < c.actUntil && c.hop === 0) { const k = c.actUntil - now; if (c.act === "wave") trz += sin(k * 11) * 0.09 * clamp(k / 1.2, 0, 1); if (c.act === "ask") trz += (c.row ? -0.16 : 0.12) * clamp(k / 1.0, 0, 1); }
         if (asleep) trz += 0.13 + sin(c.br) * 0.01;
-        if (calm && !asleep) trz += sin(now * 0.37 + c.row * 2.3) * 0.014;
+        if (calm && !asleep) trz += sin(now * 0.37 + c.row * 2.3) * 0.014 + (sin(now * 0.11 + c.row * 4) > 0.6 ? 0.012 : sin(now * 0.11 + c.row * 4) < -0.6 ? -0.012 : 0);   // N-b
         if (now - (c.flinchT || -9) < 0.35) trz += sign(px - c.x) * 0.09 * sin(PI * (now - c.flinchT) / 0.35);
         if (now - (c.curT || -9) < 0.6) trz -= clamp((px - c.x) / c.size, -1, 1) * 0.04;
         if (c.sniff && !near) trz -= clamp((px - c.x) / c.size, -1, 1) * 0.05;   // N115
