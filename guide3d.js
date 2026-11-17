@@ -1,17 +1,4 @@
-/* レンとジルの「案内役」— スクロールに合わせて、2 人が 3D でページを案内する（2026-11-15／磨き込み 11-16）
- *
- * しくみ（外部ライブラリなし・WebGL を直接書いている）
- *  - 絵は img/g3d/atlas.webp の 1 枚（表情 3 種＋奥行き）。作り直しは tools/make_g3d.py
- *  - 奥行きの絵で、板を体の形にふくらませる（レリーフ）。向きを変えると本当に立体に見え、光の当たり方も変わる
- *  - カメラは本物の遠近（Z の奥行き）。z=0 の面が画面の 1px と一致するので、HTML の位置とぴったり合う
- *  - 立つ場所は HTML の <i class="g3d-spot" data-act="…">（見出しの線の上など。CSS で決める＝画面の幅ごとに調整できる）
- *    画面の上から 78% より上に来た最後の場所へ、2 人が跳ねて移動する。着いたら、その場所に貼りつく（ページと一緒に動く）
- *  - data-act：着いたときのしぐさと、頭の上に出す印（字ではなく絵）
- *      hint（下へ）／wave（♪）／nap（レンが居眠り Zz）／watch（▶）／play（★）／follow（♥）／ask（?）
- *  - 動かない条件：動きを減らす設定・通信量の節約・WebGL が無い／遅い機械。そのときは何も足さない（元の絵のまま）
- *    動かしてみて遅い機械では、自動で画質を下げ、それでも遅ければ止めて元の絵に戻す
- *    確かめるとき：?g3d=1（遅い機械でも動かす）／?g3d=0（止める）
- */
+/* レンとジルの「案内役」（3D）。しくみ・決まりは docs/GUIDE3D-NOTES.md */
 (() => {
   "use strict";
   const Q = new URLSearchParams(location.search).get("g3d");
@@ -43,18 +30,18 @@
   const tile = (col, row) => [(col * CELL + PAD) / AW, (row * CELL + PAD) / AH, INNER / AW, INNER / AH];
   const FACE = { open: 0, blink: 1, happy: 2 };
   // 寝る姿勢の倍率（→ NOTES）
-  const POSE_R = [1.672, 1.3819], POSE_X = [-0.3168, 0.3194];   // X＝ずれ
+  const POSE_R = [1.728, 1.2604], POSE_X = [-0.3272, 0.2587];   // X＝ずれ
   const FOOT = 0.058;      // 絵の下から足の裏までの割合
   const GRID = 72;         // 板の分割数（2026-11-16：耳（→ NOTES）
   const DEPTH = 0.27;      // ふくらみの厚さ（絵の幅に対して）
   const FOV = 30 * Math.PI / 180;
   const ICONS = ["down", "note", "zz", "play", "star", "heart", "ask", "bang"];
-  const NAP_AT = 0.3;      // 居眠りの場所に着いてから、目を閉じるまでの秒数（Zz はそのあと）
+  const NAP_AT = 0.3;      // 居眠りの場所に着いてから（→ NOTES）
   const ACTS = { hint: "down", wave: "note", nap: "zz", watch: "play", play: "star", follow: "heart", ask: "ask" };
 
   /* ───────── シェーダー ───────── */
   const VS_CHAR = `
-attribute vec2 aUv; attribute vec3 aD; // aD.x＝奥行き、aD.y＝耳の形（1＝耳）、aD.z＝頭（耳こみ）の形
+attribute vec2 aUv; attribute vec3 aD; // aD.x＝奥行き（→ NOTES）
 uniform mat4 uP; uniform vec3 uPos; uniform float uSize; uniform vec3 uRot; uniform vec2 uSq; uniform vec2 uLag;
 uniform vec4 uEar; uniform vec4 uEarP; uniform vec4 uHead; uniform vec4 uNose; uniform vec4 uBelly; uniform vec4 uHop; // うさぎ跳び：x＝のび、y＝ちぢみ（背（→ NOTES）
 varying vec2 vUv;
@@ -112,9 +99,9 @@ void main() {
   float cy = cos(uTurn), sy = sin(uTurn); n.xz = vec2(n.x * cy + n.z * sy, -n.x * sy + n.z * cy);
   float ndl = dot(n, uL);
   float edge = 1.0 - clamp(abs(n.z), 0.0, 1.0);
-  vec3 col = c.rgb * uAmb * (0.85 + 0.25 * clamp(ndl, -0.2, 1.0));   // 影の側を暗くしすぎない（隣の子の顔が汚れて見える）
+  vec3 col = c.rgb * uAmb * (0.85 + 0.25 * clamp(ndl, -0.2, 1.0));   // 影の側を暗くしすぎない（→ NOTES）
   col += vec3(1.0, 0.93, 0.80) * edge * edge * 0.20 * smoothstep(-0.2, 0.7, ndl);
-  col += uRim.rgb * uRim.a * edge * sqrt(edge);   // 暗い背景では、ふちを明るくして体を浮かび上がらせる
+  col += uRim.rgb * uRim.a * edge * sqrt(edge);   // 暗い背景では（→ NOTES）
   float a = c.a * uAlpha;
   gl_FragColor = vec4(col * a, a);
 }`;
@@ -186,7 +173,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    // 奥行きを頂点に焼きこむ（頂点シェーダーで絵を読めない機械でも動くように）
+    // 奥行きを頂点に焼きこむ（→ NOTES）
     const N = GRID + 1, c2 = document.createElement("canvas"); c2.width = N; c2.height = N * 2;
     const g = c2.getContext("2d", { willReadFrequently: true });
     const mesh = (col, row) => {
@@ -213,7 +200,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     camD = H / (2 * Math.tan(FOV / 2));
     const f = 1 / Math.tan(FOV / 2), near = camD * 0.05, far = camD * 6, nf = 1 / (near - far);
     proj.fill(0); proj[0] = f / (W / H); proj[5] = f; proj[10] = (far + near) * nf; proj[11] = -1; proj[14] = 2 * far * near * nf + (-camD) * proj[10]; proj[15] = camD;
-    // ↑ 透視投影 × カメラを z=camD に置く平行移動 をまとめたもの
+    // ↑ 透視投影 × カメラ（→ NOTES）
     cleared = false;
   };
 
@@ -222,7 +209,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const findSpots = () => {
     const cur = spots[state.active];
     spots = [...document.querySelectorAll(".g3d-spot")].filter((e) => e.offsetParent !== null);
-    // pin＝場所を画面に止める親（sticky。ある一日）
+    // pin＝場所を画面に止める親（→ NOTES）
     const pinOf = (e) => { for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.position === "sticky") return { el: p, top: parseFloat(cs.top) || 0 }; } return null; };
     spotInfo = spots.map((e) => { const s = e.closest("section"); return { act: e.dataset.act || "", tone: s && s.classList.contains("day") ? 1 : s && s.classList.contains("game") ? 2 : 0, pin: pinOf(e) }; });
     if (cur) state.active = spots.indexOf(cur);
@@ -251,7 +238,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const smooth = (t) => t * t * (3 - 2 * t);
   // 最初の画面だけ（→ NOTES）
-  const zBase = (c) => c.dz + (state.active === 0 ? clamp(scrollY / H, 0, 0.8) * camD * 0.2 : 0);   // 画面の高さに比例（横向きのスマホで大きくなりすぎない）
+  const zBase = (c) => c.dz + (state.active === 0 ? clamp(scrollY / H, 0, 0.8) * camD * 0.2 : 0);   // 画面の高さに比例（→ NOTES）
   // ここを押したら 2 人に当たるか（→ NOTES）
   state.hit = (x, y) => chars.some((c) => c.mode === "sit" && c.alpha > 0.5 && Math.hypot(x - c.x, y - (c.y - c.size * 0.4)) < c.size * 0.5);
   const unsay = (c) => { for (let i = bubbles.length - 1; i >= 0; i--) if (bubbles[i].c === c) bubbles.splice(i, 1); };
@@ -359,7 +346,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
 
   const pickActive = () => {
     let a = -1;
-    for (let i = 0; i < spots.length; i++) { const r = spots[i].getBoundingClientRect(); if (r.height > 0 && r.bottom < H * 0.78 + (i === 0 ? 1e6 : i === state.active ? 70 : 0)) a = i; }   // いまの場所は 70px ぶん粘る（境目で行ったり来たりしない）
+    for (let i = 0; i < spots.length; i++) { const r = spots[i].getBoundingClientRect(); if (r.height > 0 && r.bottom < H * 0.78 + (i === 0 ? 1e6 : i === state.active ? 70 : 0)) a = i; }   // いまの場所は 70px ぶん（→ NOTES）
     return a;
   };
 
@@ -387,7 +374,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       const T = targetOf(c, r), ox = c.x, oy = c.y;
       if (c.mode === "fly") {
         c.t += dt;
-        if (c.exit && onScreen(r, 0) && c.t > 0) { launch(c, now); continue; }            // 出ていく途中で行き先が見えた → そこへ向かい直す
+        if (c.exit && onScreen(r, 0) && c.t > 0) { launch(c, now); continue; }            // 出ていく途中で行き先が見（→ NOTES）
         const t = clamp(c.t / c.dur, 0, 1), E = c.exit || T, fy = c.from.dy - sy;
         const u = t * c.hops, hi = Math.min(Math.floor(u), c.hops - 1), f = u >= c.hops ? 1 : u - Math.floor(u);
         const ST = hi > 0 ? 0.14 : 0, fa = clamp((f - ST) / (1 - ST), 0, 1), p = (hi + smooth(fa)) / c.hops;
@@ -404,11 +391,11 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         { const pre = c.t < 0 ? (c.pre > 0 ? smooth(clamp(1 + c.t / c.pre, 0, 1)) : 0) : 0, ext = c.t < 0 ? 0 : Math.pow(Math.sin(Math.PI * Math.min(1, fa * 1.12)), 0.75) * (fa < 0.9 ? 1 : (1 - fa) / 0.1);
           const front = c.t < 0 ? 0 : Math.exp(-Math.pow((fa - 0.9) / 0.07, 2)), gath = Math.max(pre, c.t < 0 ? 0 : ground * (t > 0.02 ? 1 : 0));
           const k = Math.min(1, dt * 22); c.hopE += (ext - c.hopE) * k; c.hopG += (gath - c.hopG) * k; c.hopW += (front - c.hopW) * k; }
-        c.rz += ((c.dir * (0.13 * Math.cos(Math.PI * fa) - 0.03) * (c.t < 0 ? 0 : 1)) - c.rz) * Math.min(1, dt * 12); // けった時は鼻が上、着く時は鼻が下（前足から着く）
+        c.rz += ((c.dir * (0.13 * Math.cos(Math.PI * fa) - 0.03) * (c.t < 0 ? 0 : 1)) - c.rz) * Math.min(1, dt * 12); // けった時は鼻が上（→ NOTES）
         if (t >= 1) { if (c.exit) { c.mode = "sit"; c.exit = null; c.h = 0; c.dir = 0; } else land(c, now); if (c.row === chars.length - 1) introDone = true; }
       } else {
-        { const k = Math.min(1, dt * 9); c.hopE += (0 - c.hopE) * k; c.hopG += (0 - c.hopG) * k; c.hopW += (0 - c.hopW) * k; } // 着いたあと：のび・ちぢみをゆっくり戻す（お尻が落ちて、おすわりに戻る）
-        // 着いたあとは、その場所に貼りつく（ページと一緒に動く）
+        { const k = Math.min(1, dt * 9); c.hopE += (0 - c.hopE) * k; c.hopG += (0 - c.hopG) * k; c.hopW += (0 - c.hopW) * k; } // 着いたあと（→ NOTES）
+        // 着いたあとは（→ NOTES）
         c.x = c.gx = T.x; c.gy = T.y; c.size = T.size; c.z = zBase(c); c.alpha = 1; c.comp = 1; c.air = 0;
         const near = fine && now - pAt < 4 && Math.hypot(px - c.x, py - (c.y - c.size * 0.4)) < c.size * 0.42;
         const asleep = info.act === "nap" && c.row === 0 && now > c.awakeUntil && now > c.actUntil - 2.6 + NAP_AT;
@@ -438,12 +425,14 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // 居眠り中は、ときどき Zz
         if (c.asleep && !asleep) { unsay(c); c.idle = "stretch"; c.idleT0 = now; c.idleUntil = now + 1.7; }
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
-        // 居眠り：のびて横になる（一度沈み、まん中で絵を入れかえる。11-17）
-        { const want = asleep && c.hop === 0; if (want !== c.flatGoal) { c.flatGoal = want; c.lieT = 0; } if (c.lieT < 1) { const was = c.lieT; c.lieT = Math.min(1, c.lieT + dt / (want ? 0.7 : 0.45)); if (was < 0.5 && c.lieT >= 0.5) c.flat = want; } }
+        // 居眠り：のびて横になる（（→ NOTES）
+        { const want = asleep && c.hop === 0; if (want !== c.flatGoal) { c.flatGoal = want; c.lieT = 0; } if (c.lieT < 1) { const was = c.lieT; c.lieT = Math.min(1, c.lieT + dt / (want ? 0.7 : 0.45)); if (was < 0.5 && c.lieT >= 0.5) { c.flat = want; if (want) c.legIn = 0.45; } }
+          c.legIn = want ? (c.legIn || 0) * Math.max(0, 1 - dt * 3.2) : c.lieT < 0.5 ? c.lieT * 0.9 : 0;   // 横になると後ろ足をうしろへ少しずつのばし、起きる時は先に足を引きよせる
+          if (c.flat && (Math.random() < dt / 7 || (c.twN > 0 && (c.twN -= dt) <= 0))) { c.tw = 1; c.twN = Math.random() < 0.5 ? 0.3 : 0; } if (c.flat && Math.random() < dt / 11) c.sigh = 1; c.tw = Math.max(0, (c.tw || 0) - dt * 5); c.sigh = Math.max(0, (c.sigh || 0) - dt / 2.4); }   // 夢で足がぴくっ／ときどき大きく息
       }
       c.speed = Math.hypot(c.x - ox, c.y - oy) / Math.max(dt, 0.001);
-      // 耳・頭の遅れ（重さ）：スクロールや移動の速さに、ばねで遅れてついてくる
-      // 体のゆれは、場所が画面で動いた時だけ（11-17）
+      // 耳・頭の遅れ（重さ）：ス（→ NOTES）
+      // 体のゆれは（→ NOTES）
       const sv = c.mode === "sit" && c.lastSY != null && dt > 0 ? (c.gy - c.lastSY) / dt : -vel; c.lastSY = c.mode === "sit" ? c.gy : null;
       const txl = c.mode === "fly" ? -c.dir * 0.11 : 0, tyl = clamp(-sv * 0.00011, -0.12, 0.12) + (c.mode === "sit" ? clamp(-c.hopV * 0.00015, -0.09, 0.09) : 0);
       c.lagXV += ((txl - c.lagX) * 150 - c.lagXV * 9) * dt; c.lagX += c.lagXV * dt;
@@ -479,7 +468,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       c.face = c.asleep || (c.mode === "sit" && (c.idNow === "groom" || (c.idNow === "stretch" && c.env > 0.5))) ? "blink" : now < c.happyUntil ? "happy" : (c.blinkAt - now < 0.13 ? "blink" : "open");
       if (c.alpha > 0.01 && c.y > -20 && c.y - c.size * 1.3 < H + 20 && c.x > -c.size && c.x < W + c.size) visible = true;
     }
-    // 最初の画面で止まっていたら、「下へ」の印をジルが出す
+    // 最初の画面で止まっていたら（→ NOTES）
     const jill = chars[1];
     if (state.active === 0 && introDone && jill.mode === "sit" && sy < 30 && now - lastScrollAt > 4.5 && now > hintAt && now - introAt > 4) { hintAt = now + 8; say(jill, "down", now, 2.6); jill.hopV = Math.max(jill.hopV, 240); }
     for (let i = puffs.length - 1; i >= 0; i--) { const p = puffs[i]; p.t += dt; p.x += p.vx * dt; p.dy += p.vy * dt; p.vx *= 0.94; if (p.t > 0.6) puffs.splice(i, 1); else visible = true; }
@@ -490,12 +479,12 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     // 場所が画面に止まっている間は 3D の画面も固定（→ NOTES）
     const pin = spotInfo[state.active] && spotInfo[state.active].pin, stuck = !!(pin && Math.abs(pin.el.getBoundingClientRect().top - pin.top) < 0.75 && chars.every((c) => c.mode !== "fly"));
     if (stuck !== state.fixed) { state.fixed = stuck; cv.style.position = stuck ? "fixed" : ""; cv.style.transform = stuck ? "none" : ""; placedY = -1; }
-    offY = stuck ? 0 : wrap ? sy - place(sy) : 0;   // 下の端で画面を動かしきれないぶんは、絵のほうをずらす
+    offY = stuck ? 0 : wrap ? sy - place(sy) : 0;   // 下の端で画面を動かしきれない（→ NOTES）
     draw(now, visible, heroK);
     state.frames++;
     if (visible) {
       state.ready = true;
-      // 遅い機械：まず画質を下げ、それでも遅ければ止めて元の絵に戻す
+      // 遅い機械（→ NOTES）
       if (rawDt > 0.034 && rawDt < 0.25) slow++; else if (rawDt < 0.025) fast++;
       if (slow + fast >= 120) { if (slow > fast * 1.5) { if (state.quality === 1) { state.quality = 0.5; resize(true); } else if (Q !== "1") { fail({ message: "slow" }); return; } } slow = fast = 0; }
     }
@@ -516,7 +505,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (const c of chars) {
       if (c.alpha < 0.01 || c.mode === "wait") continue;
       const k = clamp(1 - c.h / (c.size * 1.3), 0.25, 1), s = 0.7 + 0.3 * k, d = 1 - dark;
-      blob(cx(c, c.gx), cy(c, c.gy + c.size * 0.004), c.z, c.size * 0.36 * s * (1 + c.ext), c.size * 0.055 * s, 0, 0.17 * d, 0.11 * d, 0.07 * d, (0.30 + 0.25 * dark) * k * c.alpha * (1 - c.air));
+      const fs = c.flatGoal ? c.lieT : 1 - c.lieT; blob(cx(c, c.gx) + Math.max(0, fs) * POSE_X[c.row] * c.size * 0.9, cy(c, c.gy + c.size * 0.004), c.z, c.size * (0.36 + 0.26 * Math.max(0, fs)) * s * (1 + c.ext), c.size * (0.055 - 0.01 * Math.max(0, fs)) * s, 0, 0.17 * d, 0.11 * d, 0.07 * d, (0.30 + 0.25 * dark) * k * c.alpha * (1 - c.air));
     }
     for (const p of rings) { const k = p.t / 0.5, rr = p.r * (1 + k * 2.2); blob(wx(p.x), wy(p.dy - scrollY), 0, rr, rr * 0.22, 0, 1, 0.87 + 0.1 * dark, 0.66 + 0.2 * dark, 0.5 * (1 - k) * (1 - k), 1); }
     for (const p of puffs) { const k = p.t / 0.6, rr = p.r * (1 + k * 1.6); blob(wx(p.x), wy(p.dy - scrollY), 0, rr, rr, 0, 0.93, 0.86, 0.74, 0.5 * (1 - k)); }
@@ -539,17 +528,17 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       gl.bindBuffer(gl.ARRAY_BUFFER, fl ? meshesF[c.row] : meshes[c.row]);
       gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 20, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 20, 8);
       const wig = c.spinT >= 0 ? Math.sin(c.spinT * Math.PI * 4) * 0.17 * (1 - c.spinT) : 0;   // 押したとき：体を左右に振る
-      gl.uniform3f(u.uPos, cx(c, c.x) + (fl ? (POSE_X[c.row] + (c.row ? 0.16 : -0.16)) * c.size : 0), cy(c, c.y), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは少し大きく／寝る時は、となりの子から少し離す
-      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さない・ゆらさない（足が床に沈んだ）
+      gl.uniform3f(u.uPos, cx(c, c.x) + (fl ? (POSE_X[c.row] + (c.row ? 0.16 : -0.16)) * c.size : 0), cy(c, c.y), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは少し大きく（→ NOTES）
+      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig + (c.flatGoal && c.lieT < 0.5 ? (c.row ? 1 : -1) * 0.14 * Math.sin(Math.PI * c.lieT * 2) : 0)); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さな（→ NOTES）
       { const B = BODY[c.row], breath = (c.asleep ? 0.05 : 0.03 + 0.02 * c.exert) * (0.5 + 0.5 * Math.sin(c.br));
         if (fl) { // 寝ている：息だけ
           gl.uniform4f(u.uEar, 0, 0, 0, 0); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]); gl.uniform4f(u.uHead, 0, 0, B.neck, 0); gl.uniform4f(u.uNose, 0.5, 0.5, 0, 0);
-          gl.uniform4f(u.uBelly, 0.5 - 0.16 * (c.row ? -1 : 1), 0.2, 0.22, breath * 1.4); }
+          gl.uniform4f(u.uBelly, c.row ? 0.42 : 0.58, 0.2, 0.2, breath * (1.4 + 1.6 * Math.sin(Math.PI * (c.sigh || 0)))); }
         else {
         gl.uniform4f(u.uEar, c.eL, c.eR, c.flap, c.eW); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]);
         gl.uniform4f(u.uHead, c.hx, c.hy, B.neck, c.ht); gl.uniform4f(u.uNose, B.nose[0], B.nose[1], c.nose, c.nose * 6);
         gl.uniform4f(u.uBelly, B.belly[0], B.belly[1], B.belly[2], breath); } }
-      gl.uniform4f(u.uHop, fl ? 0 : c.hopE || 0, fl ? 0 : c.hopG || 0, c.mode === "fly" ? c.dir : (c.hopDir || 0), fl ? 0 : c.hopW || 0);
+      gl.uniform4f(u.uHop, fl ? 0 : c.hopE || 0, fl ? (c.legIn || 0) + Math.sin(Math.PI * (c.tw || 0)) * 0.1 : c.hopG || 0, fl ? (c.row ? -1 : 1) : c.mode === "fly" ? c.dir : (c.hopDir || 0), fl ? 0 : c.hopW || 0);
       gl.uniform4fv(u.uTile, fl ? tile(0, 2 + c.row) : tile(FACE[c.face], c.row)); gl.uniform4fv(u.uDTile, fl ? tile(1, 2 + c.row) : tile(3, c.row));
       gl.uniform1f(u.uAlpha, c.alpha); gl.uniform1f(u.uBias, clamp(Math.abs(c.z) / 420, 0, 1) * 2.2 + (c.mode === "fly" ? clamp(c.speed / 2600, 0, 1) * 1.1 : 0));   // 遠い・近い・速いときは少しぼかす
       gl.drawElements(gl.TRIANGLES, idxCount, gl.UNSIGNED_SHORT, 0);
@@ -561,13 +550,13 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       for (const b of bubbles) {
         const t = now - b.t0; if (t < 0) continue; const c = b.c, out = clamp((b.until - now) / 0.25, 0, 1);
         const pop = t < 0.35 ? 1 + Math.sin(t / 0.35 * Math.PI) * 0.25 - Math.pow(1 - t / 0.35, 3) : 1, s = clamp(c.size * 0.2, 17, 34) * pop * (0.6 + 0.4 * out);
-        const bx = c.x + c.size * (c.row ? 0.2 : -0.06), by = c.y - c.size * (c.row ? 0.93 : c.flat ? 0.8 : 0.9) - s - Math.sin(t * 3) * 2;
+        const bx = c.x + c.size * (c.row ? 0.2 : -0.06), by = c.y - c.size * (c.row ? 0.93 : c.flat ? 0.8 : 0.9) - s - Math.sin(t * (c.flat ? 1.5 : 3)) * 2;
         gl.uniform3f(ui.uPos, wx(clamp(bx, s + 4, W - s - 4)), wy(Math.max(by, s + 4)), c.z + 30); gl.uniform2f(ui.uSz, s, s); gl.uniform1f(ui.uAng, Math.sin(t * 2.2) * 0.07);
         gl.uniform4f(ui.uTile, ICONS.indexOf(b.icon) / ICONS.length, 0, 1 / ICONS.length, 1); gl.uniform1f(ui.uAlpha, out); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
       gl.activeTexture(gl.TEXTURE0);
     }
-    // 手前の牧草（カメラに近いので、ぼけて大きく、速く流れる。最初の画面だけ）
+    // 手前の牧草（→ NOTES）
     if (heroK > 0.01 && state.quality === 1) {
       gl.useProgram(progBlob.p);
       for (const m of motes) { const k = 1 - m.z, yy = ((m.y * 1.6 * H - scrollY * 0.9) % (H * 1.6) + H * 1.6) % (H * 1.6) - H * 0.3; blob((m.x * W * 0.5 + Math.sin(m.ph * 0.5) * 14) * k, (H * 0.5 - yy) * k, camD * m.z, H * m.len * k, H * 0.005 * k, m.a, 0.85, 0.66, 0.16, 0.24 * heroK); }

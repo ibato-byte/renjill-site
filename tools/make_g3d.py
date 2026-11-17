@@ -86,7 +86,7 @@ for row, who in enumerate(("ren", "jill")):  # 寝る姿勢（のびて寝る）
     _, (iy, ix) = ndimage.distance_transform_edt(~solid, return_indices=True); rgb = np.where(solid[..., None], rgb, rgb[iy, ix])
     r0 = (2 + row) * CELL
     atlas[r0 + PAD: r0 + PAD + INNER, PAD: PAD + INNER] = np.dstack([rgb, al])
-    d = inflate(al) * (al > 0.05)
+    d = inflate(al) * (al > 0.05) * 0.75  # 寝ている体は床に押されて平たい：ふくらみを 3/4 に（2026-11-17）
     atlas[r0: r0 + CELL, CELL: 2 * CELL, 3] = 1
     atlas[r0 + PAD: r0 + PAD + INNER, CELL + PAD: CELL + PAD + INNER] = np.dstack([d, np.zeros_like(d), np.zeros_like(d), np.ones_like(d)])
 out = Image.fromarray((np.clip(atlas, 0, 1) * 255).astype(np.uint8), "RGBA")
