@@ -319,6 +319,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   const life = (c, now, dt, other, cur) => {
     const B = BODY[c.row], sit = c.mode === "sit", lop = B.ear[3] > 0.5, id = sit ? c.idNow || "" : "", e = id ? c.env : 0, hf = c.hopF, fly = c.mode === "fly", air = fly && hf >= 0 ? sin(PI * hf) : 0, cs = fly && hf >= 0 ? cos(PI * hf) : 0;
     if (sit && c.calmNow && !c.asleep && !id && now > c.idleAt && introDone) { const r = Math.random(); c.idle = r < 0.45 ? "groom" : r < 0.8 ? "scope" : "stretch"; c.idleT0 = now; c.idleUntil = now + (r < 0.45 ? 2.6 : r < 0.8 ? 2.3 : 1.6); c.idleAt = now + 9 + Math.random() * 9; }
+    if (c.idle === "stretch" && now > c.idleUntil && sit && !c.asleep) { c.idle = Math.random() < 0.6 ? "shake" : ""; c.idleT0 = now + 0.15; c.idleUntil = now + 0.65; }   // のびた後、ぷるっと身ぶるい
     if (sit && abs(vel) > 1100 && c.calmNow) c.alertUntil = now + 0.7;
     if (sit && !c.hover && !c.asleep && !c.flat && now - pAt < 0.1 && pV > 2400 && hypot(px - c.x, py - (c.y - c.size * 0.45)) < c.size * 2.2 && now > (c.startleAt || 0)) { c.alertUntil = now + 0.6; c.startleAt = now + 4; c.idle = ""; if (Math.random() < 0.35) { c.idle = "shake"; c.idleT0 = now + 1; c.idleUntil = now + 1.5; } c.flapV -= 2; }   // N67
     let eL = 0, eR = 0, eW = 0, fl = 0, hx = 0, hy = 0, ht = 0, ex = 0;
@@ -352,6 +353,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       if (now - (c.nudgeT || -9) < 0.45) hx = clamp((px - c.x) / c.size, -1, 1) * 0.05 * sin(PI * (now - c.nudgeT) / 0.45);
       if ((c.floorT || 0) > 0.8) { hy = 0.045; hx = fc(c) * 0.02; }
       if ((c.chinT || 0) > 1.2) { hy = 0.035; hx = sin(now * 9) * 0.02; }
+      if (c.nod > 0) hy = 0.05 * sin(PI * min(1, c.nod * 1.6)) * (c.nod < 0.62 ? 1 : 0) + 0.03 * c.nod;
       if (now - (c.boopT || -9) < 0.4) hx = fc(c) * 0.05 * sin(PI * (now - c.boopT) / 0.4);
       if (id === "groom") { const t = now - c.idleT0; hy = -0.035 * e; hx = sin(t * 16.3) * 0.014 * e; ht = sin(t * 8.2) * 0.14 * e; }
       if (id === "scope") hy = 0.03 * e;
@@ -365,7 +367,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     for (const [n, m] of [["eL", 0.45], ["eR", 0.45], ["flap", 1.2], ["hx", 0.06], ["hy", 0.06], ["ht", 0.25]]) c[n] = clamp(c[n], -m, m);
     c.eW = clamp(c.eW, -0.12, 0.42); c.ext = clamp(c.ext, -0.05, 0.18);
     if (now > c.twAt && now > c.twUntil) { c.twUntil = now + 1 + Math.random() * 2.2; c.twAt = c.twUntil + 0.8 + Math.random() * 3; }
-    const exc = now < c.happyUntil && now - (c.tapAt || -9) < 2.2; if (exc) c.twUntil = max(c.twUntil, now + 0.2); c.twPh += dt * (c.sniff || exc ? 8 : 5 + 2 * c.exert) * 6.283;   // 押されて喜んだ後は、鼻のひくひくが速い
+    const exc = now < c.happyUntil && now - (c.tapAt || -9) < 2.2; if (exc) c.twUntil = max(c.twUntil, now + 0.2); c.twPh += dt * (c.asleep ? 2 : c.sniff || exc ? 8 : 5 + 2 * c.exert) * 6.283;   // 押されて喜んだ後は、鼻のひくひくが速い
     c.nose = !(c.asleep || c.hover || id === "groom" || fly) && (c.sniff || now < c.twUntil) ? Math.pow(max(0, sin(c.twPh)), 2) * (c.sniff ? 0.007 : 0.0045) : c.nose * max(0, 1 - dt * 12);
     { // N74
       const mT = fly && c.dir && !c.shortMv ? c.dir * (c.row ? -1 : 1) : c.faceM || 1; if (fly && c.dir && !c.shortMv) c.faceM = mT;   // N75
@@ -438,6 +440,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         c.x = c.gx = T.x; c.gy = T.y; c.size = T.size; c.z = zBase(c); c.alpha = 1; c.comp = 1; c.air = 0;
         const hasP = fine && now - pAt < 4 || !!tDown, near = (fine && now - pAt < 4 || (tDown && tDown.c === c && now - tDown.t > 0.35)) && (onBun(c, px, py, 0.42) || !c.flat && hypot(px - (c.x - fc(c) * c.size * 0.18), py - (c.y - c.size * 0.3)) < c.size * 0.2) && !(c.flat && !other0(c).flat && onBun(other0(c), px, py, 0.42));   // N91
         const asleep = info.act === "nap" && c.row === 0 && now > c.awakeUntil && now > c.actUntil - 2.6 + NAP_AT;
+        c.nod = !asleep && info.act === "nap" && c.row === 0 && now > c.awakeUntil ? clamp((now - (c.actUntil - 2.6 + NAP_AT - 1.4)) / 1.4, 0, 1) : 0;   // 眠りに落ちる前、頭がこくりと下がって戻る
         c.hopV -= 2600 * dt; c.hop = max(0, c.hop + c.hopV * dt); if (c.hop === 0 && c.hopV < 0) { if (c.hopV < -200) c.sqV = -2.4; c.hopV = 0; }
         if (introDone && now > c.hopAt && !asleep) { c.hopAt = now + 5 + Math.random() * 6; if (onScreen(r, 0) && abs(vel) < 30) c.hopV = 300; }
         if (c.act === "play" && c.hop === 0 && c.hopV === 0 && now < c.actUntil - 1.9 && now > c.actUntil - 2.2) c.hopV = 300;   // N92
@@ -491,7 +494,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (id === "shake" && now > c.idleT0) { const k = clamp((now - c.idleT0) / 0.5, 0, 1); trz += sin(k * PI * 9) * 0.1 * (1 - k); c.rz = trz; }
         c.rz += (trz - c.rz) * min(1, dt * 8);
         if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // N116
-        if (c.asleep && !asleep) { unsay(c); c.hopAt = now + 4; c.idle = "stretch"; c.idleT0 = now + (c.hop > 0 || c.hopV ? 1 : 0); c.idleUntil = c.idleT0 + 1.7; }   // N117
+        if (c.asleep && !asleep) { unsay(c); c.hopAt = now + 4; c.wkB = now + 2.5; c.idle = "stretch"; c.idleT0 = now + (c.hop > 0 || c.hopV ? 1 : 0); c.idleUntil = c.idleT0 + 1.7; }   // N117
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
         { const wb = c.mode === "sit" && c.idNow === "stretch" && c.env > 0.3 && !c.flat && c.hop === 0 && !c.hopV; if (wb !== c.bwG) { c.bwG = wb; c.bwT = 0; } if ((c.bwT ?? 1) < 1) { const w0 = c.bwT; c.bwT = min(1, c.bwT + dt / 0.32); if (w0 < 0.5 && c.bwT >= 0.5) c.bw = wb; } }   // N118
         // N119
@@ -540,7 +543,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       if (c.spinT >= 0) { c.spinT += dt / 0.8; if (c.spinT >= 1) c.spinT = -1; }
       life(c, now, dt, other, cursor);
       if (now > c.blinkAt) c.blinkAt = now + 4 + Math.random() * 7;
-      c.face = c.asleep && now - (c.peepT || -9) < 0.5 && now - c.peepT > 0.12 ? "open" : c.asleep || (c.mode === "sit" && (c.idNow === "groom" || (c.idNow === "stretch" && c.env > 0.5))) ? "blink" : now < (c.dodgeUntil || 0) || now < (c.backUntil || 0) ? "open" : c.hover && (c.petT || 0) > 1.4 ? "blink" : now < c.happyUntil && now >= c.alertUntil ? "happy" : (c.blinkAt - now < 0.13 && c.mode !== "fly" ? "blink" : "open");   // N136
+      c.face = !c.asleep && abs(now - (c.wkB || -9)) < 0.06 || !c.asleep && abs(now - (c.wkB || -9) + 0.3) < 0.06 ? "blink" : c.asleep && now - (c.peepT || -9) < 0.5 && now - c.peepT > 0.12 ? "open" : c.asleep || (c.mode === "sit" && (c.idNow === "groom" || (c.idNow === "stretch" && c.env > 0.5))) ? "blink" : now < (c.dodgeUntil || 0) || now < (c.backUntil || 0) ? "open" : c.hover && (c.petT || 0) > 1.4 ? "blink" : now < c.happyUntil && now >= c.alertUntil ? "happy" : (c.blinkAt - now < 0.13 && c.mode !== "fly" ? "blink" : "open");   // N136
       if (c.alpha > 0.01 && c.y > -20 && c.y - c.size * 1.3 < H + 20 && c.x > -c.size && c.x < W + c.size) visible = true;
     }
     // N137
