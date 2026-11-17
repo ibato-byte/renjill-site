@@ -42,7 +42,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
   if (!/webglcontextlost/.test(g)) note(57, 'WebGL が落ちたときの処理が無い');
   { // 行のとちゅうの「//」のあとに命令が続いていない（説明を書き足した時に、後ろの命令が消えていた。2026-11-17）
-    const bad = g.split('\n').filter((l) => { const i = l.indexOf('// '); return i > 0 && !/["'`]/.test(l.slice(0, i).replace(/"[^"]*"|'[^']*'|`[^`]*`/g, '')) && /[A-Za-z_$][\w$.]*\s*\(|[\w$.\]]\s*[-+*/]?=[^=]/.test(l.slice(i).replace(/（[^）]*）/g, '').replace(/[^\x00-\x7f]+/g, ' ')); });
+    const bad = g.split('\n').filter((l) => { const i = l.indexOf('// '); return i > 0 && !/["'`]/.test(l.slice(0, i).replace(/"[^"]*"|'[^']*'|`[^`]*`/g, '')) && (/[A-Za-z_$][\w$.]*\s*\(|[\w$.\]]\s*[-+*/]?=[^=]/.test(l.slice(i).replace(/（[^）]*）/g, '').replace(/[^\x00-\x7f]+/g, ' ')) || ((t) => (t.match(/[)\]}]/g) || []).length - (t.match(/[([{]/g) || []).length)(l.slice(i).replace(/[^\x00-\x7f]+/g, ' ')) > 0); });   // 開いていないかっこを説明の中で閉じている形も（2026-11-17：アニメ側で「]) : null,」を説明に入れてしまった）
     if (bad.length) note(57, '説明（//）のあとに命令がある行：' + bad.length + ' 行（' + bad[0].trim().slice(0, 60) + '）'); }
   { // 向き（2026-11-17 オーナー：左へ行く時は左を向いて走る）：絵の左右反転（uM）と、向きを変えるしくみ（tA）が消えていない
     if (!/uM > 1\.5708/.test(g) || !/c\.dir \* \(c\.row \? -1 : 1\)/.test(g) || !/c\.tA = /.test(g)) note(57, '進む方を向いて走るしくみ（uM・tA）が見つからない'); }

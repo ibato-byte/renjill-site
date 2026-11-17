@@ -32,7 +32,7 @@
   const FACE = { open: 0, blink: 1, happy: 2 };
   // 寝る姿勢の倍率（→ NOTES）
   const POSE_R = [1.728, 1.2604], POSE_X = [-0.3272, 0.2587];   // X＝ずれ
-  const FLOP_R = [1.456, 1.2865], FLOP_X = [-0.2088, 0.0738], t2 = (col, row) => [(col * CELL + PAD) / 2048, (row * CELL + PAD) / 2048, INNER / 2048, INNER / 2048];   // ばたん（2 枚目の絵 atlas2.webp）
+  const FLOP_R = [1.2992, 1.0677], FLOP_X = [-0.2872, 0.1832], t2 = (col, row) => [(col * CELL + PAD) / 2048, (row * CELL + PAD) / 2048, INNER / 2048, INNER / 2048];   // ばたん（2 枚目の絵 atlas2.webp）
   const BOW_R = [1.408, 1.125], BOW_X = [-0.1528, 0.0938];   // 前のび（伸び＋あくび）の（→ NOTES）
   const flatOff = (c) => { const X = c.fp ? FLOP_X : POSE_X, Rr = c.fp ? FLOP_R : POSE_R; return Math.cos(c.tA || 0) >= 0 ? X[c.row] + (c.row ? 0.16 : -0.16) : (c.row ? -1 : 1) * (0.3 - Rr[c.row] / 2); };   // 寝る絵のまん中のずれ（→ NOTES）
   const FOOT = 0.058;      // 絵の下から足の裏までの割合
@@ -446,7 +446,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
         { const wb = c.mode === "sit" && c.idNow === "stretch" && c.env > 0.3 && !c.flat; if (wb !== c.bwG) { c.bwG = wb; c.bwT = 0; } if ((c.bwT ?? 1) < 1) { const w0 = c.bwT; c.bwT = Math.min(1, c.bwT + dt / 0.32); if (w0 < 0.5 && c.bwT >= 0.5) c.bw = wb; } }   // 伸び：前足を前へ・お尻を（→ NOTES）
         // 居眠り：のびて横になる（（→ NOTES）
-        { const want = asleep && c.hop === 0; if (want !== c.flatGoal) { c.flatGoal = want; c.lieT = 0; if (want) c.fp = !!tex2 && Math.random() < 0.4; } if (c.lieT < 1) { const was = c.lieT; c.lieT = Math.min(1, c.lieT + dt / (want ? 0.7 : 0.45)); if (was < 0.5 && c.lieT >= 0.5) { c.flat = want; if (want) c.legIn = 0.45; } }
+        { const want = asleep && c.hop === 0; if (want !== c.flatGoal) { c.flatGoal = want; c.lieT = 0; if (want) c.fp = !!tex2 && Math.random() < 0.4; } if (c.lieT < 1) { const was = c.lieT; c.lieT = Math.min(1, c.lieT + dt / (want ? 0.7 : 0.45)); if (was < 0.5 && c.lieT >= 0.5) { c.flat = want; if (want) c.legIn = 0.45; if (want && c.fp) { c.dust = 0.8; c.dX = c.x; c.dY = c.gy; c.dK = 0.7; c.dDir = 0; } } }
           c.legIn = want ? (c.legIn || 0) * Math.max(0, 1 - dt * 3.2) : c.lieT < 0.5 ? c.lieT * 0.9 : 0;   // 横になると後ろ足をうしろへ少（→ NOTES）
           if (c.flat && (Math.random() < dt / 7 || (c.twN > 0 && (c.twN -= dt) <= 0))) { c.tw = 1; c.twN = Math.random() < 0.5 ? 0.3 : 0; } if (c.flat && Math.random() < dt / 11) c.sigh = 1; c.tw = Math.max(0, (c.tw || 0) - dt * 5); c.sigh = Math.max(0, (c.sigh || 0) - dt / 2.4); }   // 夢で足がぴくっ／ときどき大きく息
       }
@@ -553,7 +553,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       const wig = c.spinT >= 0 ? Math.sin(c.spinT * Math.PI * 4) * 0.17 * (1 - c.spinT) : 0;   // 押したとき：体を左右に振る
       gl.uniform3f(u.uPos, cx(c, c.x + (c.sl || 0) + piv * c.size * 0.05 * (c.tG > 1.5 ? -1 : 1) * (c.row ? -1 : 1)) + (fl ? flatOff(c) * c.size : bw ? (BOW_X[c.row] + (c.row ? 0.24 : -0.24)) * mm * c.size : 0), cy(c, c.y - c.size * (c.row ? 0.07 : 0.045) * piv), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは少し大きく（→ NOTES）
       gl.uniform1f(u.uM, fl ? (mc < 0 ? Math.PI : 0) : c.tA || 0); gl.uniform1f(u.uMf, mm > 0 ? 1 : -1);
-      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig + (c.flatGoal && c.lieT < 0.5 ? (c.row ? 1 : -1) * mm * 0.14 * Math.sin(Math.PI * c.lieT * 2) : 0)); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6) + ((c.tA || 0) > 1.5708 ? (c.tA || 0) - Math.PI : c.tA || 0) * 0.45); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さな（→ NOTES）
+      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig + (c.flatGoal && c.lieT < 0.5 ? (c.row ? 1 : -1) * mm * (c.fp ? 0.2 * Math.pow(c.lieT * 2, 1.7) : 0.14 * Math.sin(Math.PI * c.lieT * 2)) : 0)); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6) + ((c.tA || 0) > 1.5708 ? (c.tA || 0) - Math.PI : c.tA || 0) * 0.45); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さな（→ NOTES）
       { const B = BODY[c.row], breath = (c.asleep ? 0.05 : 0.03 + 0.02 * c.exert) * (0.5 + 0.5 * Math.sin(c.br));
         if (fl || bw) { // 寝ている（→ NOTES）
           gl.uniform4f(u.uEar, 0, 0, 0, 0); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]); gl.uniform4f(u.uHead, 0, 0, B.neck, 0); gl.uniform4f(u.uNose, 0.5, 0.5, 0, 0);
