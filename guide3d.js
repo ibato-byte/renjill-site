@@ -76,7 +76,7 @@ void main() {
     q.y -= uHop.w * 0.035 * fr * smoothstep(0.2, 0.6, q.y);                   // 前足の着地：肩（進む側）が沈む
     q.x += uHop.z * uHop.x * 0.03 * smoothstep(0.2, 0.7, q.y) * body; }        // のび：胸が前へ出る
   vec3 p = vec3((q.x - 0.5) * uSq.x, (q.y - ${FOOT.toFixed(3)}) * uSq.y, aD.x * ${DEPTH.toFixed(2)} * uSq.x);
-  p.x *= uM;   // 向き：絵を左右反転して、進む方へ頭を向ける（2026-11-17）
+  { float m = uM > 1.5708 ? -1.0 : 1.0, th = (uM > 1.5708 ? uM - 3.14159 : uM) * 0.45, c0 = cos(th), s0 = sin(th); p.x *= m; p.z *= 1.0 + 0.6 * abs(s0); p.xz = vec2(p.x * c0 + p.z * s0, -p.x * s0 + p.z * c0); }   // 向きを変える：体を縦の軸で 40 度まで回し、跳ねた一番上で左右を入れかえ、反対側から回しもどす（真横まで回すと、ふくらみの絵が流れて乱れた）
   p.xy += uLag * top * top * top;
   float cz = cos(uRot.z), sz = sin(uRot.z); p.xy = vec2(p.x * cz - p.y * sz, p.x * sz + p.y * cz);
   float cx = cos(uRot.x), sx = sin(uRot.x); p.yz = vec2(p.y * cx - p.z * sx, p.y * sx + p.z * cx);
@@ -262,7 +262,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.zArc = opt.intro ? 0 : clamp(dist * 0.35, 0, 240);
     c.dur = opt.intro ? 1.5 : Math.min(1.15, 0.5 + 0.2 * c.hops + dist / 4200);   // 広い画面でも待たせない
     c.pre = opt.intro || !curOn || c.mode !== "sit" ? 0 : 0.13;                          // 跳ぶ前に、いちど沈む（ため）
-    { const dd = Math.sign(E.x - fx), want = dd * (c.row ? -1 : 1); if (dd && !c.shortMv && c.mode === "sit" && Math.cos(c.tA || 0) * want < 0) c.pre = Math.max(c.pre, 0.16); if (c.pre > 0 && !c.row) c.pre += 0.02; }   // 重いレンは、ためが少し長い   // 向きを変える時は、向き終わってから跳ぶ
+    { const dd = Math.sign(E.x - fx), want = dd * (c.row ? -1 : 1); if (dd && !c.shortMv && c.mode === "sit" && Math.cos(c.tA || 0) * want < 0) c.pre = Math.max(c.pre, c.row ? 0.28 : 0.38); }   // 重いレンは、ためが少し長い   // 向きを変える時は、向き終わってから跳ぶ
     c.idle = ""; c.idNow = ""; c.env = 0; c.loafNow = false; c.calmNow = false; c.calmAt = 0;
     const dd0 = Math.sign(E.x - fx) || 0; c.t = -(dd0 ? (dd0 * (c.row ? 1 : -1) > 0 ? 0 : 0.12) : c.delay) - (opt.wait || 0) - c.pre; c.flat = false; c.flatGoal = false; c.lieT = 1; c.mode = "fly"; c.dir = Math.sign(E.x - fx) || 0; c.hopDir = c.dir || c.hopDir; c.seen = true; c.hop = 0; c.hopV = 0; c.spinT = -1; c.act = ""; c.hover = false; c.asleep = false;   // 進む方で前にいる子が先に出る（うしろの子が飛びこえない）
     unsay(c);
@@ -342,7 +342,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.nose = !(c.asleep || c.hover || id === "groom" || fly) && (c.sniff || now < c.twUntil) ? Math.pow(Math.max(0, Math.sin(c.twPh)), 2) * (c.sniff ? 0.007 : 0.0045) : c.nose * Math.max(0, 1 - dt * 12);
     { // 向き（2026-11-17 オーナー：左へ行く時は左を向いて走る）。ふだんは相手のほう（レンは右・ジルは左を向いた絵）。跳ぶ前にその場で向きを変え、着いて少したったら相手のほうへ戻る
       const mT = fly && c.dir && !c.shortMv ? c.dir * (c.row ? -1 : 1) : now < (c.faceUntil || 0) ? c.faceM : 1; if (fly && c.dir) c.faceM = mT;
-      const d = (mT > 0 ? 0 : Math.PI) - (c.tA || 0); c.tA = (c.tA || 0) + clamp(d, -dt * (c.row ? 28 : 20), dt * (c.row ? 28 : 20));   // 小さいジルはすばやく、重いレンはゆっくり向きを変える
+      const tg = mT > 0 ? 0 : Math.PI; if (tg !== c.tG) { c.tG = tg; c.tF = c.tA || 0; c.tq = 0; } c.tq = Math.min(1, (c.tq ?? 1) + dt / (c.row ? 0.32 : 0.45)); c.tA = c.tF + (c.tG - c.tF) * smooth(c.tq); const d = c.tG - c.tA;   // ゆっくり始まり、ゆっくり終わる。重いレンは 0.45 秒、小さいジルは 0.32 秒
       c.dust = Math.max(0, (c.dust || 0) - dt * 2.4);
       if (Math.abs(d) > 2 && !c.turning) { c.turning = 1; c.flapV -= 4; c.eWV += 2; } if (Math.abs(d) < 0.01) c.turning = 0; c.sl = (c.sl || 0) * Math.max(0, 1 - dt * 7); }   // 向きを変える時、耳がふわっと外へ
     c.exert = Math.max(0, c.exert - dt / 7); c.br += dt * (c.asleep ? 28 : c.loafNow ? 36 : 42 + 58 * c.exert) / 60 * 6.283;
@@ -537,14 +537,14 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
     for (const c of (chars[0].z <= chars[1].z ? chars : [chars[1], chars[0]])) {
       if (c.alpha < 0.01 || c.mode === "wait") continue;
-      const mc = Math.cos(c.tA || 0), mm = (mc < 0 ? -1 : 1) * Math.max(Math.abs(mc), 0.78), tw = Math.abs(Math.sin(c.tA || 0));   // 向きを変える途中：細くなりすぎない・少し沈んで、小さく跳ねてまわる
+      const mc = Math.cos(c.tA || 0), mm = mc < 0 ? -1 : 1, tw = Math.abs(Math.sin(c.tA || 0)), piv = c.tq < 1 ? Math.sin(Math.PI * c.tq) : 0;   // 向きを変える途中：小さく跳ねながらまわる
       const fl = !!c.flat, R = fl ? POSE_R[c.row] : 1, dip = (c.lieT < 1 ? 1 - 0.16 * Math.sin(Math.PI * c.lieT) : 1) * (1 - 0.08 * tw);
       gl.bindBuffer(gl.ARRAY_BUFFER, fl ? meshesF[c.row] : meshes[c.row]);
       gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 20, 0); gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 20, 8);
       const wig = c.spinT >= 0 ? Math.sin(c.spinT * Math.PI * 4) * 0.17 * (1 - c.spinT) : 0;   // 押したとき：体を左右に振る
-      gl.uniform3f(u.uPos, cx(c, c.x + (c.sl || 0)) + (fl ? (POSE_X[c.row] + (c.row ? 0.16 : -0.16)) * c.size : 0), cy(c, c.y - c.size * 0.05 * tw), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは少し大きく（→ NOTES）
-      gl.uniform1f(u.uM, fl ? 1 : mm); gl.uniform1f(u.uMf, fl || mm > 0 ? 1 : -1);
-      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig + (c.flatGoal && c.lieT < 0.5 ? (c.row ? 1 : -1) * 0.14 * Math.sin(Math.PI * c.lieT * 2) : 0)); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6)); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さな（→ NOTES）
+      gl.uniform3f(u.uPos, cx(c, c.x + (c.sl || 0)) + (fl ? (POSE_X[c.row] + (c.row ? 0.16 : -0.16)) * c.size : 0), cy(c, c.y - c.size * 0.06 * piv), c.z); gl.uniform1f(u.uSize, (c.size * pin(c) + c.size * (1 - pin(c)) * 0.45) * R);   // 近づくぶんは少し大きく（→ NOTES）
+      gl.uniform1f(u.uM, fl ? 0 : c.tA || 0); gl.uniform1f(u.uMf, fl || mm > 0 ? 1 : -1);
+      gl.uniform3f(u.uRot, fl ? 0 : c.rx, fl ? 0 : c.ry, fl ? 0 : c.rz + wig + (c.flatGoal && c.lieT < 0.5 ? (c.row ? 1 : -1) * 0.14 * Math.sin(Math.PI * c.lieT * 2) : 0)); gl.uniform1f(u.uTurn, fl ? 0 : clamp(c.ry, -0.6, 0.6) + ((c.tA || 0) > 1.5708 ? (c.tA || 0) - Math.PI : c.tA || 0) * 0.45); gl.uniform2f(u.uSq, (1 + c.ext) / Math.sqrt(c.sq * dip), c.sq * dip); gl.uniform2f(u.uLag, fl ? 0 : c.lagX, fl ? 0 : c.lagY);   // 寝る：体が長いので回さな（→ NOTES）
       { const B = BODY[c.row], breath = (c.asleep ? 0.05 : 0.03 + 0.02 * c.exert) * (0.5 + 0.5 * Math.sin(c.br));
         if (fl) { // 寝ている：息だけ
           gl.uniform4f(u.uEar, 0, 0, 0, 0); gl.uniform4f(u.uEarP, B.ear[0], B.ear[1], B.ear[2], B.ear[3]); gl.uniform4f(u.uHead, 0, 0, B.neck, 0); gl.uniform4f(u.uNose, 0.5, 0.5, 0, 0);
