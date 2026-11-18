@@ -292,7 +292,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     if (act === "follow") c.happyUntil = now + 2.6;
     const icon = ACTS[act];
     // N57
-    if (act === "nap" && c.row === 0) { c.happyUntil = 0; say(c, icon, now + NAP_AT + 0.45, 2.4); }
+    if (act === "nap" && c.row === 0) { c.happyUntil = 0; c.lookAt = 0; }
     else if (icon && act !== "hint" && act !== "nap" && c.row === 1) say(c, icon, now + 0.3, 2.4);   // N58
   };
 
@@ -496,7 +496,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
         if (c.sniff && !near) trz -= clamp((px - c.x) / c.size, -1, 1) * 0.05;   // N115
         if (id === "shake" && now > c.idleT0) { const k = clamp((now - c.idleT0) / 0.5, 0, 1); trz += sin(k * PI * 9) * 0.1 * (1 - k); c.rz = trz; }
         c.rz += (trz - c.rz) * min(1, dt * 8);
-        if (asleep && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now, 2.0); }   // N116
+        if (asleep && c.flat && c.lieT >= 1 && now > c.lookAt) { c.lookAt = now + 4.2; if (onScreen(r, 0)) say(c, "zz", now + 0.3, 2.0); }   // N116
         if (c.asleep && !asleep) { unsay(c); c.hopAt = now + 4; c.wkB = now + 2.5; c.idle = "stretch"; c.idleT0 = now + (c.hop > 0 || c.hopV ? 1 : 0); c.idleUntil = c.idleT0 + 1.7; }   // N117
         c.asleep = asleep; c.idNow = id; c.env = env; c.loafNow = loaf; c.calmNow = calm;
         { const wb = c.mode === "sit" && c.idNow === "stretch" && c.env > 0.3 && !c.flat && c.hop === 0 && !c.hopV; if (wb !== c.bwG) { c.bwG = wb; c.bwT = 0; } if ((c.bwT ?? 1) < 1) { const w0 = c.bwT; c.bwT = min(1, c.bwT + dt / 0.32); if (w0 < 0.5 && c.bwT >= 0.5) c.bw = wb; } }   // N118
