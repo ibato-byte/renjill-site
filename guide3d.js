@@ -278,7 +278,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
   };
 
   const land = (c, now) => {
-    c.dust = 1; c.dX = c.x; c.dY = c.gy; c.mode = "sit"; c.h = 0; c.z = zBase(c); c.sqV = c.row ? -2.8 : -3.8; c.sl = c.dir * c.size * 0.03 * clamp(c.hopH / 40, 0.6, 1.6); c.happyUntil = now + 1.1;   // N54
+    c.dust = 1; c.dX = c.x; c.dY = c.gy; c.mode = "sit"; c.h = 0; c.z = zBase(c); c.sqV = c.row ? -2.8 : -3.8; c.sl = c.dir * c.size * 0.03 * clamp(c.hopH / 40, 0.6, 1.6); c.happyUntil = now + 1.1; c.sniffT = now + 0.5;   // N54
     c.rx += 0.14; c.hyV -= 0.5; c.flapV -= 5; c.eWV += 3; c.exert = min(1, c.exert + 0.25 + 0.12 * c.hops); c.hopF = -1;
     if (Math.random() < 0.3) { c.idle = "shake"; c.idleT0 = now + 0.55; c.idleUntil = now + 1.05; } c.dir = 0; c.lookUntil = cA(c) * (c.row ? -1 : 1) < 0 ? now + 1.4 : c.lookUntil; if (c.hops >= 3 && Math.random() < 0.35) { c.idle = "scope"; c.idleT0 = now + 0.4; c.idleUntil = now + 2; } c.hopAt = now + 4 + Math.random() * 5; c.lookAt = now + 5 + Math.random() * 5;   // N55
     if (c.y > 0 && c.y < H + 20) {
@@ -340,6 +340,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.lastRy = c.ry;
     if (sit && !c.asleep && id !== "groom" && now > c.flickAt) { c.flickAt = now + 3.5 + Math.random() * 6; if (lop) { c.eLV += 2.2; c.eRV -= 2.2; } else if (Math.random() < 0.5) c.eLV += 7; else c.eRV -= 7; }
     if (id === "shake" && now > c.idleT0 && now < c.idleT0 + 0.05) { c.eLV += 6; c.eRV -= 6; c.flapV += 5; }
+    if (id === "groom" && !lop && now - c.idleT0 > 1.3) { eW = 0.34; eL = 0.1; eR = -0.1; }   // 毛づくろいの後半は、耳を前足で引き下ろして洗う
     const k = lop ? 90 : 230, d = lop ? 8 : 10; spr(c, "eL", eL, k, d, dt); spr(c, "eR", eR, k, d, dt); spr(c, "eW", eW, 170, 12, dt); spr(c, "flap", fl, 110, 5.5, dt);
     if (lop) { // N73
       const L = 0.1; if (abs(c.eL) > L) { c.eL = sign(c.eL) * L; c.eLV *= 0.3; } if (abs(c.eR) > L) { c.eR = sign(c.eR) * L; c.eRV *= 0.3; } c.flap = clamp(c.flap, -0.55, 0.45); }
@@ -354,6 +355,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
       if ((c.floorT || 0) > 0.8) { hy = 0.045; hx = fc(c) * 0.02; }
       if ((c.chinT || 0) > 1.2) { hy = 0.035; hx = sin(now * 9) * 0.02; }
       if (c.nod > 0) hy = 0.05 * sin(PI * min(1, c.nod * 1.6)) * (c.nod < 0.62 ? 1 : 0) + 0.03 * c.nod;
+      if (now > (c.sniffT || 0) - 0.1 && now < (c.sniffT || 0) + 0.9 && !c.hover) { hy = 0.04; c.twUntil = max(c.twUntil, now + 0.2); }
       if (now - (c.boopT || -9) < 0.4) hx = fc(c) * 0.05 * sin(PI * (now - c.boopT) / 0.4);
       if (id === "groom") { const t = now - c.idleT0; hy = -0.035 * e; hx = sin(t * 16.3) * 0.014 * e; ht = sin(t * 8.2) * 0.14 * e; }
       if (id === "scope") hy = 0.03 * e;
