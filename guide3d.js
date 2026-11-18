@@ -320,6 +320,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     const B = BODY[c.row], sit = c.mode === "sit", lop = B.ear[3] > 0.5, id = sit ? c.idNow || "" : "", e = id ? c.env : 0, hf = c.hopF, fly = c.mode === "fly", air = fly && hf >= 0 ? sin(PI * hf) : 0, cs = fly && hf >= 0 ? cos(PI * hf) : 0;
     if (sit && c.calmNow && !c.asleep && !id && now > c.idleAt && introDone) { const r = Math.random(); c.idle = r < 0.45 ? "groom" : r < 0.8 ? "scope" : "stretch"; c.idleT0 = now; c.idleUntil = now + (r < 0.45 ? 2.6 : r < 0.8 ? 2.3 : 1.6); c.idleAt = now + 9 + Math.random() * 9; }
     if (c.idle === "stretch" && now > c.idleUntil && sit && !c.asleep) { c.idle = Math.random() < 0.6 ? "shake" : ""; c.idleT0 = now + 0.15; c.idleUntil = now + 0.65; }   // のびた後、ぷるっと身ぶるい
+    if (sit && c.calmNow && !c.asleep && Math.random() < dt / 20) c.sigh = 1;   // N-c
     if (sit && abs(vel) > 1100 && c.calmNow) c.alertUntil = now + 0.7;
     if (sit && !c.hover && !c.asleep && !c.flat && now - pAt < 0.1 && pV > 2400 && hypot(px - c.x, py - (c.y - c.size * 0.45)) < c.size * 2.2 && now > (c.startleAt || 0)) { c.alertUntil = now + 0.6; c.startleAt = now + 4; c.idle = ""; if (Math.random() < 0.35) { c.idle = "shake"; c.idleT0 = now + 1; c.idleUntil = now + 1.5; } c.flapV -= 2; }   // N67
     let eL = 0, eR = 0, eW = 0, fl = 0, hx = 0, hy = 0, ht = 0, ex = 0;
@@ -370,7 +371,7 @@ void main() { vec4 c = texture2D(uI, uTile.xy + (vQ * vec2(0.5, -0.5) + 0.5) * u
     c.eW = clamp(c.eW, -0.12, 0.42); c.ext = clamp(c.ext, -0.05, 0.18);
     if (now > c.twAt && now > c.twUntil) { c.twUntil = now + 1 + Math.random() * 2.2; c.twAt = c.twUntil + 0.8 + Math.random() * 3; }
     const exc = now < c.happyUntil && now - (c.tapAt || -9) < 2.2; if (exc) c.twUntil = max(c.twUntil, now + 0.2); c.twPh += dt * (c.asleep ? 2 : c.sniff || exc ? 8 : 5 + 2 * c.exert) * 6.283;   // 押されて喜んだ後は、鼻のひくひくが速い
-    c.nose = !(c.asleep || c.hover || id === "groom" || fly) && (c.sniff || now < c.twUntil) ? Math.pow(max(0, sin(c.twPh)), 2) * (c.sniff ? 0.007 : 0.0045) : c.nose * max(0, 1 - dt * 12);
+    c.nose = !(c.asleep || c.hover || id === "groom" || fly) && (c.sniff || now < c.twUntil) ? Math.pow(max(0, sin(c.twPh)), 2) * (c.sniff ? 0.007 : 0.0045) * (0.7 + 0.3 * abs(sin(c.twPh * 0.37 + c.row))) : c.nose * max(0, 1 - dt * 12);
     { // N74
       const mT = fly && c.dir && !c.shortMv ? c.dir * (c.row ? -1 : 1) : c.faceM || 1; if (fly && c.dir && !c.shortMv) c.faceM = mT;   // N75
       const tg = mT > 0 ? 0 : PI; if (tg !== c.tG) { c.tG = tg; c.tF = c.tA || 0; c.tq = 0; } c.tq = min(1, (c.tq ?? 1) + dt / (c.row ? 0.32 : 0.45)); c.tA = c.tF + (c.tG - c.tF) * smooth(c.tq); const d = c.tG - c.tA;   // N76
