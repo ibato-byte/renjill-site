@@ -327,6 +327,7 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
 { const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'ポムの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
 // 58（2026-11-21）：検索で「レンとジル」と探す人に、日本語の公式サイトとして見つけてもらう
 { if (!/<title>レンとジル/.test(html)) note(58, 'title が「レンとジル」で始まらない');
+  if (/\?ep=/.test(fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'))) note(58, 'feed.xml の記事リンクに ?ep=（canonical が / なので Search Console に「代替ページ」と出る。/#ep-xx にする）');
   if (!html.includes('<link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/">')) note(58, 'hreflang ja が / を指していない（?lang=ja は / と同じページ）');
   if (!/"@type":"WebSite"[^}]*"name":"レンとジル"/.test(html)) note(58, 'WebSite の name が「レンとジル」でない（検索結果のサイト名）');
   if (/hay-dash\.coana\.co\.jp\/(favicon|icon)/.test(html)) note(58, 'アイコンがゲームのドメインのまま');
