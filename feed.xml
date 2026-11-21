@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="ja">
   <title>レンとジル（Ren &amp; Jill）新作エピソード</title>
-  <subtitle>うさぎのオフィスコメディ。新作は毎日。</subtitle>
+  <subtitle>うさぎのオフィスコメディ。新作は毎週 月・木・土。</subtitle>
   <link href="https://renjill.coana.co.jp/"/>
   <link rel="self" href="https://renjill.coana.co.jp/feed.xml"/>
   <id>https://renjill.coana.co.jp/</id>
-  <updated>2026-11-19T00:00:00+09:00</updated>
+  <updated>2026-11-21T00:00:00+09:00</updated>
   <author><name>COANA TOKYO LLC.</name></author>
+  <entry>
+    <title>上司とエレベーター Part 2｜レンとジル</title>
+    <link rel="alternate" href="https://renjill.coana.co.jp/?ep=elevator2"/>
+    <link rel="related" href="https://www.youtube.com/shorts/3rlI0noPSQ4"/>
+    <id>https://renjill.coana.co.jp/#ep-elevator2</id>
+    <updated>2026-11-21T00:00:00+09:00</updated>
+    <summary>全部の階で止まるエレベーター。ジルの名案で、課長の耳をまとめてみたら…（つづく）</summary>
+  </entry>
   <entry>
     <title>エレベーターで上司と2人 Part 1｜レンとジル</title>
     <link rel="alternate" href="https://renjill.coana.co.jp/?ep=elevator"/>

@@ -105,3 +105,11 @@ GitHub Pages で公開する、依存ライブラリなしのサイトです（�
 python3 -m http.server 8000
 # http://localhost:8000/
 ```
+
+## 検索（SEO）で守ること（2026-11-21）
+
+- Google の検索ロボットは英語のブラウザとして来る。ブラウザの言語で自動に切り替えると、Google には英語の題で登録され、「レンとジル」で探しても出にくくなる（実際に起きた）。そのため **検索ロボットには自動の切り替えをしない**（`BOT` の判定。人は今までどおり自動で切り替わる）。
+- 日本語の正規のアドレスは `/`。`?lang=ja` は `/` と同じページ（canonical は `/`）。英語・繁體中文・韓国語は `?lang=en|zh|ko`。sitemap.xml に 4 つとも載せ、互いを指す（`tools/prerender.mjs` が作る）。
+- 題は「レンとジル」で始める。検索結果のサイト名は WebSite の `name`（「レンとジル」）。アイコンはこのドメインの `/favicon.ico`・`/icon-512.png`。
+- 更新したら IndexNow（Bing など・無料）に自動で知らせる（`tools/indexnow.mjs`。鍵はサイト直下の 32 文字の .txt）。Google は Search Console のサイトマップで知らせる。
+- 検査 58 番がこれを全部見張る（英語のブラウザの Googlebot・bingbot で開いて、日本語の題で見えるか）。
