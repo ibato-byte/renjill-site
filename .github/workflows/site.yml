@@ -28,6 +28,17 @@ jobs:
           if git diff --quiet; then echo "変更なし"; exit 0; fi
           git config user.name "renjill-bot"; git config user.email "actions@users.noreply.github.com"
           git commit -am "毎日の更新：エピソード一覧・sitemap・feed（自動）" && git push
+      - name: 検索エンジンに更新を知らせる（IndexNow・無料）
+        run: sleep 90 && node tools/indexnow.mjs
+  notify:
+    # main に入ったら（GitHub Pages の公開を少し待ってから）検索エンジンに知らせる
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: sleep 120 && node tools/indexnow.mjs
   check:
     runs-on: ubuntu-latest
     steps:

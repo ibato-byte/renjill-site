@@ -5,7 +5,7 @@
     <lastmod>2026-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
@@ -14,6 +14,9 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
     <image:image>
       <image:loc>https://renjill.coana.co.jp/og.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261121_elevator2_cover.jpg</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261119_elevator_cover.jpg</image:loc>
@@ -66,6 +69,14 @@
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261023_mug2_cover.jpg</image:loc>
     </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261121_elevator2_cover.jpg</video:thumbnail_loc>
+      <video:title>上司とエレベーター Part 2｜レンとジル</video:title>
+      <video:description>全部の階で止まるエレベーター。ジルの名案で、課長の耳をまとめてみたら…（つづく）</video:description>
+      <video:player_loc>https://www.youtube.com/embed/3rlI0noPSQ4</video:player_loc>
+      <video:publication_date>2026-11-21</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
     <video:video>
       <video:thumbnail_loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261119_elevator_cover.jpg</video:thumbnail_loc>
       <video:title>エレベーターで上司と2人 Part 1｜レンとジル</video:title>
@@ -234,5 +245,44 @@
       <video:publication_date>2026-10-19</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
+  </url>
+  <url>
+    <loc>https://renjill.coana.co.jp/?lang=en</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
+  </url>
+  <url>
+    <loc>https://renjill.coana.co.jp/?lang=zh</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
+  </url>
+  <url>
+    <loc>https://renjill.coana.co.jp/?lang=ko</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
   </url>
 </urlset>

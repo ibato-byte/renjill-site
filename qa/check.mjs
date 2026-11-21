@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（57項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// レンとジル 公式サイトの検査（58項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -36,6 +36,7 @@ def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明�
 def(54, 'キャラクターの絵は 1 枚ずつ出る（まばたき・にっこりで絵を重ねると、足もとの影が濃くなる。2026-11-15）');
 def(55, 'キャラクターの札に「TAP」「HOVER」の文字を出さない（2026-11-15：オーナー「タップという文字はいらない」）');
 def(56, '最初のまばたきでちかっとしない：まばたき・にっこりの絵は、展開（decode）が終わってから切り替える（2026-11-15）');
+def(58, '検索エンジン向け：英語のブラウザの検索ロボットにも日本語の題で見える／日本語は / が正規／アイコンは自分のドメイン／サイトマップに各言語（2026-11-21：Google に英語の題で登録され「レンとジル」で出にくかった）');
 def(57, '案内役の 3D（レンとジル）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
 { const g = fs.existsSync(new URL('../guide3d.js', import.meta.url)) ? fs.readFileSync(new URL('../guide3d.js', import.meta.url), 'utf8') : '';
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
@@ -324,6 +325,27 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
 { const bad = [...html.matchAll(/"uploadDate":\s*"([^"]*)"/g)].map((m) => m[1]).filter((v) => !/^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d)?[+-]\d\d:\d\d$/.test(v)); if (bad.length) note(7, 'uploadDate に時間帯が無い：' + bad[0]); if (!/uploadDate: e\.date\.replace\([^)]*\) \+ "T12:00:00\+09:00"/.test(html)) note(7, '動いて作る動画の uploadDate に時間帯が無い'); }
 // 40：PICKUP
 { const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'ポムの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
+// 58（2026-11-21）：検索で「レンとジル」と探す人に、日本語の公式サイトとして見つけてもらう
+{ if (!/<title>レンとジル/.test(html)) note(58, 'title が「レンとジル」で始まらない');
+  if (!html.includes('<link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/">')) note(58, 'hreflang ja が / を指していない（?lang=ja は / と同じページ）');
+  if (!/"@type":"WebSite"[^}]*"name":"レンとジル"/.test(html)) note(58, 'WebSite の name が「レンとジル」でない（検索結果のサイト名）');
+  if (/hay-dash\.coana\.co\.jp\/(favicon|icon)/.test(html)) note(58, 'アイコンがゲームのドメインのまま');
+  for (const f of ['favicon.ico', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) if (!fs.existsSync(new URL('../' + f, import.meta.url))) note(58, f + ' がない');
+  const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); for (const l of ['en', 'zh', 'ko']) if (!sm.includes(`<loc>https://renjill.coana.co.jp/?lang=${l}</loc>`)) note(58, 'sitemap に ?lang=' + l + ' がない');
+  if (/hreflang="ja" href="[^"]*\?lang=ja"/.test(sm)) note(58, 'sitemap の hreflang ja が ?lang=ja');
+  for (const bot of ['Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)']) {
+    const ctx = await b.newContext({ userAgent: bot, locale: 'en-US', viewport: { width: 1280, height: 800 } }); const p = await ctx.newPage();
+    await p.route(/^https?:\/\/(?!localhost)/, (r) => r.request().url().includes('episodes.json') ? r.fulfill({ status: 200, contentType: 'application/json', body: fixture }) : r.abort());
+    await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1500);
+    const r = await p.evaluate(() => ({ t: document.title, l: document.documentElement.lang, c: (document.querySelector('link[rel=canonical]') || {}).href, u: location.search }));
+    if (!/^レンとジル/.test(r.t) || r.l !== 'ja') note(58, '検索ロボット（' + bot.match(/\w+bot/)[0] + '）に英語で見える：' + r.t);
+    if (r.c !== 'https://renjill.coana.co.jp/') note(58, '検索ロボットの canonical ' + r.c); if (r.u) note(58, '検索ロボットのアドレスに ' + r.u + ' が付いた'); await ctx.close(); }
+  // 人が英語のブラウザで開いたときは、これまでどおり英語に切り替わる
+  { const ctx = await b.newContext({ locale: 'en-US', viewport: { width: 1280, height: 800 } }); const p = await ctx.newPage(); await p.route(/^https?:\/\/(?!localhost)/, (r) => r.abort());
+    await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1200); const t = await p.evaluate(() => document.title); if (/^レンとジル/.test(t)) note(58, '英語のブラウザの人に英語で出なくなった'); await ctx.close(); }
+  // ?lang=ja の canonical は /
+  { const { p, ctx } = await open(1280, 800, 'ja'); const c = await p.evaluate(() => document.querySelector('link[rel=canonical]').href); if (c !== 'https://renjill.coana.co.jp/') note(58, '?lang=ja の canonical ' + c); await ctx.close(); }
+}
 await b.close();
 const ids = Object.keys(CHECKS).map(Number).sort((a, b) => a - b);
 const lines = ids.map((id) => `${fail[id] ? 'NG' : 'OK'} ${String(id).padStart(2)} ${CHECKS[id]}${fail[id] ? '\n     - ' + [...fail[id]].slice(0, 6).join('\n     - ') + (fail[id].size > 6 ? `\n     …ほか ${fail[id].size - 6}` : '') : ''}`);
