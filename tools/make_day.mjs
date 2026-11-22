@@ -1,6 +1,6 @@
 // 「ある一日」の 9 枚（img/day/*.webp、720×450）を、アニメの道具（renjill-auto の rig）の 1 コマから切り出して作る。
 // 使い方：NODE_PATH=<playwright のある所> node tools/make_day.mjs <renjill-auto のフォルダ>   （そのあと webp に：python3 で tools/day.json の通りに切る。下の SHOTS が場所と時間）
-// アニメの絵が変わったら（2026-11-16：レンとジルの手足の作り込み）、これを実行し直す。
+// アニメの絵が変わったら（2026-11-16：東京うさぎオフィスの手足の作り込み）、これを実行し直す。
 // 8・9 は頭のアップで手足が写らないので、元の絵のまま（作った時の回・時間が分からない。手足や顔を変えたら、ここに足して作り直す）
 import { createRequire } from 'node:module'; import fs from 'node:fs'; import path from 'node:path'; import { execFileSync } from 'node:child_process';
 const { chromium } = createRequire(import.meta.url)('playwright');

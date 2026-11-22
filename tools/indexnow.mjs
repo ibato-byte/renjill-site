@@ -2,7 +2,7 @@
 // 鍵は サイト直下の <鍵>.txt（中身も同じ鍵）。Google は対応していないので Search Console のサイトマップで知らせる。
 // 使い方：node tools/indexnow.mjs（失敗してもエラーにしない＝公開を止めない）
 import fs from 'node:fs';
-const HOST = 'renjill.coana.co.jp';
+const HOST = 'usagi.coana.co.jp';
 const root = new URL('../', import.meta.url);
 const keyFile = fs.readdirSync(root).find((f) => /^[0-9a-f]{32}\.txt$/.test(f));
 if (!keyFile) { console.log('IndexNow: 鍵のファイルが無いので何もしません'); process.exit(0); }

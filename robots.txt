@@ -6,5 +6,5 @@ Disallow: /docs/
 Disallow: /tools/
 Disallow: /README.md
 
-# AI 向けの説明：https://renjill.coana.co.jp/llms.txt
-Sitemap: https://renjill.coana.co.jp/sitemap.xml
+# AI 向けの説明：https://usagi.coana.co.jp/llms.txt
+Sitemap: https://usagi.coana.co.jp/sitemap.xml

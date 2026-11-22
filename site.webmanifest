@@ -1,7 +1,7 @@
 {
-  "name": "レンとジル（Ren & Jill）公式サイト",
-  "short_name": "Ren & Jill",
-  "description": "うさぎの課長レンと、しっかり者の部下ジル、新人ハムスターのポム。オフィスコメディのショートアニメ。新作は毎週 月・木・土。",
+  "name": "東京うさぎオフィス（Tokyo Usagi Office）公式サイト",
+  "short_name": "Tokyo Usagi Office",
+  "description": "うさぎの課長モチと、しっかり者の部下ユズ、新人ハムスターのクリ。オフィスコメディのショートアニメ。新作は毎週 月・木・土。",
   "lang": "ja",
   "start_url": "/",
   "scope": "/",

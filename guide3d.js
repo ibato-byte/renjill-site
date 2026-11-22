@@ -1,4 +1,4 @@
-/* レンとジルの「案内役」（3D）。しくみ・決まりは docs/GUIDE3D-NOTES.md */
+/* 東京うさぎオフィスの「案内役」（3D）。しくみ・決まりは docs/GUIDE3D-NOTES.md */
 (() => {
   "use strict";
   const { sin, cos, abs, max, min, hypot, sign, PI } = Math;   // N1
