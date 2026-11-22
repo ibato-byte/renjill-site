@@ -40,7 +40,7 @@ def(58, '検索エンジン向け：英語のブラウザの検索ロボット�
 def(57, '案内役の 3D（東京うさぎオフィス）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
 def(59, '旧名が残っていない（2026-11-22：ブランドを「東京うさぎオフィス」、キャラクターをモチ・ユズ・クリに改名。旧名のレン・ジル・ポムを画面や検索向けの文に出さない）');
 { // 見る人・検索エンジンに届くファイルだけを見る（内部の名前 renjill・ren_open.webp・POM_DAY・URL は対象外）
-  const OLD = /レンとジル|(?<![ァ-ヶー])レン(?![ァ-ヶー])|(?<![ァ-ヶー])ジル(?![ァ-ヶー])|(?<![ァ-ヶー])ポム(?![ァ-ヶー])|(?<![A-Za-z0-9_.$\/-])(?:Ren|Jill|Pom|REN|JILL|POM)(?![A-Za-z0-9_\/-])|蓮與吉兒|렌과 질/g;
+  const OLD = /レンとジル|(?<![ァ-ヶー])レン(?![ァ-ヶー])|(?<![ァ-ヶー])ジル(?![ァ-ヶー])|(?<![ァ-ヶー])ポム(?![ァ-ヶー])|(?<![A-Za-z0-9_.$\/-])(?:Ren|Jill|Pom|REN|JILL|POM)(?![A-Za-z0-9_\/-])|蓮與吉兒|렌과 질/g; // 旧名の一覧（rename.py は「旧名」を含む行を書き換えない）
   for (const f of ['index.html', '404.html', 'llms.txt', 'site.webmanifest', 'feed.xml', 'sitemap.xml', 'tools/make_og.mjs', 'tools/prerender.mjs']) {
     const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue;
     const txt = fs.readFileSync(u, 'utf8').replace(/https?:\/\/[^\s"'<>)]+/g, '');
