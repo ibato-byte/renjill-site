@@ -1,4 +1,4 @@
-// 東京うさぎオフィス 公式サイトの検査（59項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// 東京うさぎオフィス 公式サイトの検査（62項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -38,12 +38,36 @@ def(55, 'キャラクターの札に「TAP」「HOVER」の文字を出さない
 def(56, '最初のまばたきでちかっとしない：まばたき・にっこりの絵は、展開（decode）が終わってから切り替える（2026-11-15）');
 def(58, '検索エンジン向け：英語のブラウザの検索ロボットにも日本語の題で見える／日本語は / が正規／アイコンは自分のドメイン／サイトマップに各言語（2026-11-21：Google に英語の題で登録され「東京うさぎオフィス」で出にくかった）');
 def(57, '案内役の 3D（東京うさぎオフィス）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
+// 1 話ごとのページ・一覧・キャラクター紹介（tools/pages.mjs が作る。2026-11-22）
+const SUBPAGES = []; { const walk = (d) => { for (const n of fs.readdirSync(new URL('../' + d, import.meta.url), { withFileTypes: true })) { if (n.isDirectory()) walk(d + n.name + '/'); else if (n.name === 'index.html') SUBPAGES.push(d + n.name); } }; for (const d of ['ep/', 'episodes/', 'characters/', 'en/', 'zh/', 'ko/']) if (fs.existsSync(new URL('../' + d, import.meta.url))) walk(d); }
+def(60, '下のページ（1話ごと・一覧・キャラクター）：title・description・canonical が自分・h1 が1つ・JSON-LD が読める・4言語の hreflang が互いを指す');
+def(61, '下のページが全部 sitemap.xml にあり、sitemap の URL が全部あるファイルを指す（404 にならない）');
+def(62, '1話のページ：VideoObject（名前・サムネイル・公開日時・埋め込み URL）と、トップの一覧から全話のページへのリンクがある');
+{ const SITE = 'https://usagi.coana.co.jp/'; const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8');
+  const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(/&amp;/g, '&')));
+  if (!SUBPAGES.length) note(60, '下のページが 1 つもない（node tools/prerender.mjs を実行する）');
+  const canon = {};
+  for (const f of SUBPAGES) { const h = fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8'); const url = SITE + f.replace(/index\.html$/, '');
+    const t = (h.match(/<title>([^<]*)<\/title>/) || [])[1] || ''; const d = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
+    if (t.length < 10 || t.length > 90) note(60, `${f}：title の長さ ${t.length}`);
+    if (d.length < 50 || d.length > 300) note(60, `${f}：description の長さ ${d.length}`);
+    if (!h.includes(`<link rel="canonical" href="${url}">`)) note(60, `${f}：canonical が自分でない`);
+    if ((h.match(/<h1[\s>]/g) || []).length !== 1) note(60, `${f}：h1 が 1 つでない`);
+    for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) { try { const j = JSON.parse(m[1]); if (f.startsWith('ep/') || /^(en|zh|ko)\/ep\//.test(f)) { const v = (j['@graph'] || []).find((x) => x['@type'] === 'VideoObject'); if (!v || !v.name || !v.thumbnailUrl || !/T\d\d:\d\d/.test(v.uploadDate || '') || !v.embedUrl) note(62, `${f}：VideoObject が足りない`); } } catch { note(60, `${f}：JSON-LD が読めない`); } }
+    const alts = [...h.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)].map((m) => [m[1], m[2]]);
+    if (alts.length !== 5 || !alts.some(([l, u]) => u === url)) note(60, `${f}：hreflang が 4 言語＋x-default でない／自分を含まない`);
+    canon[url] = alts.map(([, u]) => u);
+    if (!locs.has(url)) note(61, `${f} が sitemap にない`);
+    if (/target="_blank"(?! rel="noopener)/.test(h)) note(20, `${f}：target=_blank に rel=noopener がない`); }
+  for (const [u, list] of Object.entries(canon)) for (const v of list) if (canon[v] && !canon[v].includes(u)) note(60, `hreflang が片道：${u} → ${v}`);
+  for (const u of locs) { if (!u.startsWith(SITE) || u.includes('?')) continue; const f = u.slice(SITE.length) + 'index.html'; if (!fs.existsSync(new URL('../' + f, import.meta.url))) note(61, `sitemap の ${u} のファイルがない`); }
+  const top = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8'); for (const f of SUBPAGES.filter((x) => /^ep\//.test(x))) if (!top.includes(`href="/${f.replace(/index\.html$/, '')}"`)) note(62, `トップから ${f} へのリンクがない`); }
 def(59, '旧名が残っていない（2026-11-22：ブランドを「東京うさぎオフィス」、キャラクターをモチ・ユズ・クリに改名。旧名のレン・ジル・ポムを画面や検索向けの文に出さない）');
 { // 見る人・検索エンジンに届くファイルだけを見る（内部の名前 renjill・ren_open.webp・POM_DAY・URL は対象外）
   const OLD = /レンとジル|(?<![ァ-ヶー])レン(?![ァ-ヶー])|(?<![ァ-ヶー])ジル(?![ァ-ヶー])|(?<![ァ-ヶー])ポム(?![ァ-ヶー])|(?<![A-Za-z0-9_.$\/-])(?:Ren|Jill|Pom|REN|JILL|POM)(?![A-Za-z0-9_\/-])|蓮與吉兒|렌과 질/g; // 旧名の一覧（rename.py は「旧名」を含む行を書き換えない）
-  for (const f of ['index.html', '404.html', 'llms.txt', 'site.webmanifest', 'feed.xml', 'sitemap.xml', 'tools/make_og.mjs', 'tools/prerender.mjs']) {
+  for (const f of ['index.html', '404.html', 'llms.txt', 'site.webmanifest', 'feed.xml', 'sitemap.xml', 'tools/make_og.mjs', 'tools/prerender.mjs', 'tools/pages.mjs', ...SUBPAGES]) {
     const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue;
-    const txt = fs.readFileSync(u, 'utf8').replace(/https?:\/\/[^\s"'<>)]+/g, '');
+    const txt = fs.readFileSync(u, 'utf8').replace(/\/\*NAMEFIX\*\/[\s\S]*?\/\*\/NAMEFIX\*\//g, '').replace(/https?:\/\/[^\s"'<>)]+/g, ''); // 読み替えの関数（旧名→新名）そのものは除く
     const hit = [...new Set(txt.match(OLD) || [])]; if (hit.length) note(59, `${f} に旧名：${hit.slice(0, 6).join('・')}`); } }
 { const g = fs.existsSync(new URL('../guide3d.js', import.meta.url)) ? fs.readFileSync(new URL('../guide3d.js', import.meta.url), 'utf8') : '';
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
@@ -329,7 +353,7 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
 { const { p, ctx } = await open(1440, 900, 'ja', { q: '?lang=ja&g3d=0' }); const r = await p.evaluate(async () => Promise.all([...document.querySelectorAll('.game-chars img')].map(async (im) => { const i = new Image(); i.src = im.src; await i.decode(); const c = document.createElement('canvas'); c.width = c.height = 80; const g = c.getContext('2d'); g.drawImage(i, 0, 0, 80, 80); const d = g.getImageData(0, 0, 80, 80).data; let s = 0, n = 0; for (let y = 0; y < 80; y++) for (let x = 0; x < 80; x++) if ((x - 39.5) ** 2 + (y - 39.5) ** 2 <= (40 * .92) ** 2) { s += d[(y * 80 + x) * 4 + 3] / 255; n++; } return [im.src.split('/').pop(), Math.round(s / n * 100)]; })));
   if (r.length !== 3) note(53, 'ゲーム紹介の丸い顔が 3 つでない ' + r.length); for (const [f, v] of r) if (v < 80) note(53, f + ' の丸の中が ' + v + '% しか埋まっていない（顔が見切れて見える。tools/make_heads.py で作り直す）'); await ctx.close(); }
 // 7：動画の uploadDate は、時刻と時間帯まで書く（日付だけだと Search Console が「日時値が無効です」と出す。2026-11-05 の通知）
-{ const bad = [...html.matchAll(/"uploadDate":\s*"([^"]*)"/g)].map((m) => m[1]).filter((v) => !/^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d)?[+-]\d\d:\d\d$/.test(v)); if (bad.length) note(7, 'uploadDate に時間帯が無い：' + bad[0]); if (!/uploadDate: e\.date\.replace\([^)]*\) \+ "T12:00:00\+09:00"/.test(html)) note(7, '動いて作る動画の uploadDate に時間帯が無い'); }
+{ const bad = [...html.matchAll(/"uploadDate":\s*"([^"]*)"/g)].map((m) => m[1]).filter((v) => !/^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d)?[+-]\d\d:\d\d$/.test(v)); if (bad.length) note(7, 'uploadDate に時間帯が無い：' + bad[0]); /* 動画の uploadDate は 1 話ごとのページ（検査 62）で確かめる。2026-11-22 */ }
 // 40：PICKUP
 { const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'クリの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
 // 58（2026-11-21）：検索で「東京うさぎオフィス」と探す人に、日本語の公式サイトとして見つけてもらう

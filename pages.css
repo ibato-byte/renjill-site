@@ -1,0 +1,73 @@
+/* エピソード・一覧・キャラクター紹介のページ（tools/pages.mjs が作る）の見た目。色と形は index.html と同じ */
+:root { --cream: #F4EAD8; --paper: #FBF6EC; --ink: #2B1D12; --ink-2: #5A4433; --navy: #1E3A5F; --mustard: #D9A520; --blush: #E8A4A0; --line: 3px solid var(--ink); --r: 22px; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--cream); color: var(--ink); font: 700 16px/1.8 "Zen Maru Gothic", "Fredoka", "Hiragino Maru Gothic ProN", "Yu Gothic", "Noto Sans TC", "Malgun Gothic", sans-serif; overflow-wrap: anywhere; }
+a { color: var(--navy); text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; border-radius: 6px; }
+img { max-width: 100%; height: auto; display: block; }
+h1, h2 { font-weight: 900; line-height: 1.3; margin: 0; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 12px; top: 12px; z-index: 9; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 999px; }
+.p-hdr, main, .p-ftr { width: min(1080px, 100% - 32px); margin-inline: auto; }
+.p-hdr { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; justify-content: space-between; padding: 14px 0; }
+.p-logo { display: inline-flex; align-items: center; gap: 10px; font: 700 18px/1 "Fredoka", sans-serif; letter-spacing: .04em; color: var(--ink); text-decoration: none; min-height: 44px; }
+.p-logo img { width: 40px; height: 40px; border-radius: 12px; border: 2px solid var(--ink); background: var(--paper); }
+.p-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+.p-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); text-decoration: none; font-size: 14px; }
+.p-nav a:hover, .p-nav a[aria-current] { background: var(--ink); color: var(--paper); }
+.p-crumb ol { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 6px 0 18px; padding: 0; font-size: 13px; color: var(--ink-2); }
+.p-crumb li + li::before { content: "›"; margin-right: 8px; }
+.p-crumb a { display: inline-block; padding: 6px 0; }
+.p-ep { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: start; }
+.p-player { aspect-ratio: 9 / 16; border: var(--line); border-radius: var(--r); overflow: hidden; background: var(--ink); box-shadow: 6px 6px 0 var(--ink); }
+.p-player a { position: relative; display: block; height: 100%; }
+.p-player img, .p-player iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.p-play { position: absolute; inset: 0; margin: auto; width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%; border: var(--line); background: var(--mustard); color: var(--ink); padding-left: 5px; }
+.p-info h1 { font-size: clamp(28px, 5vw, 46px); margin: 4px 0 12px; }
+.p-meta { margin: 0; font-size: 14px; color: var(--ink-2); }
+.p-no { display: inline-block; font: 700 13px/1 "Fredoka", sans-serif; background: var(--ink); color: var(--paper); padding: 5px 9px; border-radius: 999px; letter-spacing: .04em; }
+.p-cap { font-size: clamp(17px, 2.2vw, 20px); margin: 0 0 14px; }
+.p-series, .p-lead, .p-who { font-size: 14px; color: var(--ink-2); margin: 0 0 14px; }
+.p-btns { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+.p-btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); text-decoration: none; box-shadow: 3px 3px 0 var(--ink); }
+.p-btn.main { background: var(--mustard); }
+.p-btn:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
+.p-pn { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+.p-pn a { display: block; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 16px; background: var(--paper); color: var(--ink); text-decoration: none; line-height: 1.5; }
+.p-pn a[rel="next"] { text-align: right; }
+.p-pn span { display: block; font-size: 12px; color: var(--ink-2); }
+.p-more, .p-list { margin-top: clamp(36px, 6vw, 64px); }
+.p-list:first-of-type { margin-top: 0; }
+.p-more h2 { font-size: clamp(22px, 3.4vw, 30px); margin-bottom: 16px; }
+.p-list h1 { font-size: clamp(30px, 6vw, 52px); margin-bottom: 10px; }
+.p-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+.p-grid.wide { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; margin-top: 22px; }
+.p-card { position: relative; display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 8px 8px 12px; border: 2px solid var(--ink); border-radius: 18px; background: var(--paper); color: var(--ink); text-decoration: none; line-height: 1.45; }
+.p-card:hover { box-shadow: 4px 4px 0 var(--ink); }
+.p-card img { aspect-ratio: 9 / 16; width: 100%; object-fit: cover; border-radius: 12px; background: var(--ink); }
+.p-card .p-no { position: absolute; left: 14px; top: 14px; }
+.p-card b { font-size: 15px; margin-top: 4px; }
+.p-card time { font: 500 12px/1.4 "Fredoka", sans-serif; color: var(--ink-2); }
+.p-cc { font-size: 13px; color: var(--ink-2); }
+.p-char { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(16px, 4vw, 40px); align-items: center; margin-top: 28px; padding: clamp(16px, 3vw, 28px); border: var(--line); border-radius: var(--r); background: var(--paper); box-shadow: 6px 6px 0 var(--ink); scroll-margin-top: 16px; }
+.p-char h2 { font-size: clamp(24px, 4vw, 34px); margin-bottom: 8px; }
+.p-en { margin: 0; font: 700 14px/1 "Fredoka", sans-serif; letter-spacing: .12em; color: var(--ink-2); }
+.p-char dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; margin: 0 0 12px; font-size: 15px; }
+.p-char dt { color: var(--ink-2); font-size: 13px; }
+.p-char dd { margin: 0; }
+.p-tags, .p-sns, .p-lang { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
+.p-tags li { font-size: 13px; padding: 2px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--cream); }
+.p-rel { margin: 0; padding-left: 1.2em; }
+.p-ftr { margin-top: clamp(48px, 8vw, 88px); padding: 24px 0 40px; border-top: var(--line); font-size: 14px; }
+.p-tag { margin: 0 0 12px; color: var(--ink-2); }
+.p-sns, .p-lang { gap: 4px 18px; margin-bottom: 10px; }
+.p-sns a, .p-lang a { display: inline-block; padding: 9px 0; }
+.p-lang a[aria-current] { color: var(--ink); text-decoration: none; }
+@media (max-width: 720px) {
+  .p-ep, .p-char { grid-template-columns: 1fr; }
+  .p-player { width: min(100%, 330px); margin-inline: auto; }
+  .p-char img { width: min(70%, 260px); margin-inline: auto; }
+  .p-nav a { padding: 0 11px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) { .p-btn:hover { transform: none; } }

@@ -1,5 +1,5 @@
 # 公式サイトの見張りと毎日の更新（2026-11-10）
-# - 変更のたび（PR・main）：qa/check.mjs（59項目 × 32通り）を通す。不合格なら赤くなる
+# - 変更のたび（PR・main）：qa/check.mjs（62項目 × 32通り）を通す。不合格なら赤くなる
 # - 毎日 0:30（日本時間）：最新の episodes.json から、静的なエピソード一覧・sitemap.xml・feed.xml を作り直して main に入れる
 name: site
 on:
@@ -25,9 +25,10 @@ jobs:
           EPISODES_JSON=/tmp/episodes.json node tools/prerender.mjs
       - name: 変わっていれば main に入れる
         run: |
-          if git diff --quiet; then echo "変更なし"; exit 0; fi
+          git add -A ep en zh ko episodes characters index.html sitemap.xml feed.xml llms.txt  # 新作のページ（新しいフォルダ）も入れる。-a だけだと入らない
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
           git config user.name "renjill-bot"; git config user.email "actions@users.noreply.github.com"
-          git commit -am "毎日の更新：エピソード一覧・sitemap・feed（自動）" && git push
+          git commit -m "毎日の更新：エピソード一覧・sitemap・feed（自動）" && git push
       - name: 検索エンジンに更新を知らせる（IndexNow・無料）
         run: sleep 90 && node tools/indexnow.mjs
   notify:
@@ -46,7 +47,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm i --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
-      - name: 59項目の検査
+      - name: 62項目の検査
         run: |
           python3 -m http.server 8765 >/dev/null 2>&1 &
           sleep 1
