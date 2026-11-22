@@ -24,6 +24,32 @@
   ],
   "id": "/",
   "categories": [
-    "entertainment"
+    "entertainment",
+    "kids",
+    "games"
+  ],
+  "shortcuts": [
+    {
+      "name": "エピソード一覧",
+      "short_name": "エピソード",
+      "url": "/episodes/",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "キャラクター紹介",
+      "short_name": "キャラクター",
+      "url": "/characters/",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

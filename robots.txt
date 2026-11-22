@@ -5,6 +5,9 @@ Disallow: /qa/
 Disallow: /docs/
 Disallow: /tools/
 Disallow: /README.md
+Disallow: /node_modules/
+Disallow: /.github/
+# 共有ボタンの計測用の ?ref= 付き URL は canonical で本来のページにまとまる（ブロックはしない＝canonical を読ませるため）
 
 # AI 向けの説明：https://usagi.coana.co.jp/llms.txt
 Sitemap: https://usagi.coana.co.jp/sitemap.xml

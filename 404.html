@@ -53,7 +53,7 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
   <div class="go">
     <a class="btn" id="home" href="/">トップへ戻る</a>
     <a class="btn lite" id="game" href="https://hay-dash.coana.co.jp/">ゲームで遊ぶ</a>
-    <a class="btn lite" id="eps" href="/#episodes">エピソードを見る</a>
+    <a class="btn lite" id="eps" href="/episodes/">エピソードを見る</a>
     <a class="btn lite" id="faq" href="/#faq">よくある質問</a>
   </div>
   <nav class="sns" aria-label="SNS">
@@ -86,7 +86,7 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
     const x = L[l] || L.ja;
     document.documentElement.lang = x.tag; document.title = x.title; document.body.classList.toggle("en", l === "en");
     $("h").textContent = x.h; $("m").innerHTML = x.m; $("home").textContent = x.home; $("game").textContent = x.game; $("f").textContent = x.f;
-    $("home").href = "/?lang=" + l; $("eps").textContent = x.eps; $("faq").textContent = x.faq; $("eps").href = "/?lang=" + l + "#episodes"; $("faq").href = "/?lang=" + l + "#faq";
+    $("home").href = "/?lang=" + l; $("eps").textContent = x.eps; $("faq").textContent = x.faq; $("eps").href = (l === "ja" ? "" : "/" + l) + "/episodes/"; $("faq").href = "/?lang=" + l + "#faq";
     document.querySelectorAll(".langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.l === l));
   };
   let l = null; try { l = localStorage.getItem("rj-lang"); } catch (e) {}
