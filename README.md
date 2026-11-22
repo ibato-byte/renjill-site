@@ -6,7 +6,7 @@
 うさぎの課長モチと、しっかり者の部下ユズ（と新人のクリ）のキャラクターブランドサイト。
 GitHub Pages で公開する、依存ライブラリなしのサイトです（本体は `index.html` 1 枚。案内役の 3D だけ `guide3d.js` に分けています）。
 
-- 公開URL：https://renjill.coana.co.jp/
+- 公開URL：https://usagi.coana.co.jp/
 - 画像・動画は公開リポジトリ `ibato-byte/renjill-media` のファイルを jsDelivr 経由で読み込みます（`https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/...`）。
 - ゲーム「チモシーダッシュ（Hay Dash）」は https://hay-dash.coana.co.jp/ にリンク。
 

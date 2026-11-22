@@ -96,12 +96,12 @@ const m = (re) => (html.match(re) || [])[1];
   const lds = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((x) => x[1]);
   const types = new Set(); for (const s of lds) { try { const j = JSON.parse(s); const walk = (o) => { if (Array.isArray(o)) o.forEach(walk); else if (o && typeof o === 'object') { if (o['@type']) [].concat(o['@type']).forEach((t) => types.add(t)); Object.values(o).forEach(walk); } }; walk(j); } catch (e) { note(7, 'JSON-LD parse ' + e.message); } }
   for (const t of ['WebSite', 'Organization', 'VideoObject']) if (!types.has(t)) note(7, 'type ' + t);
-  const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); if (!sm.includes('<loc>https://renjill.coana.co.jp/</loc>') || !sm.includes('hreflang')) note(8, 'sitemap');
+  const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); if (!sm.includes('<loc>https://usagi.coana.co.jp/</loc>') || !sm.includes('hreflang')) note(8, 'sitemap');
   if (!/Sitemap:\s*https:\/\/renjill\.coana\.co\.jp\/sitemap\.xml/.test(fs.readFileSync(new URL('../robots.txt', import.meta.url), 'utf8'))) note(9, 'robots');
   try { const w = JSON.parse(fs.readFileSync(new URL('../site.webmanifest', import.meta.url), 'utf8')); if (!w.name || !w.icons || !w.icons.length) note(10, 'manifest fields'); } catch (e) { note(10, 'manifest ' + e.message); }
   try { const l = fs.readFileSync(new URL('../llms.txt', import.meta.url), 'utf8'); if (!/月・木・土/.test(l) || !/Monday, Thursday and Saturday/.test(l) || /新作は毎日|公開：毎日|new every day|every day/i.test(l)) note(11, 'llms.txt の公開日が「毎週 月・木・土」になっていない（2026-11-17 から週3回）'); if (/30\s?秒|30-second|30 sec/i.test(l)) note(11, 'llms.txt 30秒'); } catch { note(11, 'llms.txt なし'); }
   try { const n = fs.readFileSync(new URL('../404.html', import.meta.url), 'utf8'); if (!/noindex/.test(n)) note(12, '404 noindex なし'); } catch { note(12, '404 なし'); }
-  for (const s of ['youtube.com/@renjill_office', 'instagram.com/renjill_office', 'tiktok.com/@renjill_office', 'threads.net/@renjill_office']) { const n = html.split(s).length - 1; if (n < 2) note(13, s + ' ' + n); }
+  for (const s of ['youtube.com/@tokyo_usagi_office', 'instagram.com/tokyo_usagi_office', 'tiktok.com/@tokyo_usagi_office', 'threads.net/@tokyo_usagi_office']) { const n = html.split(s).length - 1; if (n < 2) note(13, s + ' ' + n); }
   if (/threads\.com\/@renjill/.test(html) && /threads\.net\/@renjill/.test(html)) note(13, 'threads.net と threads.com が混在');
   if (/http:\/\/(?!www\.w3\.org)/.test(html)) note(18, 'http:');
   for (const im of html.matchAll(/<img\b[^>]*>/g)) { const s = im[0]; if (!/\balt=/.test(s)) note(19, 'alt なし ' + s.slice(0, 60)); if (!/\bwidth=/.test(s) || !/\bheight=/.test(s)) note(19, 'width/height なし ' + s.slice(0, 60)); }
@@ -118,7 +118,7 @@ const m = (re) => (html.match(re) || [])[1];
   if (/(^|[\s,}])\.game::(before|after)/m.test(html)) note(51, '「.game::before/after」は右の列のゲームのボタンにもかかる（section.game に限る）');
   if (/data-eye/.test(html)) note(51, '古い線画（data-eye）が残っている'); if ((html.match(/<image href="img\/char\//g) || []).length !== 3) note(51, '関係の図の絵が 3 人分でない');
   // feed.xml は Search Console にも出す：記事のリンク（alternate）はこのサイトの URL だけ（2026-11-10：YouTube へのリンクが「許可されていない URL」になった）
-  try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://renjill.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
+  try { const fd = fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'); for (const mm of fd.matchAll(/<link (?:rel="alternate" )?href="([^"]+)"\/>/g)) if (!mm[1].startsWith('https://usagi.coana.co.jp/')) note(8, 'feed.xml の記事リンクが別のサイト ' + mm[1].slice(0, 50)); } catch { note(8, 'feed.xml なし'); }
 }
 
 // ---------- ブラウザでの検査
@@ -335,11 +335,11 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
 // 58（2026-11-21）：検索で「東京うさぎオフィス」と探す人に、日本語の公式サイトとして見つけてもらう
 { if (!/<title>東京うさぎオフィス/.test(html)) note(58, 'title が「東京うさぎオフィス」で始まらない');
   if (/\?ep=/.test(fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'))) note(58, 'feed.xml の記事リンクに ?ep=（canonical が / なので Search Console に「代替ページ」と出る。/#ep-xx にする）');
-  if (!html.includes('<link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/">')) note(58, 'hreflang ja が / を指していない（?lang=ja は / と同じページ）');
+  if (!html.includes('<link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/">')) note(58, 'hreflang ja が / を指していない（?lang=ja は / と同じページ）');
   if (!/"@type":"WebSite"[^}]*"name":"東京うさぎオフィス"/.test(html)) note(58, 'WebSite の name が「東京うさぎオフィス」でない（検索結果のサイト名）');
   if (/hay-dash\.coana\.co\.jp\/(favicon|icon)/.test(html)) note(58, 'アイコンがゲームのドメインのまま');
   for (const f of ['favicon.ico', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) if (!fs.existsSync(new URL('../' + f, import.meta.url))) note(58, f + ' がない');
-  const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); for (const l of ['en', 'zh', 'ko']) if (!sm.includes(`<loc>https://renjill.coana.co.jp/?lang=${l}</loc>`)) note(58, 'sitemap に ?lang=' + l + ' がない');
+  const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); for (const l of ['en', 'zh', 'ko']) if (!sm.includes(`<loc>https://usagi.coana.co.jp/?lang=${l}</loc>`)) note(58, 'sitemap に ?lang=' + l + ' がない');
   if (/hreflang="ja" href="[^"]*\?lang=ja"/.test(sm)) note(58, 'sitemap の hreflang ja が ?lang=ja');
   for (const bot of ['Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)']) {
     const ctx = await b.newContext({ userAgent: bot, locale: 'en-US', viewport: { width: 1280, height: 800 } }); const p = await ctx.newPage();
@@ -347,12 +347,12 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
     await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1500);
     const r = await p.evaluate(() => ({ t: document.title, l: document.documentElement.lang, c: (document.querySelector('link[rel=canonical]') || {}).href, u: location.search }));
     if (!/^東京うさぎオフィス/.test(r.t) || r.l !== 'ja') note(58, '検索ロボット（' + bot.match(/\w+bot/)[0] + '）に英語で見える：' + r.t);
-    if (r.c !== 'https://renjill.coana.co.jp/') note(58, '検索ロボットの canonical ' + r.c); if (r.u) note(58, '検索ロボットのアドレスに ' + r.u + ' が付いた'); await ctx.close(); }
+    if (r.c !== 'https://usagi.coana.co.jp/') note(58, '検索ロボットの canonical ' + r.c); if (r.u) note(58, '検索ロボットのアドレスに ' + r.u + ' が付いた'); await ctx.close(); }
   // 人が英語のブラウザで開いたときは、これまでどおり英語に切り替わる
   { const ctx = await b.newContext({ locale: 'en-US', viewport: { width: 1280, height: 800 } }); const p = await ctx.newPage(); await p.route(/^https?:\/\/(?!localhost)/, (r) => r.abort());
     await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1200); const t = await p.evaluate(() => document.title); if (/^東京うさぎオフィス/.test(t)) note(58, '英語のブラウザの人に英語で出なくなった'); await ctx.close(); }
   // ?lang=ja の canonical は /
-  { const { p, ctx } = await open(1280, 800, 'ja'); const c = await p.evaluate(() => document.querySelector('link[rel=canonical]').href); if (c !== 'https://renjill.coana.co.jp/') note(58, '?lang=ja の canonical ' + c); await ctx.close(); }
+  { const { p, ctx } = await open(1280, 800, 'ja'); const c = await p.evaluate(() => document.querySelector('link[rel=canonical]').href); if (c !== 'https://usagi.coana.co.jp/') note(58, '?lang=ja の canonical ' + c); await ctx.close(); }
 }
 await b.close();
 const ids = Object.keys(CHECKS).map(Number).sort((a, b) => a - b);

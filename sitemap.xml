@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
-    <loc>https://renjill.coana.co.jp/</loc>
+    <loc>https://usagi.coana.co.jp/</loc>
     <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/"/>
     <image:image>
-      <image:loc>https://renjill.coana.co.jp/og.jpg</image:loc>
+      <image:loc>https://usagi.coana.co.jp/og.jpg</image:loc>
     </image:image>
     <image:image>
       <image:loc>https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/20261121_elevator2_cover.jpg</image:loc>
@@ -247,42 +247,42 @@
     </video:video>
   </url>
   <url>
-    <loc>https://renjill.coana.co.jp/?lang=en</loc>
+    <loc>https://usagi.coana.co.jp/?lang=en</loc>
     <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/"/>
   </url>
   <url>
-    <loc>https://renjill.coana.co.jp/?lang=zh</loc>
+    <loc>https://usagi.coana.co.jp/?lang=zh</loc>
     <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/"/>
   </url>
   <url>
-    <loc>https://renjill.coana.co.jp/?lang=ko</loc>
+    <loc>https://usagi.coana.co.jp/?lang=ko</loc>
     <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://renjill.coana.co.jp/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://renjill.coana.co.jp/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://renjill.coana.co.jp/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://renjill.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-HK" href="https://usagi.coana.co.jp/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/?lang=ko"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/"/>
   </url>
 </urlset>
