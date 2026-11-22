@@ -89,7 +89,7 @@ if (/char-hint|>TAP<|>HOVER</.test(html)) note(55, '札に TAP / HOVER の文字
 const m = (re) => (html.match(re) || [])[1];
 { const t = m(/<title>([^<]*)<\/title>/); if (!t || t.length < 15 || t.length > 70) note(1, 'title ' + (t || '').length);
   const d = m(/<meta name="description" content="([^"]*)"/); if (!d || d.length < 50 || d.length > 160) note(2, 'desc ' + (d || '').length);
-  if (!/<link rel="canonical" href="https:\/\/renjill\.coana\.co\.jp\/">/.test(html)) note(3, 'canonical');
+  if (!/<link rel="canonical" href="https:\/\/usagi\.coana\.co\.jp\/">/.test(html)) note(3, 'canonical');
   for (const h of ['ja', 'en', 'zh-Hant', 'ko', 'x-default']) if (!new RegExp(`hreflang="${h}"`).test(html)) note(4, h);
   for (const p of ['og:title', 'og:description', 'og:image', 'og:url', 'og:type']) if (!html.includes(`property="${p}"`)) note(5, p);
   for (const p of ['twitter:card', 'twitter:title', 'twitter:image']) if (!html.includes(`name="${p}"`)) note(6, p);
@@ -97,7 +97,7 @@ const m = (re) => (html.match(re) || [])[1];
   const types = new Set(); for (const s of lds) { try { const j = JSON.parse(s); const walk = (o) => { if (Array.isArray(o)) o.forEach(walk); else if (o && typeof o === 'object') { if (o['@type']) [].concat(o['@type']).forEach((t) => types.add(t)); Object.values(o).forEach(walk); } }; walk(j); } catch (e) { note(7, 'JSON-LD parse ' + e.message); } }
   for (const t of ['WebSite', 'Organization', 'VideoObject']) if (!types.has(t)) note(7, 'type ' + t);
   const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); if (!sm.includes('<loc>https://usagi.coana.co.jp/</loc>') || !sm.includes('hreflang')) note(8, 'sitemap');
-  if (!/Sitemap:\s*https:\/\/renjill\.coana\.co\.jp\/sitemap\.xml/.test(fs.readFileSync(new URL('../robots.txt', import.meta.url), 'utf8'))) note(9, 'robots');
+  if (!/Sitemap:\s*https:\/\/usagi\.coana\.co\.jp\/sitemap\.xml/.test(fs.readFileSync(new URL('../robots.txt', import.meta.url), 'utf8'))) note(9, 'robots');
   try { const w = JSON.parse(fs.readFileSync(new URL('../site.webmanifest', import.meta.url), 'utf8')); if (!w.name || !w.icons || !w.icons.length) note(10, 'manifest fields'); } catch (e) { note(10, 'manifest ' + e.message); }
   try { const l = fs.readFileSync(new URL('../llms.txt', import.meta.url), 'utf8'); if (!/月・木・土/.test(l) || !/Monday, Thursday and Saturday/.test(l) || /新作は毎日|公開：毎日|new every day|every day/i.test(l)) note(11, 'llms.txt の公開日が「毎週 月・木・土」になっていない（2026-11-17 から週3回）'); if (/30\s?秒|30-second|30 sec/i.test(l)) note(11, 'llms.txt 30秒'); } catch { note(11, 'llms.txt なし'); }
   try { const n = fs.readFileSync(new URL('../404.html', import.meta.url), 'utf8'); if (!/noindex/.test(n)) note(12, '404 noindex なし'); } catch { note(12, '404 なし'); }
