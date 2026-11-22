@@ -6,8 +6,8 @@
    "ja": "最後の1枚"
   },
   "caption": {
-   "ja": "最後の1枚をレンもジルも譲らない。結局ポムがテープで貼って「1枚」。",
-   "en": "One sheet left. Two bunnies. Zero compromise. Pom tapes it all back together."
+   "ja": "最後の1枚をモチもユズも譲らない。結局クリがテープで貼って「1枚」。",
+   "en": "One sheet left. Two bunnies. Zero compromise. Kuri tapes it all back together."
   },
   "cover": "20261110_lastsheet_cover.jpg",
   "video": "20261110_lastsheet.mp4",
@@ -48,7 +48,7 @@
    "ja": "自販機のにんじんジュース"
   },
   "caption": {
-   "ja": "自販機にコインを入れたのに、にんじんジュースが出ない。叩いて、蹴って、そして缶の雨。（ジルは全部持っていった）",
+   "ja": "自販機にコインを入れたのに、にんじんジュースが出ない。叩いて、蹴って、そして缶の雨。（ユズは全部持っていった）",
    "en": "He just wanted a carrot juice. He got every can except that one."
   },
   "cover": "20261104_vending_cover.jpg",
@@ -73,10 +73,10 @@
   "ep": "pom_debut",
   "date": "2026-11-01",
   "title": {
-   "ja": "新人のポム",
-   "en": "New hire: Pom",
-   "zh": "新人 Pom",
-   "ko": "신입 Pom"
+   "ja": "新人のクリ",
+   "en": "New hire: Kuri",
+   "zh": "新人 Kuri",
+   "ko": "신입 Kuri"
   },
   "cover": "20261101_pom_debut_cover.jpg",
   "video": "20261101_pom_debut.mp4",
@@ -130,10 +130,10 @@
   "ep": "jil_morning2",
   "date": "2026-10-26",
   "title": {
-   "ja": "ジルの朝",
-   "en": "Jill's morning",
-   "zh": "Jill 的早晨",
-   "ko": "Jill의 아침"
+   "ja": "ユズの朝",
+   "en": "Yuzu's morning",
+   "zh": "Yuzu 的早晨",
+   "ko": "Yuzu의 아침"
   },
   "cover": "20261026_jil_morning2_cover.jpg",
   "video": "20261026_jil_morning2.mp4",

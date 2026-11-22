@@ -1,4 +1,4 @@
-// レンとジル 公式サイトの検査（58項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
+// 東京うさぎオフィス 公式サイトの検査（59項目）。使い方：python3 -m http.server 8765 & node qa/check.mjs [round名]
 // 画面の大きさ7種類 × 言語4つ × 動きを減らす設定 で、表示・文言・SEO・アクセシビリティ・矛盾を確かめる。
 // 外部の通信は止め、エピソード一覧は qa/fixture-episodes.json を使う（ネットが無くても同じ結果になる）
 import { createRequire } from 'node:module';
@@ -36,8 +36,15 @@ def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明�
 def(54, 'キャラクターの絵は 1 枚ずつ出る（まばたき・にっこりで絵を重ねると、足もとの影が濃くなる。2026-11-15）');
 def(55, 'キャラクターの札に「TAP」「HOVER」の文字を出さない（2026-11-15：オーナー「タップという文字はいらない」）');
 def(56, '最初のまばたきでちかっとしない：まばたき・にっこりの絵は、展開（decode）が終わってから切り替える（2026-11-15）');
-def(58, '検索エンジン向け：英語のブラウザの検索ロボットにも日本語の題で見える／日本語は / が正規／アイコンは自分のドメイン／サイトマップに各言語（2026-11-21：Google に英語の題で登録され「レンとジル」で出にくかった）');
-def(57, '案内役の 3D（レンとジル）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
+def(58, '検索エンジン向け：英語のブラウザの検索ロボットにも日本語の題で見える／日本語は / が正規／アイコンは自分のドメイン／サイトマップに各言語（2026-11-21：Google に英語の題で登録され「東京うさぎオフィス」で出にくかった）');
+def(57, '案内役の 3D（東京うさぎオフィス）：見出しの字に重ならない・画面からはみ出さない・動きを減らす設定では読み込まない・クリックの邪魔をしない（2026-11-15）');
+def(59, '旧名が残っていない（2026-11-22：ブランドを「東京うさぎオフィス」、キャラクターをモチ・ユズ・クリに改名。旧名のレン・ジル・ポムを画面や検索向けの文に出さない）');
+{ // 見る人・検索エンジンに届くファイルだけを見る（内部の名前 renjill・ren_open.webp・POM_DAY・URL は対象外）
+  const OLD = /レンとジル|(?<![ァ-ヶー])レン(?![ァ-ヶー])|(?<![ァ-ヶー])ジル(?![ァ-ヶー])|(?<![ァ-ヶー])ポム(?![ァ-ヶー])|(?<![A-Za-z0-9_.$\/-])(?:Ren|Jill|Pom|REN|JILL|POM)(?![A-Za-z0-9_\/-])|蓮與吉兒|렌과 질/g;
+  for (const f of ['index.html', '404.html', 'llms.txt', 'site.webmanifest', 'feed.xml', 'sitemap.xml', 'tools/make_og.mjs', 'tools/prerender.mjs']) {
+    const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue;
+    const txt = fs.readFileSync(u, 'utf8').replace(/https?:\/\/[^\s"'<>)]+/g, '');
+    const hit = [...new Set(txt.match(OLD) || [])]; if (hit.length) note(59, `${f} に旧名：${hit.slice(0, 6).join('・')}`); } }
 { const g = fs.existsSync(new URL('../guide3d.js', import.meta.url)) ? fs.readFileSync(new URL('../guide3d.js', import.meta.url), 'utf8') : '';
   if (!g) note(57, 'guide3d.js が無い'); if (!fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url))) note(57, 'img/g3d/atlas.webp が無い');
   if (!/prefers-reduced-motion: reduce/.test(g) || !/saveData/.test(g)) note(57, '動きを減らす設定・通信量の節約で止める処理が無い');
@@ -61,7 +68,7 @@ def(57, '案内役の 3D（レンとジル）：見出しの字に重ならな�
     for (const f of ['guide3d.js', 'img/g3d/atlas.webp', 'img/g3d/atlas2.webp']) { const m = html.match(new RegExp(f.replace(/[./]/g, (c) => '\\' + c) + '\\?v=([0-9a-z]+)')); if (!m || m[1] !== h(f)) note(57, `${f} の ?v= が中身と合わない（${m ? m[1] : 'なし'} → ${h(f)}。tools/stamp.sh で直す）`); } }
   { const m = g.match(/const AW = (\d+), AH = (\d+), CELL = (\d+)/), a = fs.existsSync(new URL('../img/g3d/atlas.webp', import.meta.url)) ? fs.readFileSync(new URL('../img/g3d/atlas.webp', import.meta.url)) : null;
     const w = a && a.toString('ascii', 12, 16) === 'VP8X' ? 1 + a.readUIntLE(24, 3) : 0, h = a && w ? 1 + a.readUIntLE(27, 3) : 0; // webp（VP8X）の幅と高さ
-    if (!m || +m[3] < 1024) note(57, '案内役の 3D の絵が細かくない（1 人 1024 より小さいと、手足の指やかげがつぶれる。2026-11-16 オーナー「動くレンとジルの足が質の低いまま」）');
+    if (!m || +m[3] < 1024) note(57, '案内役の 3D の絵が細かくない（1 人 1024 より小さいと、手足の指やかげがつぶれる。2026-11-16 オーナー「動くモチとユズの足が質の低いまま」）');
     else if (w !== +m[1] || h !== +m[2]) note(57, `案内役の 3D の絵の大きさ（${w}×${h}）が guide3d.js の数字（${m[1]}×${m[2]}）と合わない（tools/make_g3d.py で作り直す）`); }
   if (!/mix\(0\.45, 1\.0, smoothstep/.test(g) || !/p\.x \/= mix\(1\.0, cy/.test(g)) note(57, '横を向いたとき体が平べったくなる直し（頭を中心に回す・幅を戻す）が無い（2026-11-16 オーナー指摘）');
   if (!/scrollY \/ H/.test(g) || !/const pin = /.test(g)) note(57, '奥行きスクロールが画面の高さに合っていない／足の位置を固定していない（横向きのスマホで大きくなりすぎ、端からはみ出した。2026-11-16）');
@@ -287,7 +294,7 @@ for (const [w, h, lang] of [[280, 653, 'ja'], [320, 568, 'en'], [390, 844, 'zh']
       const bad = s.chars.some((c) => [c.x, c.y, c.z, c.size, c.sq, c.ry, c.rz, c.lagX, c.lagY].some((v) => !Number.isFinite(v)) || Math.abs(c.ry) > .6 || c.sq < .69 || c.sq > 1.26);
       return { active: s.active, hit, hit2, bad, out: boxes.some((b) => b.r > innerWidth + 1 || b.l < -1), modes: boxes.map((b) => b.mode + b.a).join(), small: Math.min(...s.chars.map((c) => c.size)) }; }, i);
     const tag = w + ' ' + lang + ' 場所' + i;
-    // 横になっている子は、寝姿の横幅（体 1.5 個分）で測る（2026-11-18：そっとなでても起きないようにしたら、寝ているレンを押すようになり、寝姿の横幅がはみ出しと数えられた。乱れの見張りは弱めない）
+    // 横になっている子は、寝姿の横幅（体 1.5 個分）で測る（2026-11-18：そっとなでても起きないようにしたら、寝ているモチを押すようになり、寝姿の横幅がはみ出しと数えられた。乱れの見張りは弱めない）
     // 押した直後の絵が、2 人のまわりからはみ出さない（2026-11-16：押すと絵が引きのばされて大きく乱れた）。3D の画面を 6 コマ読んで、絵のある範囲を測る
     if (i === 1 && r.active === 1) { const pt = await p.evaluate(() => { const c = window.__g3d.chars[0]; return [c.x, c.y - c.size * .4]; }); if (w < 900) await p.touchscreen.tap(pt[0], pt[1]); else await p.mouse.click(pt[0], pt[1]);
       const ext = await p.evaluate(async () => { const cv = document.getElementById('g3d'), s = window.__g3d, k = 200 / cv.width, c2 = document.createElement('canvas'); c2.width = 200; c2.height = Math.round(cv.height * k); const g = c2.getContext('2d', { willReadFrequently: true }); let worst = 0, seen = 0;
@@ -305,31 +312,31 @@ for (const [w, h, lang] of [[280, 653, 'ja'], [320, 568, 'en'], [390, 844, 'zh']
   const back = await p.evaluate(() => { const s = window.__g3d, c = s.chars[0]; const el = document.elementFromPoint(Math.max(1, Math.min(innerWidth - 2, c.x)), Math.max(1, c.y - c.size * .4)); return { a: s.active, m: s.chars.map((c) => c.mode).join(), cv: !!el && el.id === 'g3d', ov: document.documentElement.scrollWidth - innerWidth }; });
   if (back.a !== 0 || back.m !== 'sit,sit') note(57, w + ' 一番上に戻っても最初の場所に戻らない ' + JSON.stringify(back)); if (back.cv) note(57, w + ' 3D の画面がクリックを受けている'); if (back.ov > 1) note(57, w + ' 横にはみ出す');
   if (errs.length) note(57, w + ' エラー ' + errs[0].slice(0, 100)); await ctx.close(); }
-// 57：居眠りの Zz は、レンが目を閉じてから出る（2026-11-16 オーナー「Zz が出るのに寝るのが遅い」）。着くところから 4 秒、細かく見る
+// 57：居眠りの Zz は、モチが目を閉じてから出る（2026-11-16 オーナー「Zz が出るのに寝るのが遅い」）。着くところから 4 秒、細かく見る
 for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(w, h, 'ja', { q: '?lang=ja&g3d=1' }); await p.waitForTimeout(3500);
   const r = await p.evaluate(async () => { const s = window.__g3d; if (!s || s.lost) return null; const i = [...document.querySelectorAll('.g3d-spot')].findIndex((e) => e.dataset.act === 'nap'), e = document.querySelectorAll('.g3d-spot')[i]; scrollTo(0, Math.max(0, e.getBoundingClientRect().bottom + scrollY - innerHeight * .45));
     let early = 0, zz = 0, slept = 0, smiled = 0; const t0 = performance.now(); while (performance.now() - t0 < 4500) { await new Promise((q) => requestAnimationFrame(q)); const now = performance.now() / 1000, ren = s.chars[0]; if (s.active !== i || ren.mode !== 'sit') continue; const b = s.bubbles.find((x) => x.icon === 'zz' && now >= x.t0); if (ren.asleep) slept++; if (ren.face === 'happy' && !ren.hover) smiled++; if (b) { zz++; if (!ren.asleep || ren.face !== 'blink' || !ren.flat) early++; } } return { early, zz, slept, smiled }; });
-  if (r) { if (!r.zz || !r.slept) note(57, w + ' 居眠りの場所で、Zz または居眠りが出ていない ' + JSON.stringify(r)); if (r.early) note(57, w + ' レンが横になって目を閉じる前に Zz が出ている（' + r.early + ' コマ）'); if (r.smiled > 2) note(57, w + ' 居眠りの場所に着いたレンが、寝る前ににっこりしている'); } await ctx.close(); }
-// 57：カーソルをレンに乗せたまま居眠りの場所に着くと、レンは起きている。そのあいだ Zz を出さない（2026-11-18 オーナー「まだ寝てないのに ZZ と出る」）
+  if (r) { if (!r.zz || !r.slept) note(57, w + ' 居眠りの場所で、Zz または居眠りが出ていない ' + JSON.stringify(r)); if (r.early) note(57, w + ' モチが横になって目を閉じる前に Zz が出ている（' + r.early + ' コマ）'); if (r.smiled > 2) note(57, w + ' 居眠りの場所に着いたモチが、寝る前ににっこりしている'); } await ctx.close(); }
+// 57：カーソルをモチに乗せたまま居眠りの場所に着くと、モチは起きている。そのあいだ Zz を出さない（2026-11-18 オーナー「まだ寝てないのに ZZ と出る」）
 { const { p, ctx } = await open(1440, 900, 'ja', { q: '?lang=ja&g3d=1' }); await p.waitForTimeout(3500);
   const ok = await p.evaluate(() => { const s = window.__g3d; if (!s || s.lost) return false; const e = [...document.querySelectorAll('.g3d-spot')].find((x) => x.dataset.act === 'nap'); scrollTo(0, Math.max(0, e.getBoundingClientRect().bottom + scrollY - innerHeight * .45)); return true; });
   let bad = 0, seen = 0; const t0 = Date.now();
   while (ok && Date.now() - t0 < 5000) { const q = await p.evaluate(() => { const s = window.__g3d, ren = s.chars[0], now = performance.now() / 1000; return { x: ren.x, y: ren.y - ren.size * .35, sit: ren.mode === 'sit', nap: (document.querySelectorAll('.g3d-spot')[s.active] || {}).dataset?.act === 'nap', asleep: ren.asleep, zz: s.bubbles.some((b) => b.icon === 'zz' && now >= b.t0) }; });
     await p.mouse.move(q.x + (seen % 2), q.y); if (q.sit && q.nap) { seen++; if (q.zz && !q.asleep) bad++; } await p.waitForTimeout(40); }
-  if (ok && !seen) note(57, '1440 カーソルを乗せた居眠りの確かめ：着いたところを見られなかった'); if (bad) note(57, '1440 カーソルを乗せて起きているレンに Zz が出ている（' + bad + ' 回）'); await ctx.close(); }
+  if (ok && !seen) note(57, '1440 カーソルを乗せた居眠りの確かめ：着いたところを見られなかった'); if (bad) note(57, '1440 カーソルを乗せて起きているモチに Zz が出ている（' + bad + ' 回）'); await ctx.close(); }
 { const { p, ctx } = await open(390, 844, 'ja', { reduce: true, q: '?lang=ja&g3d=1' }); await p.waitForTimeout(1500); if (await p.evaluate(() => !!window.__g3d || !!document.querySelector('script[src*="guide3d"]') || document.documentElement.classList.contains('g3d-on'))) note(57, '動きを減らす設定でも 3D を読み込んでいる'); await ctx.close(); }
-// 53：ゲーム紹介の小さな丸い顔（REN・JILL・POM）が見切れていない：丸の中が顔で 8 割以上埋まっている（2026-11-16 オーナー「レンの顔が見切れてる」。前のレンは 59%）
+// 53：ゲーム紹介の小さな丸い顔（MOCHI・YUZU・KURI）が見切れていない：丸の中が顔で 8 割以上埋まっている（2026-11-16 オーナー「モチの顔が見切れてる」。前のモチは 59%）
 { const { p, ctx } = await open(1440, 900, 'ja', { q: '?lang=ja&g3d=0' }); const r = await p.evaluate(async () => Promise.all([...document.querySelectorAll('.game-chars img')].map(async (im) => { const i = new Image(); i.src = im.src; await i.decode(); const c = document.createElement('canvas'); c.width = c.height = 80; const g = c.getContext('2d'); g.drawImage(i, 0, 0, 80, 80); const d = g.getImageData(0, 0, 80, 80).data; let s = 0, n = 0; for (let y = 0; y < 80; y++) for (let x = 0; x < 80; x++) if ((x - 39.5) ** 2 + (y - 39.5) ** 2 <= (40 * .92) ** 2) { s += d[(y * 80 + x) * 4 + 3] / 255; n++; } return [im.src.split('/').pop(), Math.round(s / n * 100)]; })));
   if (r.length !== 3) note(53, 'ゲーム紹介の丸い顔が 3 つでない ' + r.length); for (const [f, v] of r) if (v < 80) note(53, f + ' の丸の中が ' + v + '% しか埋まっていない（顔が見切れて見える。tools/make_heads.py で作り直す）'); await ctx.close(); }
 // 7：動画の uploadDate は、時刻と時間帯まで書く（日付だけだと Search Console が「日時値が無効です」と出す。2026-11-05 の通知）
 { const bad = [...html.matchAll(/"uploadDate":\s*"([^"]*)"/g)].map((m) => m[1]).filter((v) => !/^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d)?[+-]\d\d:\d\d$/.test(v)); if (bad.length) note(7, 'uploadDate に時間帯が無い：' + bad[0]); if (!/uploadDate: e\.date\.replace\([^)]*\) \+ "T12:00:00\+09:00"/.test(html)) note(7, '動いて作る動画の uploadDate に時間帯が無い'); }
 // 40：PICKUP
-{ const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'ポムの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
-// 58（2026-11-21）：検索で「レンとジル」と探す人に、日本語の公式サイトとして見つけてもらう
-{ if (!/<title>レンとジル/.test(html)) note(58, 'title が「レンとジル」で始まらない');
+{ const { p, ctx } = await open(1440, 900, 'ja'); const r = await p.evaluate(() => ({ pk: document.querySelector('#pickup .pickup-t').textContent, d: __RJ.jstISO() })); if (r.d > '2026-11-07' && /入社しました|joined/.test(r.pk)) note(40, 'クリの入社から1週間以上たっても「入社しました」：' + r.pk); await ctx.close(); }
+// 58（2026-11-21）：検索で「東京うさぎオフィス」と探す人に、日本語の公式サイトとして見つけてもらう
+{ if (!/<title>東京うさぎオフィス/.test(html)) note(58, 'title が「東京うさぎオフィス」で始まらない');
   if (/\?ep=/.test(fs.readFileSync(new URL('../feed.xml', import.meta.url), 'utf8'))) note(58, 'feed.xml の記事リンクに ?ep=（canonical が / なので Search Console に「代替ページ」と出る。/#ep-xx にする）');
   if (!html.includes('<link rel="alternate" hreflang="ja" href="https://renjill.coana.co.jp/">')) note(58, 'hreflang ja が / を指していない（?lang=ja は / と同じページ）');
-  if (!/"@type":"WebSite"[^}]*"name":"レンとジル"/.test(html)) note(58, 'WebSite の name が「レンとジル」でない（検索結果のサイト名）');
+  if (!/"@type":"WebSite"[^}]*"name":"東京うさぎオフィス"/.test(html)) note(58, 'WebSite の name が「東京うさぎオフィス」でない（検索結果のサイト名）');
   if (/hay-dash\.coana\.co\.jp\/(favicon|icon)/.test(html)) note(58, 'アイコンがゲームのドメインのまま');
   for (const f of ['favicon.ico', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png']) if (!fs.existsSync(new URL('../' + f, import.meta.url))) note(58, f + ' がない');
   const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8'); for (const l of ['en', 'zh', 'ko']) if (!sm.includes(`<loc>https://renjill.coana.co.jp/?lang=${l}</loc>`)) note(58, 'sitemap に ?lang=' + l + ' がない');
@@ -339,11 +346,11 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
     await p.route(/^https?:\/\/(?!localhost)/, (r) => r.request().url().includes('episodes.json') ? r.fulfill({ status: 200, contentType: 'application/json', body: fixture }) : r.abort());
     await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1500);
     const r = await p.evaluate(() => ({ t: document.title, l: document.documentElement.lang, c: (document.querySelector('link[rel=canonical]') || {}).href, u: location.search }));
-    if (!/^レンとジル/.test(r.t) || r.l !== 'ja') note(58, '検索ロボット（' + bot.match(/\w+bot/)[0] + '）に英語で見える：' + r.t);
+    if (!/^東京うさぎオフィス/.test(r.t) || r.l !== 'ja') note(58, '検索ロボット（' + bot.match(/\w+bot/)[0] + '）に英語で見える：' + r.t);
     if (r.c !== 'https://renjill.coana.co.jp/') note(58, '検索ロボットの canonical ' + r.c); if (r.u) note(58, '検索ロボットのアドレスに ' + r.u + ' が付いた'); await ctx.close(); }
   // 人が英語のブラウザで開いたときは、これまでどおり英語に切り替わる
   { const ctx = await b.newContext({ locale: 'en-US', viewport: { width: 1280, height: 800 } }); const p = await ctx.newPage(); await p.route(/^https?:\/\/(?!localhost)/, (r) => r.abort());
-    await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1200); const t = await p.evaluate(() => document.title); if (/^レンとジル/.test(t)) note(58, '英語のブラウザの人に英語で出なくなった'); await ctx.close(); }
+    await p.goto(BASE, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1200); const t = await p.evaluate(() => document.title); if (/^東京うさぎオフィス/.test(t)) note(58, '英語のブラウザの人に英語で出なくなった'); await ctx.close(); }
   // ?lang=ja の canonical は /
   { const { p, ctx } = await open(1280, 800, 'ja'); const c = await p.evaluate(() => document.querySelector('link[rel=canonical]').href); if (c !== 'https://renjill.coana.co.jp/') note(58, '?lang=ja の canonical ' + c); await ctx.close(); }
 }

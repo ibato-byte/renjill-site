@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """案内役の 3D（guide3d.js）用の絵を作る。使い方：python3 tools/make_g3d.py
 /tmp/char_hi/{ren,jill}_{open,blink,happy}.png（tools/char_from_rig.py が作る大きい絵。無ければ img/char/*.webp）→ img/g3d/atlas.webp（4096x2048、1024 のますが 4 列 × 2 段）
-  列：ふだん / まばたき / にっこり / 奥行き（白いほど手前）。段：レン / ジル
+  列：ふだん / まばたき / にっこり / 奥行き（白いほど手前）。段：モチ / ユズ
 - 絵に描きこまれた足もとの影は消す（3D では影を別に描くので、跳ねたとき影がついてこないように）
 - 奥行きは、体の形をふくらませて作る（輪郭で 0、まん中ほど高い）。絵を差し替えたら、これを実行し直す
 """
@@ -12,7 +12,7 @@ from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CELL, PAD = 1024, 32  # 2026-11-16：512 では手足の指やかげがつぶれた（オーナー「LP の動くレンとジルの足が質の低いまま」）→ 2 倍に
+CELL, PAD = 1024, 32  # 2026-11-16：512 では手足の指やかげがつぶれた（オーナー「LP の動くモチとユズの足が質の低いまま」）→ 2 倍に
 INNER = CELL - PAD * 2
 
 def body_alpha(a):
@@ -60,7 +60,7 @@ for row, who in enumerate(("ren", "jill")):
         cell = np.dstack([rgb, base_alpha])
         atlas[row * CELL + PAD: row * CELL + PAD + INNER, col * CELL + PAD: col * CELL + PAD + INNER] = cell
     d = inflate(base_alpha) * (base_alpha > 0.05)
-    # 緑＝耳の形（耳だけを動かす。前は「耳のあたりの帯」を動かしていて、レンは背中まで一緒に動き、髪の毛のように見えた。2026-11-16）
+    # 緑＝耳の形（耳だけを動かす。前は「耳のあたりの帯」を動かしていて、モチは背中まで一緒に動き、髪の毛のように見えた。2026-11-16）
     ep = f"/tmp/char_hi/{who}_ears.png"
     if os.path.exists(ep):
         ea = np.array(Image.open(ep).convert("RGBA").resize((INNER, INNER), Image.LANCZOS))[..., 3] > 60
@@ -106,7 +106,7 @@ out.save(f"{ROOT}/img/g3d/atlas.webp", quality=88, method=6, exact=True)
 print("img/g3d/atlas.webp", out.size, os.path.getsize(f"{ROOT}/img/g3d/atlas.webp") // 1024, "KB")
 
 # ---- 2 枚目の絵 atlas2.webp（2048×2048）：ばたん（フロップ）。1 枚目はもう空きが無く、4096 より大きい絵は読めないスマホがあるので、別の 1 枚にする（2026-11-17）
-# 段 0＝レン、段 1＝ジル。列 0＝絵、列 1＝奥行き（R）
+# 段 0＝モチ、段 1＝ユズ。列 0＝絵、列 1＝奥行き（R）
 a2 = np.zeros((CELL * 2, CELL * 2, 4), np.float32)
 for row, who in enumerate(("ren", "jill")):
     fp = f"/tmp/char_hi/{who}_flop.png"
