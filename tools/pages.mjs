@@ -44,10 +44,10 @@ const S = {
   lang: ['言語', 'Language', '語言', '언어'],
   crumb: ['現在の場所', 'Breadcrumb', '目前位置', '현재 위치'],
   tagline: [
-    'うさぎの課長モチと、しっかり者の部下ユズ、新人ハムスターのクリのオフィスコメディ・ショートアニメ。新作は毎週 月・木・土の 18:00（日本時間）。',
-    'An office-comedy short animation starring Mochi the rabbit boss, Yuzu his capable assistant, and Kuri the rookie hamster. New episodes every Monday, Thursday and Saturday at 18:00 JST.',
-    '兔子課長 Mochi、可靠的部下 Yuzu 和新人倉鼠 Kuri 的辦公室喜劇短篇動畫。新作每週一、四、六 18:00（日本時間）。',
-    '토끼 과장 모찌, 든든한 부하 유자, 신입 햄스터 쿠리의 오피스 코미디 숏 애니메이션. 신작은 매주 월·목·토 18:00(일본 시간).'],
+    'うさぎの課長モチと、しっかり者の部下ユズ、新人ハムスターのクリのオフィスコメディ・ショートアニメ。新作は毎週 月・木・土（日本時間）。',
+    'An office-comedy short animation starring Mochi the rabbit boss, Yuzu his capable assistant, and Kuri the rookie hamster. New episodes every Monday, Thursday and Saturday (JST).',
+    '兔子課長 Mochi、可靠的部下 Yuzu 和新人倉鼠 Kuri 的辦公室喜劇短篇動畫。新作每週一、四、六推出（日本時間）。',
+    '토끼 과장 모찌, 든든한 부하 유자, 신입 햄스터 쿠리의 오피스 코미디 숏 애니메이션. 신작은 매주 월·목·토(일본 시간).'],
   gameCta: ['無料ゲーム「チモシーダッシュ」で遊ぶ', 'Play the free game “Hay Dash”', '玩免費遊戲「Hay Dash」', '무료 게임 「Hay Dash」 플레이'],
   epTitle: ['{t}｜東京うさぎオフィス EP.{n}（うさぎのショートアニメ）', '{t} — Tokyo Usagi Office EP.{n} (bunny office comedy short)', '{t}｜Tokyo Usagi Office EP.{n}（兔子辦公室短篇動畫）', '{t} | 도쿄 토끼 오피스 EP.{n} (토끼 오피스 숏 애니메이션)'],
   epDesc: [
@@ -162,6 +162,11 @@ export function buildPages({ EPS, shown, T, root }) {
   const seriesRef = { '@id': SITE + '#series' }, orgRef = { '@id': SITE + '#org' };
   const tt = (k, L) => (T[k] ? T[k][L] || T[k][0] : '');
 
+  // ---- 今の一覧に無い回のページは消す（動画を消した回。2026-11-24）
+  { const keep = new Set(shown.map((e) => slugOf(e.ep)));
+    PRE.forEach((pre) => { const dir = new URL(pre + 'ep/', root); if (!fs.existsSync(dir)) return;
+      for (const name of fs.readdirSync(dir)) if (!keep.has(name)) { fs.rmSync(new URL(name + '/', dir), { recursive: true, force: true }); if (!pre) console.log('removed ep page', name); } }); }
+
   // ---- 1 話ごとのページ
   shown.forEach((e, i) => {
     const n = no(e), path = `ep/${slugOf(e.ep)}/`, newer = shown[i - 1], older = shown[i + 1];
@@ -172,7 +177,7 @@ export function buildPages({ EPS, shown, T, root }) {
       const title = s('epTitle', L, { t, n }), desc = s('epDesc', L, { c, t, n, d: dateText(e.date, L) }).trim();
       const video = {
         '@type': 'VideoObject', '@id': url + '#video', name: `${t}｜${S.brand[L]} EP.${n}`, description: c || t, thumbnailUrl: ldThumb,
-        uploadDate: iso(e.date) + 'T18:00:00+09:00', embedUrl: `https://www.youtube.com/embed/${e.yt}`, ...(e.video ? { contentUrl: MEDIA + e.video } : {}),
+        uploadDate: iso(e.date) + 'T' + (e.time || '18:00') + ':00+09:00', embedUrl: `https://www.youtube.com/embed/${e.yt}`, ...(e.video ? { contentUrl: MEDIA + e.video } : {}),
         url, isFamilyFriendly: true, isPartOf: seriesRef, publisher: orgRef, creator: orgRef, sameAs: `https://www.youtube.com/shorts/${e.yt}`,
         potentialAction: { '@type': 'WatchAction', target: url },
       };
@@ -194,7 +199,7 @@ export function buildPages({ EPS, shown, T, root }) {
 <section class="p-more"><h2>${s('more', L)}</h2><ul class="p-grid">${others.map((x) => card(x, no(x), L)).join('')}</ul><p class="p-btns"><a class="p-btn" href="${SITE}${PRE[L]}episodes/">${s('all', L)}</a><a class="p-btn" href="${GAME}" target="_blank" rel="noopener">${esc(S.gameCta[L])}</a></p></section>
 <script>(function(){var p=document.getElementById("player"),a=p&&p.querySelector("a");if(!a)return;a.addEventListener("click",function(ev){if(ev.metaKey||ev.ctrlKey||ev.shiftKey)return;ev.preventDefault();p.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+p.dataset.yt+'?autoplay=1&playsinline=1&rel=0" title="'+a.getAttribute("aria-label").replace(/"/g,"&quot;")+'" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';});})();</script>`;
       write(PRE[L] + path, shell({ L, path, title, desc, image: e.cover ? MEDIA + e.cover : `https://i.ytimg.com/vi/${e.yt}/hqdefault.jpg`, imageW: e.cover ? 1080 : 480, imageH: e.cover ? 1920 : 360, imageAlt: s('cover', L, { t }), ogType: 'video.other', crumbs: [[`${SITE}${PRE[L]}episodes/`, s('eps', L)], [url, t]], body, graph: [page, video], extraHead: `<link rel="preload" as="image" href="${esc(poster)}" fetchpriority="high">\n<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>\n<meta property="og:video" content="https://www.youtube.com/embed/${esc(e.yt)}">\n<meta property="og:video:type" content="text/html">\n<meta property="og:video:width" content="1080">\n<meta property="og:video:height" content="1920">\n` }));
-      out.push({ loc: url, lastmod: later(iso(e.date), TEMPLATE_DATE), alts: altsOf(path), images: [ldThumb[0]], video: { thumb: ldThumb[0], title: `${t}｜${S.brand[L]}`, desc: c || t, player: `https://www.youtube.com/embed/${e.yt}`, content: e.video ? MEDIA + e.video : '', date: iso(e.date) + 'T18:00:00+09:00' } });
+      out.push({ loc: url, lastmod: later(iso(e.date), TEMPLATE_DATE), alts: altsOf(path), images: [ldThumb[0]], video: { thumb: ldThumb[0], title: `${t}｜${S.brand[L]}`, desc: c || t, player: `https://www.youtube.com/embed/${e.yt}`, content: e.video ? MEDIA + e.video : '', date: iso(e.date) + 'T' + (e.time || '18:00') + ':00+09:00' } });
     });
   });
 
