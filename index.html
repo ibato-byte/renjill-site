@@ -930,6 +930,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
 .hero-sticker.b { top: -14px; right: 8%; }
 @media (max-width: 900px) { .hero-sticker.b { top: -12px; right: 6%; } }
 .char-no { z-index: 3; }
+.char-tags { align-content: flex-start; align-items: flex-start; } /* 高さをそろえたとき、タグが縦にのびない */
 /* タブレット（641〜860px）：キャラクターは 3 列のまま（1 列だと 3 枚で画面 5 つ分の長さになる） */
 @media (min-width: 641px) and (max-width: 860px) { .chars { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; gap: 14px; } .char-front { padding: 16px; } .char-name { font-size: 26px; } .char-tags li { font-size: 12px; } }
 /* スマホ：キャラクターは横にめくるカード（1 枚ずつ縦に並べると長すぎる） */
@@ -3161,6 +3162,16 @@ const openByEp = (id) => { const e = EPS.find((x) => x.ep === id); if (e && e.yt
 document.addEventListener("click", (ev) => { const c = ev.target.closest(".day-card.has-ep, .debut-link"); if (c && c.dataset.ep) { ev.stopPropagation(); openByEp(c.dataset.ep); } }, true);
 document.addEventListener("keydown", (ev) => { if (ev.key !== "Enter" && ev.key !== " ") return; const c = ev.target.closest && ev.target.closest(".day-card.has-ep, .debut-link"); if (c && c.dataset.ep) { ev.preventDefault(); openByEp(c.dataset.ep); } });
 linkDayCards(); langHooks.push(linkDayCards);
+// キャラクターの札：横に並んだ札どうしで、種類・名前・説明・タグの高さをそろえる（2026-11-24 オーナー「モチだけ名前の位置が上になる」。
+// 種類の行が札によって 1 行／2 行になり、名前がずれていた）。並びが変わる幅・言語・字の読み込みのたびに測り直す
+function alignChars() {
+  const cards = $$(".chars .char-front"); if (!cards.length) return;
+  const parts = [".char-face", ".char-role", ".char-name", ".char-text", ".char-tags"];
+  cards.forEach((c) => { c.style.minHeight = ""; parts.forEach((q) => { const e = $(q, c); if (e) e.style.minHeight = ""; }); });
+  const rows = {}; cards.forEach((c) => { const k = Math.round(c.closest(".char").offsetTop); (rows[k] = rows[k] || []).push(c); });
+  Object.values(rows).forEach((row) => { if (row.length < 2) return; parts.forEach((q) => { const els = row.map((c) => $(q, c)).filter(Boolean); const h = Math.max(...els.map((e) => e.getBoundingClientRect().height)); els.forEach((e) => { e.style.minHeight = h + "px"; }); }); const H = Math.max(...row.map((c) => c.getBoundingClientRect().height)); row.forEach((c) => { c.style.minHeight = H + "px"; }); });
+}
+alignChars(); addEventListener("resize", () => { clearTimeout(window.__acT); window.__acT = setTimeout(alignChars, 80); }); addEventListener("load", alignChars); if (document.fonts) document.fonts.ready.then(alignChars); langHooks.push(() => setTimeout(alignChars, 60));
 // 検査用（qa/check.mjs）：中の値を読むだけ。画面には何もしない
 Object.defineProperty(window, "__RJ", { get: () => ({ T, EPS, jstISO, openLb, closeLb }) });
 })();

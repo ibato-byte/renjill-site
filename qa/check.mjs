@@ -43,6 +43,7 @@ const SUBPAGES = []; { const walk = (d) => { for (const n of fs.readdirSync(new 
 def(60, '下のページ（1話ごと・一覧・キャラクター）：title・description・canonical が自分・h1 が1つ・JSON-LD が読める・4言語の hreflang が互いを指す');
 def(61, '下のページが全部 sitemap.xml にあり、sitemap の URL が全部あるファイルを指す（404 にならない）');
 def(63, 'LP に動画の長さ・連載の決まり・公開の時刻を書かない／「ある一日」は置かない（2026-11-24）／消した回のページ・動画が残っていない（2026-11-24 オーナー）');
+def(64, 'キャラクターの札：横に並んだ札の名前の高さがそろっている（全部の幅・言語。2026-11-24 オーナー「モチだけ名前の位置が上」）');
 def(62, '1話のページ：VideoObject（名前・サムネイル・公開日時・埋め込み URL）と、トップの一覧から全話のページへのリンクがある');
 { const SITE = 'https://usagi.coana.co.jp/'; const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8');
   const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(/&amp;/g, '&')));
@@ -390,6 +391,12 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   const gone = ['hanko', 'elevator2', 'lastsheet', 'pom_debut', 'jil_morning2'].filter((x) => r.eps.includes(x)); if (gone.length) note(63, '消した回が一覧に残っている：' + gone.join(','));
   for (const d of ['ep/hanko/', 'ep/elevator2/', 'en/ep/hanko/']) if (fs.existsSync(new URL('../' + d, import.meta.url))) note(63, '消した回のページが残っている：' + d);
   await ctx.close(); }
+// 64（2026-11-24）：キャラクターの札の名前の高さがそろっている
+for (const [w, h] of [[320, 640], [375, 812], [390, 844], [430, 932], [641, 900], [700, 1000], [768, 1024], [820, 1180], [860, 1000], [1024, 768], [1280, 800], [1440, 900], [1920, 1080], [2560, 1440]]) for (const lang of ['ja', 'en', 'zh', 'ko']) {
+  const { p, ctx } = await open(w, h, lang); await p.evaluate(() => document.getElementById('characters').scrollIntoView()); await p.waitForTimeout(500);
+  await p.waitForTimeout(1600); const r = await p.evaluate(() => { document.getAnimations().forEach((x) => { try { x.finish(); } catch (e) {} }); const rows = {}; document.querySelectorAll('.chars .char-front').forEach((c) => { const k = Math.round(c.closest('.char').offsetTop); (rows[k] = rows[k] || []).push(c); });
+    const bad = []; Object.values(rows).forEach((row) => { if (row.length < 2) return; for (const q of ['.char-name', '.char-text', '.char-tags', '.char-more']) { const ys = row.map((c) => { let el = c.querySelector(q), y = 0; while (el && el !== c) { y += el.offsetTop; el = el.offsetParent; } return y; }); /* 動き（出てくる演出）に左右されない位置で比べる */ if (Math.max(...ys) - Math.min(...ys) > 2) bad.push(q + ' ' + ys.map(Math.round).join('/')); } }); return bad; });
+  if (r.length) note(64, w + ' ' + lang + ' ずれ：' + r.join('、')); await ctx.close(); }
 await b.close();
 const ids = Object.keys(CHECKS).map(Number).sort((a, b) => a - b);
 const lines = ids.map((id) => `${fail[id] ? 'NG' : 'OK'} ${String(id).padStart(2)} ${CHECKS[id]}${fail[id] ? '\n     - ' + [...fail[id]].slice(0, 6).join('\n     - ') + (fail[id].size > 6 ? `\n     …ほか ${fail[id].size - 6}` : '') : ''}`);
