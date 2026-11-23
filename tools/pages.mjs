@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 
 export const SITE = 'https://usagi.coana.co.jp/';
-const MEDIA = 'https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/';
+const MEDIA = 'https://cdn.jsdelivr.net/gh/ibato-byte/usagi-office-media@main/';
 const YT = 'https://www.youtube.com/@tokyo_usagi_office';
 const SNS = [['YouTube', YT], ['Instagram', 'https://www.instagram.com/tokyo_usagi_office/'], ['TikTok', 'https://www.tiktok.com/@tokyo_usagi_office'], ['Threads', 'https://www.threads.net/@tokyo_usagi_office'], ['Facebook', 'https://www.facebook.com/1358515160686321']];
 const GAME = 'https://hay-dash.coana.co.jp/';

@@ -4,7 +4,7 @@
 // 8・9 は頭のアップで手足が写らないので、元の絵のまま（作った時の回・時間が分からない。手足や顔を変えたら、ここに足して作り直す）
 import { createRequire } from 'node:module'; import fs from 'node:fs'; import path from 'node:path'; import { execFileSync } from 'node:child_process';
 const { chromium } = createRequire(import.meta.url)('playwright');
-const AUTO = process.argv[2] || '../renjill-auto', OUT = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'img', 'day');
+const AUTO = process.argv[2] || '../usagi-office-auto', OUT = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'img', 'day');
 // [番号, 回, 何コマ目（40 等分の i 番目のまん中）, 切り出す左上 x, y, 幅]（1080×1920 の座標。高さは幅 × 450/720）
 const SHOTS = [[1, 'jil_morning2', 23, 664, 1332, 312], [2, 'meeting2', 5, 0, 420, 1080], [3, 'camera_off2', 7, 384, 612, 696], [4, 'hanko', 31, 156, 736, 864],
   [5, 'papers2', 16, 264, 644, 648], [6, 'mug2', 6, 0, 936, 864], [7, 'receipts2', 16, 172, 508, 648]];

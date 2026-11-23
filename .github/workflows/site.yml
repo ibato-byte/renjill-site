@@ -21,7 +21,7 @@ jobs:
         with: { node-version: 22 }
       - name: 最新の episodes.json で作り直す
         run: |
-          curl -fsSL https://raw.githubusercontent.com/ibato-byte/renjill-media/main/episodes.json -o /tmp/episodes.json || echo "[]" > /tmp/episodes.json
+          curl -fsSL https://raw.githubusercontent.com/ibato-byte/usagi-office-media/main/episodes.json -o /tmp/episodes.json || echo "[]" > /tmp/episodes.json
           EPISODES_JSON=/tmp/episodes.json node tools/prerender.mjs
       - name: 変わっていれば main に入れる
         run: |

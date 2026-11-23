@@ -7,7 +7,7 @@
 GitHub Pages で公開する、依存ライブラリなしのサイトです（本体は `index.html` 1 枚。案内役の 3D だけ `guide3d.js` に分けています）。
 
 - 公開URL：https://usagi.coana.co.jp/
-- 画像・動画は公開リポジトリ `ibato-byte/renjill-media` のファイルを jsDelivr 経由で読み込みます（`https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/...`）。
+- 画像・動画は公開リポジトリ `ibato-byte/usagi-office-media` のファイルを jsDelivr 経由で読み込みます（`https://cdn.jsdelivr.net/gh/ibato-byte/usagi-office-media@main/...`）。
 - ゲーム「チモシーダッシュ（Hay Dash）」は https://hay-dash.coana.co.jp/ にリンク。
 
 ## 構成（上から）
@@ -65,7 +65,7 @@ GitHub Pages で公開する、依存ライブラリなしのサイトです（�
 ```
 
 ### 自動更新（任意）：`renjill-media/episodes.json`
-サイトは読み込み時に `https://raw.githubusercontent.com/ibato-byte/renjill-media/main/episodes.json` を取りに行き、あれば埋め込みの一覧より優先します（無ければ埋め込みのまま。失敗しても何も起きません）。投稿パイプライン（renjill-auto）がこのファイルを書けば、サイトを触らずに新作が並びます。
+サイトは読み込み時に `https://raw.githubusercontent.com/ibato-byte/usagi-office-media/main/episodes.json` を取りに行き、あれば埋め込みの一覧より優先します（無ければ埋め込みのまま。失敗しても何も起きません）。投稿パイプライン（renjill-auto）がこのファイルを書けば、サイトを触らずに新作が並びます。
 
 ```json
 [
