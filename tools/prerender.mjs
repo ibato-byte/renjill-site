@@ -13,7 +13,7 @@ if (process.env.EPISODES_JSON && fs.existsSync(process.env.EPISODES_JSON)) {
   for (const x of feed) if (x.ep && !known.has(x.ep)) EPS.push({ ep: x.ep, title: ['ja', 'en', 'zh', 'ko'].map((k) => L(x.title, k) || L(x.title, 'en') || L(x.title, 'ja')), cap: ['ja', 'en', 'zh', 'ko'].map((k) => L(x.caption, k) || x['caption_' + k] || L(x.caption, 'ja') || x.caption_ja || ''), cover: x.cover, video: x.video, yt: x.youtube_id || '', date: (x.date || '').slice(0, 10).replace(/-/g, '.') });
   EPS.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 }
-const MEDIA = 'https://cdn.jsdelivr.net/gh/ibato-byte/usagi-office-media@main/', SITE = 'https://usagi.coana.co.jp/';
+const MEDIA = 'https://cdn.jsdelivr.net/gh/ibato-byte/renjill-media@main/', SITE = 'https://usagi.coana.co.jp/';
 const esc = (x) => String(x ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 const shown = EPS.filter((e) => e.yt && e.date && e.date.replace(/\./g, '-') <= today);
