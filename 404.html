@@ -81,11 +81,14 @@ a:focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; }
     zh: { tag: "zh-Hant", title: "找不到頁面｜Tokyo Usagi Office", h: "找不到頁面", m: "好像是課長把文件山弄倒了。<br>找不到這個頁面。", home: "回到首頁", game: "玩遊戲", f: "每週一、四、六更新。歡迎追蹤！", eps: "看影片", faq: "常見問題" },
     ko: { tag: "ko", title: "페이지를 찾을 수 없어요 | Tokyo Usagi Office", h: "페이지를 찾을 수 없어요", m: "과장님이 서류 산을 무너뜨린 것 같아요.<br>이 페이지를 찾지 못했습니다.", home: "처음 페이지로", game: "게임하기", f: "신작은 매주 월·목·토. 팔로우해 주세요!" }
   };
+  // 2026-11-24：それまでの動画は全部消して、新しく出し直している。古い回のページ（/ep/…）に来た人には、そう伝えて新しい一覧へ
+  const OLD_EP = /^\/(?:(?:en|zh|ko)\/)?ep\//.test(location.pathname);
+  const EPM = { ja: ["この回は公開を終えました", "エピソードは新しく出し直しています。<br>最新のエピソードは、一覧から見られます。"], en: ["This episode is no longer available", "We've started a fresh set of episodes.<br>Find the latest ones in the episode list."], zh: ["這一集已停止公開", "影片已重新推出。<br>最新的影片請從列表觀看。"], ko: ["이 에피소드는 공개가 끝났어요", "에피소드를 새로 공개하고 있어요.<br>최신 에피소드는 목록에서 볼 수 있어요."] };
   const $ = (id) => document.getElementById(id);
   const set = (l) => {
     const x = L[l] || L.ja;
     document.documentElement.lang = x.tag; document.title = x.title; document.body.classList.toggle("en", l === "en");
-    $("h").textContent = x.h; $("m").innerHTML = x.m; $("home").textContent = x.home; $("game").textContent = x.game; $("f").textContent = x.f;
+    $("h").textContent = OLD_EP ? (EPM[l] || EPM.ja)[0] : x.h; $("m").innerHTML = OLD_EP ? (EPM[l] || EPM.ja)[1] : x.m; $("home").textContent = x.home; $("game").textContent = x.game; $("f").textContent = x.f;
     $("home").href = "/?lang=" + l; $("eps").textContent = x.eps; $("faq").textContent = x.faq; $("eps").href = (l === "ja" ? "" : "/" + l) + "/episodes/"; $("faq").href = "/?lang=" + l + "#faq";
     document.querySelectorAll(".langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.l === l));
   };

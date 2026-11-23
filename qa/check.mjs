@@ -26,13 +26,13 @@ def(21, 'JS エラーがない'); def(22, '横スクロールが出ない'); def
 def(25, '見出しの順序が飛ばない（h2→h4 など）'); def(26, '同じ id が2つない'); def(27, 'ボタン・リンクに名前がある'); def(28, 'html の lang が言語と一致');
 def(29, 'title が言語に合わせて変わる'); def(30, '言語の切り替えで未翻訳の日本語が残らない（英語ページ）'); def(31, 'ボタン・タグの文字がはみ出さない');
 def(32, 'スマホでタップ領域が小さすぎない（主要ボタン 40px 以上）'); def(33, 'ヘッダーと本文が重ならない'); def(34, '本文へスキップ リンク');
-def(35, '画像が読めないときも枠が崩れない'); def(36, 'エピソードの番号が重複しない・新しい順'); def(37, '日付の書式がそろっている'); def(38, '次の新作の日付が正しい（毎週 月・木・土の 18:00）');
+def(35, '画像が読めないときも枠が崩れない'); def(36, 'エピソードの番号が重複しない・新しい順'); def(37, '日付の書式がそろっている'); def(38, '次の新作の日付が正しい（毎週 月・木・土。月・木 18:00、土 12:00）');
 def(39, '曜日の帯が「毎週 月・木・土」と合う（どこにも「毎日」と書かない）'); def(40, 'PICKUP が最新回 or 告知期間に合う'); def(41, '動きを減らす設定でアニメーションが止まる'); def(42, 'ページ内リンク #id の行き先がある');
 def(43, 'キーボードのフォーカスが見える'); def(44, '文字のコントラスト（主要な文 4.5:1 以上）'); def(45, 'エピソード一覧の題がその言語で出る'); def(46, '言語の保存と ?lang= が効く');
 def(47, '動画の窓：Esc で閉じる・前後の回へ移動／もっと見るで全部出る'); def(48, '本文の文字が小さすぎない（12px 以上）'); def(49, 'canonical/hreflang が言語の切り替え後も正しい'); def(50, 'ページの重さ（HTML 400KB 以下）');
 def(51, 'キャラクターの絵がアニメ・ゲームと同じ絵で、3 人とも読み込めている（平たい線画に戻っていない）');
 def(52, 'ゲームの紹介：本物のゲーム画面 6 枚とアイコンが読み込めている／スマホの最初の画面に 2 人がいて、題名や上の行に重ならない');
-def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明は 2 行まで／週の帯に「18:00」／お見送りの 3 人が読み込めている／共有用の画像の作り方に古い曜日が残っていない');
+def(53, 'スマホのエピソード：シェアのボタンは 1 つ・説明は 2 行まで／週の帯に時刻を書かない／お見送りの 3 人が読み込めている／共有用の画像の作り方に古い曜日が残っていない');
 def(54, 'キャラクターの絵は 1 枚ずつ出る（まばたき・にっこりで絵を重ねると、足もとの影が濃くなる。2026-11-15）');
 def(55, 'キャラクターの札に「TAP」「HOVER」の文字を出さない（2026-11-15：オーナー「タップという文字はいらない」）');
 def(56, '最初のまばたきでちかっとしない：まばたき・にっこりの絵は、展開（decode）が終わってから切り替える（2026-11-15）');
@@ -42,6 +42,7 @@ def(57, '案内役の 3D（東京うさぎオフィス）：見出しの字に�
 const SUBPAGES = []; { const walk = (d) => { for (const n of fs.readdirSync(new URL('../' + d, import.meta.url), { withFileTypes: true })) { if (n.isDirectory()) walk(d + n.name + '/'); else if (n.name === 'index.html') SUBPAGES.push(d + n.name); } }; for (const d of ['ep/', 'episodes/', 'characters/', 'en/', 'zh/', 'ko/']) if (fs.existsSync(new URL('../' + d, import.meta.url))) walk(d); }
 def(60, '下のページ（1話ごと・一覧・キャラクター）：title・description・canonical が自分・h1 が1つ・JSON-LD が読める・4言語の hreflang が互いを指す');
 def(61, '下のページが全部 sitemap.xml にあり、sitemap の URL が全部あるファイルを指す（404 にならない）');
+def(63, 'LP に動画の長さ・連載の決まり・公開の時刻を書かない／「ある一日」の9枚が今ある回につながる／消した回のページ・動画が残っていない（2026-11-24 オーナー）');
 def(62, '1話のページ：VideoObject（名前・サムネイル・公開日時・埋め込み URL）と、トップの一覧から全話のページへのリンクがある');
 { const SITE = 'https://usagi.coana.co.jp/'; const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8');
   const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(/&amp;/g, '&')));
@@ -230,8 +231,8 @@ for (const [w, h] of VIEWS) for (const lang of LANGS) {
   // 2026-11-17：新作は週3回（月・木・土）。光っている曜日がちょうど月・木・土で、ページのどこにも「新作は毎日」と書いていない
   if (r.schedOn !== 'MON,THU,SAT') note(39, tag + ' 光っている曜日が「' + r.schedOn + '」（月・木・土のはず）');
   if (r.dailyText) note(39, tag + ' 「毎日」の言い方が残っている：' + r.dailyText);
-  // 次の新作（毎週 月・木・土の 18:00 日本時間。連載は 2026-11-19 から）：18時前ならその日から、それ以降は明日から数えて、次の 月・木・土
-  { const now = new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000); const nx = new Date(now); nx.setHours(0, 0, 0, 0); if (now.getHours() >= 18) nx.setDate(nx.getDate() + 1); const first = new Date(2026, 10, 19); if (nx < first) nx.setTime(first.getTime()); while (![1, 4, 6].includes(nx.getDay())) nx.setDate(nx.getDate() + 1); const md = `${nx.getMonth() + 1}/${nx.getDate()}`; if (!r.next.includes(md)) note(38, tag + ' 「' + r.next + '」 期待 ' + md); }
+  // 次の新作（毎週 月・木・土。時刻は 月・木 18:00、土 12:00。2026-11-24）：その日の時刻の前ならその日から、それ以降は明日から数えて、次の 月・木・土
+  { const now = new Date(Date.now() + (9 * 60 + new Date().getTimezoneOffset()) * 60000); const nx = new Date(now); nx.setHours(0, 0, 0, 0); const SLOT = { 1: 18, 4: 18, 6: 12 }; if (SLOT[now.getDay()] !== undefined && now.getHours() >= SLOT[now.getDay()]) nx.setDate(nx.getDate() + 1); while (SLOT[nx.getDay()] === undefined) nx.setDate(nx.getDate() + 1); const md = `${nx.getMonth() + 1}/${nx.getDate()}`; if (!r.next.includes(md)) note(38, tag + ' 「' + r.next + '」 期待 ' + md); }
   // ヘッダーと本文：ページ途中までスクロールして、見出しがヘッダーの下に隠れないか（#episodes へ移動）
   { await p.evaluate(() => { const a = document.querySelector('a[href="#episodes"]'); const t = document.getElementById('episodes'); if (t) t.scrollIntoView(); }); await p.waitForTimeout(400);
     const ov = await p.evaluate(() => { const hdr = document.querySelector('#hdr, header'); const t = document.querySelector('#episodes h2, #episodes .sec-ttl'); if (!hdr || !t) return 0; const a = hdr.getBoundingClientRect(), b2 = t.getBoundingClientRect(); return getComputedStyle(hdr).position === 'fixed' && b2.top < a.bottom - 2 && b2.bottom > a.top ? Math.round(a.bottom - b2.top) : 0; });
@@ -266,9 +267,9 @@ for (const [w, h, lang] of [[390, 844, 'ja'], [320, 568, 'en'], [1440, 900, 'ja'
   if (g.n !== 6) note(52, w + ' ゲームの画面が 6 枚でない ' + g.n); if (g.bad) note(52, w + ' ゲームの画面が読み込めない ' + g.bad); if (!g.icon) note(52, w + ' アイコンが読み込めない'); if (g.caps) note(52, w + ' 場所の名前が空'); if (g.cut) note(52, w + ' PC でゲームの画面が切れる'); if (w < 900 && !g.scroll) note(52, w + ' スマホで横に動かせない'); if (g.pageW) note(52, w + ' ページが横にはみ出す'); await ctx.close(); }
 // 53：スマホのエピソードの札・週の帯・お見送りの 3 人
 { const { p, ctx } = await open(390, 844, 'ja', { share: true }); await p.evaluate(() => document.querySelector('#episodes').scrollIntoView()); await p.waitForTimeout(1200);
-  const r = await p.evaluate(() => { const vis = (e) => { const b = e.getBoundingClientRect(); return b.width > 2 && b.height > 2 && getComputedStyle(e).display !== 'none'; }; const cards = [...document.querySelectorAll('#eps .ep:not(.more-hidden):not(.soon)')].slice(0, 6);
+  const r = await p.evaluate(() => { const vis = (e) => { const b = e.getBoundingClientRect(); return b.width > 2 && b.height > 2 && getComputedStyle(e).display !== 'none'; }; const cards = [...document.querySelectorAll('#eps .ep:not(.ep-next):not(.more-hidden):not(.soon)')].slice(0, 6);
     return { n: cards.length, btn: cards.map((c) => [...c.querySelectorAll('.ep-share .shb')].filter(vis).length), tall: cards.filter((c) => { const p = c.querySelector('.ep-cap'); return p && p.getBoundingClientRect().height > parseFloat(getComputedStyle(p).lineHeight) * 2.3; }).length, small: cards.filter((c) => { const b = [...c.querySelectorAll('.ep-share .shb')].filter(vis)[0]; return b && (b.getBoundingClientRect().width < 38 || b.getBoundingClientRect().height < 38); }).length, k: (document.querySelector('.sched-k b') || {}).textContent, pageW: document.documentElement.scrollWidth > innerWidth + 1 }; });
-  if (r.n < 3) note(53, '札が少ない ' + r.n); if (r.btn.some((x) => x !== 1)) note(53, 'シェアのボタンが 1 つでない ' + r.btn.join(',')); if (r.tall) note(53, '説明が 2 行をこえる札 ' + r.tall); if (r.small) note(53, 'シェアのボタンが小さい（38px 未満）'); if (r.k !== '18:00') note(53, '週の帯に 18:00 がない'); if (r.pageW) note(53, 'ページが横にはみ出す');
+  if (r.n < 3) note(53, '札が少ない ' + r.n); if (r.btn.some((x) => x !== 1)) note(53, 'シェアのボタンが 1 つでない ' + r.btn.join(',')); if (r.tall) note(53, '説明が 2 行をこえる札 ' + r.tall); if (r.small) note(53, 'シェアのボタンが小さい（38px 未満）'); if (r.k !== 'NEW') note(53, '週の帯の大きな字が「NEW」でない（時刻は書かない。2026-11-24）'); if (r.pageW) note(53, 'ページが横にはみ出す');
   await p.evaluate(() => document.querySelector('#epsMore').scrollIntoView({ block: 'center' })); await p.waitForTimeout(1800);
   const gap = await p.evaluate(() => { const b = document.querySelector('#epsMore'), c = [...document.querySelectorAll('#eps .ep:not(.more-hidden)')].pop(); return b && !b.hidden && c ? Math.round(b.getBoundingClientRect().top - c.getBoundingClientRect().bottom) : 99; }); if (gap < 20) note(53, '「もっと見る」と一覧のあいだの余白が ' + gap + 'px（20 以上）');
   const shift = await p.evaluate(() => [...document.querySelectorAll('#eps .ep.in')].filter((e) => getComputedStyle(e).transform !== 'none' && !e.matches(':hover')).length); if (shift) note(53, '出てきた後も、ずれたままの札 ' + shift);
@@ -300,7 +301,7 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   const back = await p.evaluate(() => ({ open: document.getElementById('lb').classList.contains('open'), q: location.search }));
   if (!/ep=/.test(u1) || back.open || /ep=/.test(back.q)) note(47, '戻るボタン ' + JSON.stringify({ u1, ...back }));
   // 「ある一日」のカード・初登場から、同じ題の回が開く
-  const day = await p.evaluate(async () => { const c = document.querySelectorAll('#dayTrack .day-card.has-ep'); if (c.length < 5) return 'つながったカードが ' + c.length; c[0].click(); await new Promise((r) => setTimeout(r, 300)); const ok = document.getElementById('lb').classList.contains('open') && document.querySelector('#lbInfo b').textContent === c[0].querySelector('.day-ttl').textContent; window.__RJ.closeLb(); await new Promise((r) => setTimeout(r, 400)); return ok ? 'ok' : '開いた回の題がちがう'; });
+  const day = await p.evaluate(async () => { const c = document.querySelectorAll('#dayTrack .day-card.has-ep'); if (c.length < 5) return 'つながったカードが ' + c.length; c[0].click(); await new Promise((r) => setTimeout(r, 300)); const ok = document.getElementById('lb').classList.contains('open') && (() => { const e = window.__RJ.EPS.find((x) => x.ep === c[0].dataset.ep); return !!e && e.title.includes(document.querySelector('#lbInfo b').textContent); })(); /* カードは場面の題、窓はその回の題（2026-11-24） */ window.__RJ.closeLb(); await new Promise((r) => setTimeout(r, 400)); return ok ? 'ok' : '開いた回の題がちがう'; });
   if (day !== 'ok') note(47, 'ある一日 ' + day);
   await ctx.close(); }
 // 57：案内役の 3D。?g3d=1 で動かし、最初の画面と各見出しで、字に重ならない・はみ出さないことを確かめる（WebGL が無い検査機では、動かない＝元の絵のまま、を確かめる）
@@ -378,6 +379,16 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   // ?lang=ja の canonical は /
   { const { p, ctx } = await open(1280, 800, 'ja'); const c = await p.evaluate(() => document.querySelector('link[rel=canonical]').href); if (c !== 'https://usagi.coana.co.jp/') note(58, '?lang=ja の canonical ' + c); await ctx.close(); }
 }
+// 63（2026-11-24）：動画を全部消して出し直した。LP には動画の長さ・3本で1話などの決まり・公開の時刻を書かない
+{ const all = JSON.stringify(T.T) + fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '');
+  const bad = [/\d+\s*[〜~–-]\s*\d+\s*(秒|SEC|seconds|초)/i, /\d+\s*(秒|sec)\s*(ほど|くらい|前後)/i, /3\s*(本|話)で\s*1/, /(月・木・土|Mon(day)?, Thu(rsday)?)[^"<]{0,12}\d{1,2}:\d{2}/, /18:00（日本時間）/];
+  for (const re of bad) { const m = all.match(re); if (m) note(63, '決まりごとの文が残っている：' + m[0]); }
+  const { p, ctx } = await open(1440, 900, 'ja');
+  const r = await p.evaluate(() => ({ linked: document.querySelectorAll('#dayTrack .day-card.has-ep').length, cards: document.querySelectorAll('#dayTrack .day-card').length, eps: __RJ.EPS.map((e) => e.ep) }));
+  if (r.cards !== 9 || r.linked !== r.cards) note(63, '「ある一日」で回につながっていないカード ' + (r.cards - r.linked) + '/' + r.cards);
+  const gone = ['hanko', 'elevator2', 'lastsheet', 'pom_debut', 'jil_morning2'].filter((x) => r.eps.includes(x)); if (gone.length) note(63, '消した回が一覧に残っている：' + gone.join(','));
+  for (const d of ['ep/hanko/', 'ep/elevator2/', 'en/ep/hanko/']) if (fs.existsSync(new URL('../' + d, import.meta.url))) note(63, '消した回のページが残っている：' + d);
+  await ctx.close(); }
 await b.close();
 const ids = Object.keys(CHECKS).map(Number).sort((a, b) => a - b);
 const lines = ids.map((id) => `${fail[id] ? 'NG' : 'OK'} ${String(id).padStart(2)} ${CHECKS[id]}${fail[id] ? '\n     - ' + [...fail[id]].slice(0, 6).join('\n     - ') + (fail[id].size > 6 ? `\n     …ほか ${fail[id].size - 6}` : '') : ''}`);

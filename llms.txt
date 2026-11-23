@@ -1,12 +1,12 @@
 # 東京うさぎオフィス（Tokyo Usagi Office）
 
-> うさぎの課長モチと、しっかり者の部下ユズ（と新人ハムスターのクリ）が登場する、オフィスコメディのショートアニメ。1話およそ10〜20秒、ちょっとだけ平和なオフィスの毎日。新作は毎週 月・木・土の 18:00（日本時間）。
-> An office-comedy short animation series (10–20 seconds an episode; new episodes every Monday, Thursday and Saturday at 18:00 JST) starring Mochi the floppy-eared rabbit boss, Yuzu his capable assistant, and Kuri the rookie hamster.
+> うさぎの課長モチと、しっかり者の部下ユズ（と新人ハムスターのクリ）が登場する、オフィスコメディのショートアニメ。ちょっとだけ平和なオフィスの毎日。新作は毎週 月・木・土の 18:00（日本時間）。
+> An office-comedy short animation series (new episodes every Monday, Thursday and Saturday, JST) starring Mochi the floppy-eared rabbit boss, Yuzu his capable assistant, and Kuri the rookie hamster.
 
 ## キャラクター / Characters
-- モチ（Mochi）：うさぎの課長。ホーランドロップ（たれ耳）。承認印は鼻で押す。定時のチャイムがいちばんの楽しみ。初登場 EP.01「ハンコ」（2026-10-19）
-- ユズ（Yuzu）：しっかり者の部下。ネザーランドドワーフ。メガネをかけるとスイッチが入る。初登場 EP.01「ハンコ」
-- クリ（Kuri）：2026年11月1日に入社した新人。ゴールデンハムスター。ほっぺに何でも入れておく。初登場 EP.10「新人のクリ」
+- モチ（Mochi）：うさぎの課長。ホーランドロップ（たれ耳）。承認印は鼻で押す。定時のチャイムがいちばんの楽しみ。初登場「定時1分前の『ちょっといい？』Part 1」
+- ユズ（Yuzu）：しっかり者の部下。ネザーランドドワーフ。メガネをかけるとスイッチが入る。初登場「定時1分前の『ちょっといい？』Part 1」
+- クリ（Kuri）：2026年11月に入社した新人。ゴールデンハムスター。ほっぺに何でも入れておく。初登場「上司がくれた箱の中身 Part 3」
 
 ## 見られる場所 / Where to watch
 - [公式サイト / Official site](https://usagi.coana.co.jp/)（?lang=en / zh / ko で英語・繁體中文・한국어）
@@ -29,29 +29,10 @@
 - [キャラクター紹介 / Characters](https://usagi.coana.co.jp/characters/)（English: https://usagi.coana.co.jp/en/characters/）
 
 ## エピソード / Episodes（新しい順 / newest first）
-- [EP.22 上司とエレベーター Part 2 / Elevator with the boss, Part 2](https://usagi.coana.co.jp/ep/elevator2/)（2026-11-21）：全部の階で止まるエレベーター。ユズの名案で、課長の耳をまとめてみたら…（つづく）
-- [EP.21 エレベーターで上司と2人 Part 1 / Elevator with the boss, Part 1](https://usagi.coana.co.jp/ep/elevator/)（2026-11-19）：エレベーターで上司と2人きり。沈黙に耐えていたら、課長の耳が全部の階を押しました。（つづく）
-- [EP.20 月曜の朝 / Monday morning](https://usagi.coana.co.jp/ep/monday/)（2026-11-16）：月曜7:00の目覚まし。3回止めて、8:59。ユズはもう席にいます。
-- [EP.19 10分の会議 / Just 10 minutes](https://usagi.coana.co.jp/ep/meeting/)（2026-11-15）：「10分だけ」の会議、2時間後。ユズはコーヒー3杯目で寝落ちです。
-- [EP.18 ウォーターサーバー / Water cooler](https://usagi.coana.co.jp/ep/watercooler/)（2026-11-14）：紙コップ、マグ、バケツ。課長の「ちょっとだけ」で床が水びたしです。
-- [EP.17 定時1分前 / One minute to six](https://usagi.coana.co.jp/ep/teiji/)（2026-11-13）：金曜17:59、書類の山を抱えた課長が来た。ユズは18:00ちょうどに消えました。
-- [EP.16 年末調整 / Year-end tax forms](https://usagi.coana.co.jp/ep/nenmatsu/)（2026-11-11）：年末調整の書類、読むほど長くなる気がする。モチ課長、倒れました。
-- [EP.15 最後の1枚 / The last sheet](https://usagi.coana.co.jp/ep/lastsheet/)（2026-11-10）：最後の1枚をモチもユズも譲らない。結局クリがテープで貼って「1枚」。
-- [EP.14 了解です / Thumbs up](https://usagi.coana.co.jp/ep/thumbsup/)（2026-11-08）：「了解です」を押しすぎた課長。辞めますにも親指。
-- [EP.13 全員に返信 / Reply all](https://usagi.coana.co.jp/ep/replyall/)（2026-11-06）：「返信」のつもりが「全員に返信」。取り消しは間に合わない。（尻尾は正直）
-- [EP.12 自販機のにんじんジュース / The carrot juice machine](https://usagi.coana.co.jp/ep/vending/)（2026-11-04）：自販機にコインを入れたのに、にんじんジュースが出ない。叩いて、蹴って、そして缶の雨。
-- [EP.11 99%で止まる更新 / Stuck at 99%](https://usagi.coana.co.jp/ep/update99/)（2026-11-02）：99%で止まった更新バー。待っているうちに全員寝ました。
-- [EP.10 新人のクリ / New hire: Kuri](https://usagi.coana.co.jp/ep/kuri-debut/)（2026-11-01）：断れない新人のほおぶくろは、もう満杯です。
-- [EP.09 締め切りのカレンダー / The deadline calendar](https://usagi.coana.co.jp/ep/deadline2/)（2026-10-30）：見なければ、締め切りは来ない（来ます）。
-- [EP.08 牧草の領収書 / Hay receipts](https://usagi.coana.co.jp/ep/receipts2/)（2026-10-28）：経費精算、ぜんぶ牧草。
-- [EP.07 ユズの朝 / Yuzu's morning](https://usagi.coana.co.jp/ep/yuzu-morning/)（2026-10-26）：メガネをかけたらスイッチが入る。課長のスイッチはどこ？
-- [EP.06 定時のチャイム / The 6 pm chime](https://usagi.coana.co.jp/ep/chime2/)（2026-10-25）：定時のチャイム、よろこびが止まらない。
-- [EP.05 マグカップはどこ / Where's the mug](https://usagi.coana.co.jp/ep/mug2/)（2026-10-23）：課長、マグカップは頭の上です。
-- [EP.04 書類の山 / The paper mountain](https://usagi.coana.co.jp/ep/papers2/)（2026-10-21）：整えるほど崩れる。課長、手伝わなくていいです。
-- [EP.03 カメラオフ会議 / Camera-off meeting](https://usagi.coana.co.jp/ep/cameraoff/)（2026-10-19）：カメラを切れば、何をしても大丈夫。大丈夫？
-- [EP.02 会議の5分前 / 5 minutes before the meeting](https://usagi.coana.co.jp/ep/meeting5/)（2026-10-19）：会議まで、あと5分。
-- [EP.01 ハンコ / The stamp](https://usagi.coana.co.jp/ep/hanko/)（2026-10-19）：承認。鼻で。
+- [EP.03 上司がくれた箱の中身 Part 3 / What's in the box? — Part 3](https://usagi.coana.co.jp/ep/teiji59-3/)（2026-11-24）：逃げ続けた箱の中身は…。
+- [EP.02 どこに逃げても課長がいる Part 2 / My boss is everywhere — Part 2](https://usagi.coana.co.jp/ep/teiji59-2/)（2026-11-24）：ロッカーにも、コピー機にも、引き出しにも。
+- [EP.01 定時1分前の「ちょっといい？」Part 1 / “Got a minute?” at 5:59 — Part 1](https://usagi.coana.co.jp/ep/teiji59-1/)（2026-11-24）：定時1分前の「ちょっといい？」ほど怖いものはない。
 
 ## 事実 / Facts
-- 形式：ショートアニメ（縦型）。1話およそ10〜20秒。
-- 公開：毎週 月・木・土の 18:00（日本時間）。どのSNSでも同じエピソード。
+- 形式：ショートアニメ（縦型）。
+- 公開：毎週 月・木・土（日本時間）。どのSNSでも同じエピソード。
