@@ -931,7 +931,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
 @media (max-width: 900px) { .hero-sticker.b { top: -12px; right: 6%; } }
 .char-no { z-index: 3; }
 /* タブレット（641〜860px）：キャラクターは 3 列のまま（1 列だと 3 枚で画面 5 つ分の長さになる） */
-@media (min-width: 641px) and (max-width: 860px) { .chars { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; gap: 14px; } .char-front { padding: 16px; } .char-name { font-size: 26px; } .char-tags li { font-size: 11px; } }
+@media (min-width: 641px) and (max-width: 860px) { .chars { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; gap: 14px; } .char-front { padding: 16px; } .char-name { font-size: 26px; } .char-tags li { font-size: 12px; } }
 /* スマホ：キャラクターは横にめくるカード（1 枚ずつ縦に並べると長すぎる） */
 @media (max-width: 640px) {
   .chars { display: flex; max-width: none; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 26px; scrollbar-width: none; }
