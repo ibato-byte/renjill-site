@@ -38,7 +38,7 @@ const x = (v) => esc(v);
   const altHome = [['ja', 'ja'], ['en', 'en'], ['zh-Hant', 'zh'], ['zh-TW', 'zh'], ['zh-HK', 'zh'], ['ko', 'ko']].map(([h, l]) => `    <xhtml:link rel="alternate" hreflang="${h}" href="${x(U(l))}"/>`).join('\n') + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}"/>`;
   const img = (u) => `    <image:image>\n      <image:loc>${x(u)}</image:loc>\n    </image:image>`;
   const local = (dir) => fs.readdirSync(new URL(dir, root)).filter((n) => /\.webp$/.test(n)).sort().map((n) => SITE + dir + n);
-  const homeImgs = [SITE + 'og.jpg', ...['ren', 'jill', 'pom'].map((k) => `${SITE}img/char/${k}_happy.webp`), ...local('img/game/'), ...local('img/day/'), ...shown.filter((e) => e.cover).map((e) => MEDIA + e.cover)].map(img).join('\n');
+  const homeImgs = [SITE + 'og.jpg', ...['ren', 'jill', 'pom'].map((k) => `${SITE}img/char/${k}_happy.webp`), ...local('img/game/'), ...shown.filter((e) => e.cover).map((e) => MEDIA + e.cover)].map(img).join('\n');
   const vid = (v) => `    <video:video>\n      <video:thumbnail_loc>${x(v.thumb)}</video:thumbnail_loc>\n      <video:title>${x(v.title)}</video:title>\n      <video:description>${x(v.desc)}</video:description>\n${v.content ? `      <video:content_loc>${x(v.content)}</video:content_loc>\n` : ''}      <video:player_loc>${x(v.player)}</video:player_loc>\n      <video:publication_date>${v.date}</video:publication_date>\n      <video:family_friendly>yes</video:family_friendly>\n    </video:video>`;
   const urls = [
     `  <url>\n    <loc>${SITE}</loc>\n    <lastmod>${stamp}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n${altHome}\n${homeImgs}\n  </url>`,

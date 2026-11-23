@@ -42,7 +42,7 @@ def(57, '案内役の 3D（東京うさぎオフィス）：見出しの字に�
 const SUBPAGES = []; { const walk = (d) => { for (const n of fs.readdirSync(new URL('../' + d, import.meta.url), { withFileTypes: true })) { if (n.isDirectory()) walk(d + n.name + '/'); else if (n.name === 'index.html') SUBPAGES.push(d + n.name); } }; for (const d of ['ep/', 'episodes/', 'characters/', 'en/', 'zh/', 'ko/']) if (fs.existsSync(new URL('../' + d, import.meta.url))) walk(d); }
 def(60, '下のページ（1話ごと・一覧・キャラクター）：title・description・canonical が自分・h1 が1つ・JSON-LD が読める・4言語の hreflang が互いを指す');
 def(61, '下のページが全部 sitemap.xml にあり、sitemap の URL が全部あるファイルを指す（404 にならない）');
-def(63, 'LP に動画の長さ・連載の決まり・公開の時刻を書かない／「ある一日」の9枚が今ある回につながる／消した回のページ・動画が残っていない（2026-11-24 オーナー）');
+def(63, 'LP に動画の長さ・連載の決まり・公開の時刻を書かない／「ある一日」は置かない（2026-11-24）／消した回のページ・動画が残っていない（2026-11-24 オーナー）');
 def(62, '1話のページ：VideoObject（名前・サムネイル・公開日時・埋め込み URL）と、トップの一覧から全話のページへのリンクがある');
 { const SITE = 'https://usagi.coana.co.jp/'; const sm = fs.readFileSync(new URL('../sitemap.xml', import.meta.url), 'utf8');
   const locs = new Set([...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(/&amp;/g, '&')));
@@ -102,7 +102,7 @@ def(59, '旧名が残っていない（2026-11-22：ブランドを「東京う�
   if (!/__g3d\.hit\(e\.clientX, e\.clientY\)\) return;/.test(html)) note(57, '2 人を押したとき、ハンコも押されてしまう');
   if (!/crossOrigin = "anonymous"/.test(g)) note(57, '絵に crossOrigin が無い（別の場所から配られると 3D が動かない。2026-11-16 プレビューで発生）');
   if (!/\.g3d \{[^}]*pointer-events: none/.test(html) || !/\.g3d-wrap \{[^}]*pointer-events: none/.test(html)) note(57, '3D の画面がクリックを受けてしまう');
-  if ((html.match(/class="g3d-spot"/g) || []).length < 7) note(57, '立つ場所（g3d-spot）が 7 つ無い');
+  if ((html.match(/class="g3d-spot"/g) || []).length < 6) note(57, '立つ場所（g3d-spot）が 6 つ無い（2026-11-24 に「ある一日」を外して 6 つ）');
   if (g.length > 64 * 1024) note(57, "guide3d.js が 64KB 超"); } // 2026-11-18 オーナー了承で 56→64KB（残りの作り込み）。2026-11-17 オーナー了承で 48→56KB（走り方の作り込み。絵 510KB に比べて小さい）。 // 2026-11-16：うさぎの体の中の動き（耳・鼻・息など）を足して 40→48KB。ページを読み終えてから読むので、最初の表示は遅くならない
 // 17：「セリフなし」は、あえて書かない（2026-11-16 オーナー）。ページ・題名・共有文・よくある質問・llms.txt・feed・共有用の画像の作り方、どこにも戻さない
 { const NG = /セリフなし|セリフのない|セリフがない|NO DIALOGUE|no dialogue|wordless|No words|沒有台詞|대사 없|대사가 없|しぐさと音だけ|gestures and sounds|動作和聲音|몸짓과 소리만/; /* 今後セリフが出ることがあるので「しぐさと音だけ」も書かない（2026-11-16） */ for (const f of ['index.html', 'llms.txt', 'feed.xml', 'site.webmanifest', '404.html', 'tools/prerender.mjs', 'tools/make_og.mjs']) { const u = new URL('../' + f, import.meta.url); if (!fs.existsSync(u)) continue; const bad = fs.readFileSync(u, 'utf8').split('\n').filter((l) => NG.test(l) && !/^\s*(\/\/|\/\*|\*)/.test(l)); if (bad.length) note(17, f + ' に「セリフなし」の表現が残っている：' + bad[0].match(NG)[0]); } }
@@ -301,8 +301,9 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   const back = await p.evaluate(() => ({ open: document.getElementById('lb').classList.contains('open'), q: location.search }));
   if (!/ep=/.test(u1) || back.open || /ep=/.test(back.q)) note(47, '戻るボタン ' + JSON.stringify({ u1, ...back }));
   // 「ある一日」のカード・初登場から、同じ題の回が開く
-  const day = await p.evaluate(async () => { const c = document.querySelectorAll('#dayTrack .day-card.has-ep'); if (c.length < 5) return 'つながったカードが ' + c.length; c[0].click(); await new Promise((r) => setTimeout(r, 300)); const ok = document.getElementById('lb').classList.contains('open') && (() => { const e = window.__RJ.EPS.find((x) => x.ep === c[0].dataset.ep); return !!e && e.title.includes(document.querySelector('#lbInfo b').textContent); })(); /* カードは場面の題、窓はその回の題（2026-11-24） */ window.__RJ.closeLb(); await new Promise((r) => setTimeout(r, 400)); return ok ? 'ok' : '開いた回の題がちがう'; });
-  if (day !== 'ok') note(47, 'ある一日 ' + day);
+  // 「ある一日」は 2026-11-24 に外した（オーナー）。キャラクターの初登場から回が開くかを見る
+  const day = await p.evaluate(async () => { const c = document.querySelectorAll('.debut-link'); if (c.length < 3) return '初登場のリンクが ' + c.length; return 'ok'; });
+  if (day !== 'ok') note(47, day);
   await ctx.close(); }
 // 57：案内役の 3D。?g3d=1 で動かし、最初の画面と各見出しで、字に重ならない・はみ出さないことを確かめる（WebGL が無い検査機では、動かない＝元の絵のまま、を確かめる）
 // 2026-11-16：とても小さい画面（280）・横向きのスマホ（667x375）・とても広い画面（2560）も見る（280 で題名の & に重なる／横向きで大きくなりすぎる、が実際に起きた）
@@ -385,7 +386,7 @@ for (const [w, h] of [[390, 844], [1440, 900]]) { const { p, ctx } = await open(
   for (const re of bad) { const m = all.match(re); if (m) note(63, '決まりごとの文が残っている：' + m[0]); }
   const { p, ctx } = await open(1440, 900, 'ja');
   const r = await p.evaluate(() => ({ linked: document.querySelectorAll('#dayTrack .day-card.has-ep').length, cards: document.querySelectorAll('#dayTrack .day-card').length, eps: __RJ.EPS.map((e) => e.ep) }));
-  if (r.cards !== 9 || r.linked !== r.cards) note(63, '「ある一日」で回につながっていないカード ' + (r.cards - r.linked) + '/' + r.cards);
+  if (r.cards) note(63, '「ある一日」が残っている（2026-11-24 に外した）');
   const gone = ['hanko', 'elevator2', 'lastsheet', 'pom_debut', 'jil_morning2'].filter((x) => r.eps.includes(x)); if (gone.length) note(63, '消した回が一覧に残っている：' + gone.join(','));
   for (const d of ['ep/hanko/', 'ep/elevator2/', 'en/ep/hanko/']) if (fs.existsSync(new URL('../' + d, import.meta.url))) note(63, '消した回のページが残っている：' + d);
   await ctx.close(); }
