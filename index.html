@@ -191,7 +191,7 @@ body:not(.lang-en) .btn { font-family: var(--f-jp); font-weight: 900; }
 .sec-ttl { margin: 0; font: 900 clamp(30px, 4.6vw, 64px)/1.15 var(--f-jp); letter-spacing: -.02em; }
 body.lang-en .sec-ttl { font-family: var(--f-en); font-weight: 700; letter-spacing: -.01em; }
 .sec-ttl .ja, .sec-ttl .en { display: block; }
-body:not(.lang-en) :is(.sec-ttl, .hero-sub, .char-text, .day-ttl, .ep-ttl, .rel-ttl, .game-text, .pickup-t) { word-break: auto-phrase; overflow-wrap: anywhere; }
+body:not(.lang-en) :is(.sec-ttl, .hero-sub, .char-text, .ep-ttl, .rel-ttl, .game-text, .pickup-t) { word-break: auto-phrase; overflow-wrap: anywhere; }
 .sec-lead { grid-column: 1 / -1; margin: 6px 0 0; max-width: 46em; color: var(--ink-2); font-size: 15.5px; }
 @media (max-width: 640px) { .sec-head { grid-template-columns: 1fr; gap: 6px; } }
 
@@ -294,46 +294,6 @@ body:not(.lang-en) .tape-track span { font-family: var(--f-jp); font-weight: 900
 .char.pom:hover .cheek { animation: puff .6s var(--ease) both; transform-origin: center; }
 @keyframes puff { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
 @media (max-width: 860px) { .chars { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; } }
-
-/* ═══════ A DAY (horizontal) ═══════ */
-.day { background: var(--navy); color: var(--paper); overflow-x: hidden; }
-/* 色の変わり目を、まっすぐな線ではなく、紙を切ったような丸い波に */
-/* 「.game」はゲームの欄だけ（右の列のゲームのボタンも class に game を持つので、section に限る。2026-11-15：ボタンに丸い波がかかって見づらかった） */
-.day, section.game { position: relative; }
-.day::before, .day::after, section.game::before, section.game::after { content: ""; position: absolute; left: 0; right: 0; height: 13px; z-index: 2; pointer-events: none; background: radial-gradient(circle at 13px 0, var(--cream) 12.4px, transparent 13px) 0 0 / 26px 13px repeat-x; }
-.day::before, section.game::before { top: -1px; } .day::after, section.game::after { bottom: -1px; transform: scaleY(-1); }
-@supports (overflow: clip) { .day { overflow-x: clip; overflow-y: visible; } }
-.day .sec-no { color: var(--mustard); -webkit-text-stroke-color: var(--paper); }
-.day .sec-head { border-bottom-color: rgba(255, 255, 255, .5); }
-.day .sec-lead { color: rgba(255, 255, 255, .75); }
-.day-pin { position: relative; }
-.day-track { display: flex; gap: clamp(16px, 2vw, 32px); width: max-content; padding-right: 20vw; will-change: transform; align-items: stretch; }
-.day-card { position: relative; width: clamp(260px, 30vw, 380px); flex: none; border: 3px solid var(--paper); border-radius: 24px; background: var(--navy-d); padding: 22px 22px 24px; display: grid; gap: 12px; grid-template-rows: auto auto 1fr; align-content: start; }
-.day-card.big { width: clamp(300px, 34vw, 440px); background: var(--mustard); color: var(--ink); border-color: var(--ink); }
-.day-time { font: 700 clamp(40px, 4.6vw, 64px)/1 var(--f-en); letter-spacing: -.03em; }
-.day-card.big .day-time { font-size: clamp(56px, 6.5vw, 96px); }
-.day-ttl { margin: 0; font: 900 clamp(18px, 1.7vw, 23px)/1.4 var(--f-jp); }
-body.lang-en .day-ttl { font-family: var(--f-en); font-weight: 700; }
-.day-text { margin: 0; font-size: 14px; line-height: 1.8; opacity: .85; }
-.day-pic { margin: -10px -10px 2px; border-radius: 18px; overflow: hidden; aspect-ratio: 16 / 10; background: #EADFCB; }
-.day-pic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease, ease-out); }
-.day-card:hover .day-pic img { transform: scale(1.05); }
-@media (prefers-reduced-motion: reduce) { .day-pic img { transition: none; } .day-card:hover .day-pic img { transform: none; } }
-.day-head { position: relative; padding-right: 100px; }
-.day-clock { position: absolute; right: 0; bottom: 26px; width: 80px; height: 80px; z-index: 2; }
-.day-progress { height: 4px; background: rgba(255, 255, 255, .2); border-radius: 999px; margin-top: 36px; overflow: hidden; }
-.day-progress i { display: block; height: 100%; width: 100%; background: var(--mustard); transform: scaleX(0); transform-origin: left; }
-@media (max-width: 760px) {
-  .day-track { width: auto; margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); overscroll-behavior-x: contain; scrollbar-width: none; will-change: auto; }
-  .day-track::-webkit-scrollbar { display: none; }
-  .day-card, .day-card.big { width: min(78vw, 320px); scroll-snap-align: start; }
-  .day-card.big { width: min(84vw, 340px); }
-  .day-clock { width: 56px; height: 56px; bottom: 30px; }
-  .day-head { padding-right: 0; } .day .sec-lead { padding-right: 70px; }
-  .day-progress { margin-top: 14px; }
-  .day-pin { padding-block: clamp(90px, 12vw, 180px); }
-  .sec.day .day-pin { padding-bottom: clamp(56px, 12vw, 90px); }
-}
 
 /* ═══════ EPISODES ═══════ */
 .eps { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: clamp(14px, 2vw, 28px); }
@@ -442,7 +402,6 @@ a, button, summary { -webkit-tap-highlight-color: rgba(43, 29, 18, .08); }
 @media (max-width: 640px) { .lb-nav { top: 18px; transform: none; } .lb-nav.prev { left: 18px; } .lb-nav.next { left: 72px; right: auto; } }
 .ftr-nav { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 18px; padding: 0; list-style: none; font-size: 14px; }
 .ftr-nav a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding: 6px 0; }
-.day-card.has-ep { cursor: pointer; } .day-card.has-ep:focus-visible { outline: 3px solid var(--mustard); outline-offset: 4px; }
 .debut-link { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; } .debut-link:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
 .nt-hint { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .faq { display: grid; gap: 12px; }
@@ -578,13 +537,6 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .rel-lab { transform-box: fill-box; transform-origin: center; }
 
-/* ═══════ DAY: sticky space ═══════ */
-.day-space { position: relative; }
-.day-pin { position: sticky; top: 0; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: clamp(60px, 8vw, 100px) 40px; }
-.day .sec { padding-block: 0; }
-.sec.day { padding-block: 0; }
-@media (max-width: 760px) { .day-space { height: auto !important; } .day-pin { position: static; min-height: 0; padding-block: 0; } }
-
 /* ═══════ HERO INTRO (CSS-driven, no library) ═══════ */
 .hero-title .c { opacity: 0; transform: translateY(-130%) rotate(var(--rot, 0deg)); }
 .hero.go .hero-title .c { animation: drop 1.15s cubic-bezier(.34, 1.56, .64, 1) forwards; animation-delay: calc(.1s + var(--i) * .07s); }
@@ -678,12 +630,6 @@ body.lang-en .rel-ttl { font-family: var(--f-en); font-weight: 700; }
 .rel { border: var(--sticker); box-shadow: var(--shadow-lg); background: var(--paper); }
 .rel-lab rect { stroke: var(--fur-d) !important; stroke-width: 2.5 !important; }
 .rel-line { stroke: var(--fur-d); }
-.day-card { border: 0; background: var(--paper); color: var(--ink); box-shadow: var(--shadow-lg); border-radius: 26px; }
-.day-card .day-text { color: var(--ink-2); opacity: 1; }
-.day-card svg * { stroke: var(--navy); }
-.day-card.big { background: var(--mustard); border: 0; }
-.day-card.big svg * { stroke: var(--ink); }
-.day-card.big .day-text { color: var(--ink); } /* 黄色い札の上の文字を濃く（コントラスト 4.5:1 以上） */
 .ep { border: var(--sticker); border-radius: 26px; box-shadow: var(--shadow); background: var(--paper); }
 .ep:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 .ep-play { border: 0; box-shadow: 0 3px 0 var(--edge); }
@@ -954,7 +900,6 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 .sec-head { position: relative; }
 .sec-head { --g3d-h: clamp(84px, 7.6vw, 124px); }
 .sec-head .g3d-spot { right: 2%; bottom: 0; height: var(--g3d-h); }
-.day-head .g3d-spot { right: 130px; }
 /* 見出しの字が長い言語でも 2 人に重ならないよう、右に 2 人の幅だけ空きを取る（下の点線は端まで伸びたまま） */
 @media (min-width: 641px) { .sec-head { padding-right: calc(2% + var(--g3d-h) * 1.5 + 20px); } .day-head { padding-right: calc(130px + var(--g3d-h) * 1.5 + 20px); } }
 .hero-title { position: relative; }
@@ -964,12 +909,39 @@ body.fbar-on .ftr { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 @media (max-width: 360px) { .brand { font-size: 10.5px; letter-spacing: 0; padding-right: 10px; } .brand svg { width: 22px; height: 22px; } }
 @media (max-width: 900px) { .hero-title .g3d-spot { left: auto; right: 6px; bottom: -.04em; height: 76%; max-width: 50%; } }
 @media (max-width: 360px) { .hero-title .g3d-spot { height: 62%; right: 0; } }
-@media (max-width: 640px) { .sec-head .g3d-spot, .day-head .g3d-spot { right: 0; bottom: auto; top: -12px; height: 56px; } }
-/* スマホの「ある一日」：見出しのすぐ上が色の変わり目（波の形）なので、2 人が前の部分にはみ出さないよう、少し小さく・下げる */
-@media (max-width: 640px) { .day-head .g3d-spot { top: 0; height: 50px; } }
+@media (max-width: 640px) { .sec-head .g3d-spot { right: 0; bottom: auto; top: -12px; height: 56px; } }
 /* 3D が始まったら、元の絵（スマホの題名の右の 2 人）は、ぱっと消さずに、すっと消す */
 html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s linear 0s !important; }
 @media print { .g3d, .g3d-wrap { display: none; } }
+/* ═══════ バランスの見直し（2026-11-24：「ある一日」を外したあと） ═══════ */
+/* 章の間を少しつめる（同じ色の章が続くので、間が空きすぎない） */
+.sec { padding-block: clamp(72px, 9vw, 140px); }
+/* エピソードの章は、少し明るい紙の色にして、キャラクターの章と分ける（上の端は波の形） */
+#episodes { background: var(--paper); }
+#episodes::before { content: ""; position: absolute; left: 0; right: 0; top: -13px; height: 14px; background: radial-gradient(circle at 14px 14px, var(--paper) 13.5px, transparent 14px) 0 0 / 28px 14px repeat-x; pointer-events: none; }
+#episodes .ep, #episodes .lp { background-color: #fff; }
+#episodes .ep.ep-next { background: var(--navy); }
+/* キャラクターの3枚の高さをそろえ、「押してみる？」を下にそろえる */
+.chars { align-items: stretch; }
+.char, .char-flip { height: 100%; }
+.char-front { height: 100%; display: flex; flex-direction: column; }
+.char-front .char-more { margin-top: auto; align-self: flex-start; }
+/* ヒーローの縦の画面：表紙の題名に札が重ならないよう、札は画面のふちへ */
+.hero-sticker.b { top: -14px; right: 8%; }
+@media (max-width: 900px) { .hero-sticker.b { top: -12px; right: 6%; } }
+.char-no { z-index: 3; }
+.char-tags { align-content: flex-start; align-items: flex-start; } /* 高さをそろえたとき、タグが縦にのびない */
+/* タブレット（641〜860px）：キャラクターは 3 列のまま（1 列だと 3 枚で画面 5 つ分の長さになる） */
+@media (min-width: 641px) and (max-width: 860px) { .chars { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; gap: 14px; } .char-front { padding: 16px; } .char-name { font-size: 26px; } .char-tags li { font-size: 12px; } }
+/* スマホ：キャラクターは横にめくるカード（1 枚ずつ縦に並べると長すぎる） */
+@media (max-width: 640px) {
+  .chars { display: flex; max-width: none; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 26px; scrollbar-width: none; }
+  .chars::-webkit-scrollbar { display: none; }
+  .char { flex: 0 0 min(80vw, 320px); scroll-snap-align: center; }
+  /* 作業用BGMは 2 列（1 列だと長い） */
+  .lp-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .lp-list.one { grid-template-columns: minmax(0, 1fr); }
+}
 </style>
 </head>
 <body class="lang-ja">
@@ -1059,7 +1031,6 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
         <img src="https://ibato-byte.github.io/usagi-office-media/20261124_teiji59_1_cover.jpg" alt="定時1分前の「ちょっといい？」Part 1" width="1080" height="1920" fetchpriority="high">
         <video muted loop playsinline preload="none" src="https://ibato-byte.github.io/usagi-office-media/20261124_teiji59_1.mp4" aria-hidden="true"></video>
       </div>
-      <div class="hero-sticker a" data-t="hero.st1">OFFICE COMEDY</div>
       <div class="hero-sticker b" data-t="hero.st2">新作 · 月木土</div>
       <svg class="hero-clock" id="heroClock" viewBox="0 0 100 100" aria-hidden="true">
         <circle cx="50" cy="50" r="46" fill="#FBF6EC" stroke="#2B1D12" stroke-width="4"/>
@@ -1196,46 +1167,12 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
   </div>
 </section>
 
-<!-- ═══════ 02 A DAY ═══════ -->
-<section class="sec day" id="day">
-  <div class="day-space" id="daySpace">
-  <div class="day-pin" id="dayPin">
-    <div class="wrap">
-      <div class="sec-head rv day-head">
-      <i class="g3d-spot" data-act="nap" aria-hidden="true"></i>
-        <div class="sec-no">02</div>
-        <h2 class="sec-ttl"><span data-t="day.ttl">オフィスの、ある一日。</span></h2>
-        <p class="sec-lead" data-t="day.lead">定時の1分前から。スクロールすると、時計が進みます。</p>
-        <svg class="day-clock" id="dayClock" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="46" fill="#FBF6EC" stroke="#2B1D12" stroke-width="4"/>
-          <line id="dH" x1="50" y1="50" x2="50" y2="28" stroke="#2B1D12" stroke-width="5" stroke-linecap="round" transform="rotate(179.5 50 50)"/>
-          <line id="dM" x1="50" y1="50" x2="50" y2="20" stroke="#D9A520" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="50" cy="50" r="4" fill="#2B1D12"/>
-        </svg>
-      </div>
-      <div class="day-track" id="dayTrack">
-        <article class="day-card" data-day-ep="teiji59_1"><div class="day-pic"><img src="img/day/1.webp" width="720" height="450" loading="lazy" decoding="async" alt="帰る準備、完了。" data-talt="day.1.t"></div><div class="day-time">17:59</div><div><h3 class="day-ttl" data-t="day.1.t">帰る準備、完了。</h3><p class="day-text" data-t="day.1.d">カバンも机も、片づいた。あとは、1分待つだけ。</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_1"><div class="day-pic"><img src="img/day/2.webp" width="720" height="450" loading="lazy" decoding="async" alt="ちょっといい？" data-talt="day.2.t"></div><div class="day-time">17:59</div><div><h3 class="day-ttl" data-t="day.2.t">ちょっといい？</h3><p class="day-text" data-t="day.2.d">課長の、いちばん怖い一言。頭の中は、もう残業。</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_1"><div class="day-pic"><img src="img/day/3.webp" width="720" height="450" loading="lazy" decoding="async" alt="作戦は、3つ。" data-talt="day.3.t"></div><div class="day-time">17:59</div><div><h3 class="day-ttl" data-t="day.3.t">作戦は、3つ。</h3><p class="day-text" data-t="day.3.d">聞こえないふり。死んだふり。身代わり。</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_1"><div class="day-pic"><img src="img/day/4.webp" width="720" height="450" loading="lazy" decoding="async" alt="自由だ！" data-talt="day.4.t"></div><div class="day-time">18:00</div><div><h3 class="day-ttl" data-t="day.4.t">自由だ！</h3><p class="day-text" data-t="day.4.d">チャイムと同時に、エレベーターへ。</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_1"><div class="day-pic"><img src="img/day/5.webp" width="720" height="450" loading="lazy" decoding="async" alt="扉が開くと、そこに。" data-talt="day.5.t"></div><div class="day-time">18:00</div><div><h3 class="day-ttl" data-t="day.5.t">扉が開くと、そこに。</h3><p class="day-text" data-t="day.5.d">どうして、課長が先にいるの？</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_2"><div class="day-pic"><img src="img/day/6.webp" width="720" height="450" loading="lazy" decoding="async" alt="ロッカーに隠れても。" data-talt="day.6.t"></div><div class="day-time">18:01</div><div><h3 class="day-ttl" data-t="day.6.t">ロッカーに隠れても。</h3><p class="day-text" data-t="day.6.d">となりを開けたら、課長。</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_2"><div class="day-pic"><img src="img/day/7.webp" width="720" height="450" loading="lazy" decoding="async" alt="コピー機の、うしろにも。" data-talt="day.7.t"></div><div class="day-time">18:02</div><div><h3 class="day-ttl" data-t="day.7.t">コピー機の、うしろにも。</h3><p class="day-text" data-t="day.7.d">ここなら、さすがに……いた。</p></div></article>
-        <article class="day-card" data-day-ep="teiji59_2"><div class="day-pic"><img src="img/day/8.webp" width="720" height="450" loading="lazy" decoding="async" alt="引き出しの中にも。" data-talt="day.8.t"></div><div class="day-time">18:03</div><div><h3 class="day-ttl" data-t="day.8.t">引き出しの中にも。</h3><p class="day-text" data-t="day.8.d">もう、どこにも逃げられない。</p></div></article>
-        <article class="day-card big" data-day-ep="teiji59_3"><div class="day-pic"><img src="img/day/9.webp" width="720" height="450" loading="lazy" decoding="async" alt="屋上で、箱をひとつ。" data-talt="day.9.t"></div><div class="day-time">18:10</div><div><h3 class="day-ttl" data-t="day.9.t">屋上で、箱をひとつ。</h3><p class="day-text" data-t="day.9.d">課長が持ってきた、四角い箱。中身は……？</p></div></article>
-      </div>
-      <div class="day-progress"><i id="dayBar"></i></div>
-    </div>
-  </div>
-  </div>
-</section>
-
-<!-- ═══════ 03 EPISODES ═══════ -->
+<!-- ═══════ 02 EPISODES ═══════ -->
 <section class="sec" id="episodes">
   <div class="wrap">
     <div class="sec-head rv">
       <i class="g3d-spot" data-act="watch" aria-hidden="true"></i>
-      <div class="sec-no">03</div>
+      <div class="sec-no">02</div>
       <h2 class="sec-ttl"><span data-t="ep.ttl">エピソード</span></h2>
       <p class="sec-lead" data-t="ep.lead">カーソルを当てると動き出し、押すとそのまま見られます。</p>
     </div>
@@ -1255,23 +1192,15 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
       </div>
       <ul class="lp-list one" id="lpList"><li><a class="lp-card" href="https://www.youtube.com/watch?v=gb0SAEwlNtw" target="_blank" rel="noopener"><span class="lp-thumb"><img src="https://ibato-byte.github.io/usagi-office-media/bgm_2026-11-13_thumb.jpg" alt="雨の夜の残業" loading="lazy" decoding="async" width="1280" height="720"><span class="lp-len">1:00:00</span></span><span class="lp-name">雨の夜の残業</span><span class="lp-date">2026.11.14</span></a></li></ul>
     </div>
-    <aside class="fcall rv" aria-labelledby="fcallTtl">
-      <div class="fcall-txt">
-        <p class="fcall-k">FOLLOW · @tokyo_usagi_office</p>
-        <h3 class="fcall-ttl" id="fcallTtl" data-t="fc.ttl">つづきは、タイムラインで。</h3>
-        <p class="fcall-lead" data-t="fc.lead">新作は毎週 月・木・土。いつものSNSを、ひとつ選ぶだけ。</p>
-      </div>
-      <div class="sns-btns" data-sns="call"></div>
-    </aside>
   </div>
 </section>
 
-<!-- ═══════ 04 GAME ═══════ -->
+<!-- ═══════ 03 GAME ═══════ -->
 <section class="sec game" id="game">
   <div class="wrap">
     <div class="sec-head rv">
       <i class="g3d-spot" data-act="play" aria-hidden="true"></i>
-      <div class="sec-no">04</div>
+      <div class="sec-no">03</div>
       <h2 class="sec-ttl"><span data-t="game.ttl">遊べます。</span></h2>
       <p class="sec-lead" data-t="game.lead">ブラウザで、すぐ。</p>
     </div>
@@ -1304,12 +1233,12 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
   </div>
 </section>
 
-<!-- ═══════ 05 FOLLOW ═══════ -->
+<!-- ═══════ 04 FOLLOW ═══════ -->
 <section class="sec" id="follow">
   <div class="wrap">
     <div class="sec-head rv">
-      <i class="g3d-spot" data-act="follow" aria-hidden="true"></i>
-      <div class="sec-no">05</div>
+      <i class="g3d-spot" data-act="nap" aria-hidden="true"></i><!-- 2026-11-24：「ある一日」を外したので、居眠りは「ちょっと平和に」の章で --> 
+      <div class="sec-no">04</div>
       <h2 class="sec-ttl"><span data-t="sns.ttl">フォローすると、ちょっと平和に。</span></h2>
       <p class="sec-lead" data-t="sns.lead">新作は毎週 月・木・土。どのSNSでも同じエピソードを見られます。</p>
     </div>
@@ -1335,7 +1264,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
   <div class="wrap">
     <div class="sec-head rv">
       <i class="g3d-spot" data-act="ask" aria-hidden="true"></i>
-      <div class="sec-no">06</div>
+      <div class="sec-no">05</div>
       <h2 class="sec-ttl"><span data-t="faq.ttl">よくある質問</span></h2>
       <p class="sec-lead" data-t="faq.lead">東京うさぎオフィスについて、よく聞かれること。</p>
     </div>
@@ -1358,7 +1287,7 @@ html.g3d-on .hero .hero-duo { opacity: 0 !important; transition: opacity .25s li
     <div class="ftr-crew rv" aria-hidden="true"><img class="c-pom" src="img/char/pom_happy.webp" width="600" height="600" alt="" loading="lazy" decoding="async"><img class="c-ren" src="img/char/ren_happy.webp" width="600" height="600" alt="" loading="lazy" decoding="async"><img class="c-jill" src="img/char/jill_happy.webp" width="600" height="600" alt="" loading="lazy" decoding="async"></div>
     <p class="ftr-big rv" translate="no">SEE YOU AT <span>6 PM.</span></p>
     <nav class="ftr-follow" aria-label="SNS" data-ta="a.follow"><span class="ftr-follow-k" data-t="ff.k">フォローする</span><div class="sns-ics" data-sns="footer"></div></nav>
-    <nav aria-label="このページの中" data-ta="fn.k"><ul class="ftr-nav"><li><a href="#characters" data-t="fn.chars">キャラクター</a></li><li><a href="#day" data-t="fn.day">ある一日</a></li><li><a href="#episodes" data-t="fn.eps">エピソード</a></li><li><a href="#game" data-t="fn.game">ゲーム</a></li><li><a href="#follow" data-t="fn.follow">フォロー</a></li><li><a href="#faq" data-t="fn.faq">よくある質問</a></li><li><a href="/episodes/" data-t="ep.all" data-lhref="episodes/">エピソード一覧（全話）</a></li><li><a href="/characters/" data-t="ch.page" data-lhref="characters/">キャラクター紹介のページへ</a></li></ul></nav>
+    <nav aria-label="このページの中" data-ta="fn.k"><ul class="ftr-nav"><li><a href="#characters" data-t="fn.chars">キャラクター</a></li><li><a href="#episodes" data-t="fn.eps">エピソード</a></li><li><a href="#game" data-t="fn.game">ゲーム</a></li><li><a href="#follow" data-t="fn.follow">フォロー</a></li><li><a href="#faq" data-t="fn.faq">よくある質問</a></li><li><a href="/episodes/" data-t="ep.all" data-lhref="episodes/">エピソード一覧（全話）</a></li><li><a href="/characters/" data-t="ch.page" data-lhref="characters/">キャラクター紹介のページへ</a></li></ul></nav>
     <div class="ftr-in">
       <small>© <a class="u" href="https://coana.co.jp/" target="_blank" rel="noopener">COANA TOKYO LLC.</a> · TOKYO USAGI OFFICE</small>
     </div>
@@ -1416,12 +1345,6 @@ const runScroll = () => onScrollFns.forEach((f) => f(scrollY));
 
 /* ───────── 1. i18n ───────── */
 const T = {
-"day.watch": [
-"「{t}」の回を見る",
-"Watch “{t}”",
-"看「{t}」這一集",
-"「{t}」 에피소드 보기"
-],
 "pickup.today": [
 "今日の新作：",
 "New today: ",
@@ -1493,12 +1416,6 @@ const T = {
 "Characters",
 "角色",
 "캐릭터"
-],
-"fn.day": [
-"ある一日",
-"A day",
-"一天",
-"하루"
 ],
 "fn.eps": [
 "エピソード",
@@ -1931,126 +1848,6 @@ const T = {
 "Learns from",
 "跟著學",
 "배움"
-],
-"day.ttl": [
-"オフィスの、ある一日。",
-"A day at the office.",
-"辦公室的某一天。",
-"오피스의 어느 하루."
-],
-"day.lead": [
-"定時の1分前から。スクロールすると、時計が進みます。",
-"It starts one minute before six. Scroll, and the clock moves.",
-"從下班前1分鐘開始。往下捲動，時鐘就會走。",
-"퇴근 1분 전부터. 스크롤하면 시계가 갑니다."
-],
-"day.1.t": [
-"帰る準備、完了。",
-"Ready to go home.",
-"準備下班，完成。",
-"퇴근 준비 완료."
-],
-"day.1.d": [
-"カバンも机も、片づいた。あとは、1分待つだけ。",
-"Bag packed, desk cleared. Just one more minute.",
-"包包收好、桌面整理好了。只要再等1分鐘。",
-"가방도 책상도 정리 끝. 이제 1분만 기다리면 돼요."
-],
-"day.2.t": [
-"ちょっといい？",
-"“Got a minute?”",
-"有空嗎？",
-"잠깐 괜찮아?"
-],
-"day.2.d": [
-"課長の、いちばん怖い一言。頭の中は、もう残業。",
-"The scariest words a boss can say. Overtime flashes before her eyes.",
-"課長最可怕的一句話。腦中已經是加班了。",
-"과장님의 가장 무서운 한마디. 머릿속은 이미 야근."
-],
-"day.3.t": [
-"作戦は、3つ。",
-"Three plans.",
-"作戰有三個。",
-"작전은 세 가지."
-],
-"day.3.d": [
-"聞こえないふり。死んだふり。身代わり。",
-"Pretend not to hear. Play dead. Use a decoy.",
-"裝作沒聽到、裝死、找替身。",
-"못 들은 척. 죽은 척. 대역."
-],
-"day.4.t": [
-"自由だ！",
-"Freedom!",
-"自由了！",
-"자유다!"
-],
-"day.4.d": [
-"チャイムと同時に、エレベーターへ。",
-"Into the elevator the second the chime rings.",
-"鐘聲一響，就衝進電梯。",
-"종이 울리자마자 엘리베이터로."
-],
-"day.5.t": [
-"扉が開くと、そこに。",
-"The doors open, and…",
-"電梯門一開，他就在那裡。",
-"문이 열리자, 거기에."
-],
-"day.5.d": [
-"どうして、課長が先にいるの？",
-"How is the boss already in here?",
-"為什麼課長比我先到？",
-"어떻게 과장님이 먼저 와 있는 거죠?"
-],
-"day.6.t": [
-"ロッカーに隠れても。",
-"Hiding in a locker.",
-"躲進置物櫃也沒用。",
-"사물함에 숨어도."
-],
-"day.6.d": [
-"となりを開けたら、課長。",
-"Open the next door: the boss.",
-"打開隔壁，是課長。",
-"옆 칸을 열었더니, 과장님."
-],
-"day.7.t": [
-"コピー機の、うしろにも。",
-"Behind the copier, too.",
-"影印機後面也是。",
-"복사기 뒤에도."
-],
-"day.7.d": [
-"ここなら、さすがに……いた。",
-"Surely not here… nope.",
-"這裡總該沒有了吧……有。",
-"여기라면 설마…… 있었다."
-],
-"day.8.t": [
-"引き出しの中にも。",
-"Even in the drawer.",
-"連抽屜裡也有。",
-"서랍 속에도."
-],
-"day.8.d": [
-"もう、どこにも逃げられない。",
-"There's nowhere left to run.",
-"已經無處可逃了。",
-"이제 어디로도 도망칠 수 없어요."
-],
-"day.9.t": [
-"屋上で、箱をひとつ。",
-"One box, on the roof.",
-"屋頂上，一個箱子。",
-"옥상에서, 상자 하나."
-],
-"day.9.d": [
-"課長が持ってきた、四角い箱。中身は……？",
-"The boss brought a box. What's inside…?",
-"課長帶來的方形箱子。裡面是……？",
-"과장님이 가져온 네모난 상자. 안에는……?"
 ],
 "ep.ttl": [
 "エピソード",
@@ -2495,12 +2292,6 @@ const T = {
 "Tap a card to see a profile.",
 "點一下卡片，可以看到個人資料。",
 "카드를 누르면 프로필을 볼 수 있어요."
-],
-"day.lead.touch": [
-"定時の1分前から。横にスワイプして、のぞいてみて。",
-"It starts one minute before six. Swipe sideways to follow along.",
-"從下班前1分鐘開始。往旁邊滑，看看接下來。",
-"퇴근 1분 전부터. 옆으로 넘기며 들여다보세요."
 ],
 "ep.lead.touch": [
 "押すと、そのまま見られます。",
@@ -3014,50 +2805,6 @@ if (!reduce) {
   });
 })();
 
-/* ───────── 8. a day: sticky horizontal + clock + chime ───────── */
-(() => {
-  const space = $("#daySpace"), pin = $("#dayPin"), track = $("#dayTrack"), bar = $("#dayBar"), dH = $("#dH"), dM = $("#dM");
-  let chimed = false, dist = 0, active = false;
-  const DAY_FROM = 17 + 59 / 60, DAY_TO = 18 + 10 / 60; // 「ある一日」は 17:59 → 18:10（2026-11-24 新シリーズ）
-  const setClock = (p) => { const h = DAY_FROM + p * (DAY_TO - DAY_FROM); dH.setAttribute("transform", `rotate(${(h % 12) * 30} 50 50)`); dM.setAttribute("transform", `rotate(${(h % 1) * 360} 50 50)`); };
-  const burst = () => {
-    if (reduce) return;
-    const r = pin.getBoundingClientRect();
-    for (let i = 0; i < 26; i++) {
-      const s = document.createElement("i");
-      s.style.cssText = `position:fixed;left:${r.left + r.width * .82}px;top:${r.top + 70}px;width:${rnd(6, 14)}px;height:3px;border-radius:2px;background:${["#D9A520", "#F4EAD8", "#E8A4A0"][i % 3]};z-index:120;pointer-events:none`;
-      document.body.appendChild(s);
-      s.animate([{ transform: "translate(0,0) rotate(0)", opacity: 1 }, { transform: `translate(${rnd(-280, 120)}px, ${rnd(-170, 230)}px) rotate(${rnd(-360, 360)}deg)`, opacity: 0 }], { duration: rnd(1300, 2300), easing: "cubic-bezier(.2,.8,.3,1)", fill: "forwards" }).onfinish = () => s.remove();
-    }
-  };
-  const layout = () => {
-    active = innerWidth > 760 && !reduce;
-    // the lead tells the truth about how this section moves: scroll (pinned) or swipe (row)
-    const lead = $('#day [data-t="day.lead"]'); if (lead) lead.textContent = t(active ? "day.lead" : "day.lead.touch");
-    if (!active) { space.style.height = ""; track.style.transform = ""; swipe(); return; }
-    const g = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter")) || 24;
-    dist = Math.max(0, track.scrollWidth - innerWidth + g * 2);
-    space.style.height = (dist * .6 + innerHeight) + "px"; // ~0.6px of scroll per px of travel: brisk, not a chore
-    update(scrollY);
-  };
-  const update = (y) => {
-    if (!active) return;
-    const top = space.getBoundingClientRect().top + y;
-    const p = clamp((y - top) / (space.offsetHeight - innerHeight), 0, 1);
-    track.style.transform = `translate3d(${-dist * p}px,0,0)`;
-    bar.style.transform = `scaleX(${p})`;
-    setClock(p);
-    const at18 = (18 - DAY_FROM) / (DAY_TO - DAY_FROM); // 18:00 のカードを通ったらチャイム
-    if (p > at18 && !chimed) { chimed = true; chime(); burst(); }
-    if (p < at18 * .5) chimed = false;
-  };
-  // phones: the cards are a native swipe row; the bar and clock follow the swipe
-  function swipe() { const max = track.scrollWidth - track.clientWidth; const p = max > 0 ? clamp(track.scrollLeft / max, 0, 1) : 1; bar.style.transform = `scaleX(${p})`; setClock(p); }
-  track.addEventListener("scroll", () => { if (!active) swipe(); }, { passive: true });
-  layout(); addEventListener("resize", layout); addEventListener("load", layout); if (document.fonts) document.fonts.ready.then(layout); onScroll(update);
-  langHooks.push(() => setTimeout(layout, 50));
-})();
-
 /* ───────── 9a. follow + share (plain links only: no outside scripts, no trackers) ───────── */
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const enc = encodeURIComponent;
@@ -3406,15 +3153,25 @@ newTabHints(); langHooks.push(newTabHints); new MutationObserver(() => { clearTi
 // 「オフィスのある一日」のカード・キャラの「初登場」は、同じ題の回の動画を開く（題で照合。見つからなければ何もしない）
 const epByTitle = (ttl) => EPS.find((e) => e.yt && e.title.some((x) => x && x.trim() === ttl.trim()));
 function linkDayCards() {
-  $$("#dayTrack .day-card").forEach((c) => { const h = $(".day-ttl", c); if (!h) return; const k = h.dataset.t; const e = (c.dataset.dayEp && EPS.find((x) => x.ep === c.dataset.dayEp && x.yt)) || (k && T[k] ? epByTitle(T[k][0]) : null); c.classList.toggle("has-ep", !!e);
+  /* 「ある一日」は 2026-11-24 にオーナーの判断で外した */ $$("#dayTrack .day-card").forEach((c) => { const h = $(".day-ttl", c); if (!h) return; const k = h.dataset.t; const e = (c.dataset.dayEp && EPS.find((x) => x.ep === c.dataset.dayEp && x.yt)) || (k && T[k] ? epByTitle(T[k][0]) : null); c.classList.toggle("has-ep", !!e);
     if (!e) { c.removeAttribute("role"); c.removeAttribute("tabindex"); c.removeAttribute("aria-label"); return; }
     c.setAttribute("role", "button"); c.tabIndex = 0; c.setAttribute("aria-label", t("day.watch").replace("{t}", e.title[li()] || e.title[0])); c.dataset.ep = e.ep; });
-  $$('[data-t$=".debut"]').forEach((dd) => { const m = (T[dd.dataset.t] || [""])[0].match(/「(.+)」/); const e = m ? epByTitle(m[1]) : null; dd.classList.toggle("debut-link", !!e); if (e) { dd.dataset.ep = e.ep; dd.setAttribute("role", "button"); dd.tabIndex = 0; dd.title = t("ch.watchDebut"); } });
+  $$('[data-t$=".debut"]').forEach((dd) => { const m = (T[dd.dataset.t] || [""])[0].match(/「(.+)」/); const e = m ? epByTitle(m[1].replace(/『/g, "「").replace(/』/g, "」")) : null; dd.classList.toggle("debut-link", !!e); if (e) { dd.dataset.ep = e.ep; dd.setAttribute("role", "button"); dd.tabIndex = 0; dd.title = t("ch.watchDebut"); } });
 }
 const openByEp = (id) => { const e = EPS.find((x) => x.ep === id); if (e && e.yt) openLb(e.yt, e); };
 document.addEventListener("click", (ev) => { const c = ev.target.closest(".day-card.has-ep, .debut-link"); if (c && c.dataset.ep) { ev.stopPropagation(); openByEp(c.dataset.ep); } }, true);
 document.addEventListener("keydown", (ev) => { if (ev.key !== "Enter" && ev.key !== " ") return; const c = ev.target.closest && ev.target.closest(".day-card.has-ep, .debut-link"); if (c && c.dataset.ep) { ev.preventDefault(); openByEp(c.dataset.ep); } });
 linkDayCards(); langHooks.push(linkDayCards);
+// キャラクターの札：横に並んだ札どうしで、種類・名前・説明・タグの高さをそろえる（2026-11-24 オーナー「モチだけ名前の位置が上になる」。
+// 種類の行が札によって 1 行／2 行になり、名前がずれていた）。並びが変わる幅・言語・字の読み込みのたびに測り直す
+function alignChars() {
+  const cards = $$(".chars .char-front"); if (!cards.length) return;
+  const parts = [".char-face", ".char-role", ".char-name", ".char-text", ".char-tags"];
+  cards.forEach((c) => { c.style.minHeight = ""; parts.forEach((q) => { const e = $(q, c); if (e) e.style.minHeight = ""; }); });
+  const rows = {}; cards.forEach((c) => { const k = Math.round(c.closest(".char").offsetTop); (rows[k] = rows[k] || []).push(c); });
+  Object.values(rows).forEach((row) => { if (row.length < 2) return; parts.forEach((q) => { const els = row.map((c) => $(q, c)).filter(Boolean); const h = Math.max(...els.map((e) => e.getBoundingClientRect().height)); els.forEach((e) => { e.style.minHeight = h + "px"; }); }); const H = Math.max(...row.map((c) => c.getBoundingClientRect().height)); row.forEach((c) => { c.style.minHeight = H + "px"; }); });
+}
+alignChars(); addEventListener("resize", () => { clearTimeout(window.__acT); window.__acT = setTimeout(alignChars, 80); }); addEventListener("load", alignChars); if (document.fonts) document.fonts.ready.then(alignChars); langHooks.push(() => setTimeout(alignChars, 60));
 // 検査用（qa/check.mjs）：中の値を読むだけ。画面には何もしない
 Object.defineProperty(window, "__RJ", { get: () => ({ T, EPS, jstISO, openLb, closeLb }) });
 })();
