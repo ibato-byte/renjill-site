@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://usagi.coana.co.jp/</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -75,7 +75,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/?lang=en</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -88,7 +88,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/?lang=zh</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -101,7 +101,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/?lang=ko</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -128,7 +128,7 @@
       <video:title>社員からのお土産 Part 1「ひとくちだけ」｜東京うさぎオフィス</video:title>
       <video:description>新人クリの旅行のお土産は「金のチモシー」。ユズがひとくちだけ…のはずが、皿はみるみる3分の1に。そこへ課長が。（つづく）</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy1.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/og5TCGrH8-A</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/x0-yeftMbEQ</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -149,7 +149,7 @@
       <video:title>A souvenir from the new hire, Part 1: Just One Bite｜Tokyo Usagi Office</video:title>
       <video:description>Kuri brought back &quot;Golden Timothy&quot; from his trip. Yuzu takes just one bite... then the plate is down to a third. And here comes the boss. (to be continued)</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy1.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/og5TCGrH8-A</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/x0-yeftMbEQ</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -170,7 +170,7 @@
       <video:title>新人帶來的伴手禮 Part 1｜Tokyo Usagi Office</video:title>
       <video:description>新人栗子旅行帶回的伴手禮是「黃金提摩西草」。柚子只吃一口…盤子卻剩下三分之一。這時課長來了。（待續）</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy1.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/og5TCGrH8-A</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/x0-yeftMbEQ</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -191,7 +191,7 @@
       <video:title>신입이 사 온 기념품 Part 1｜도쿄 토끼 오피스</video:title>
       <video:description>신입 쿠리의 여행 기념품은 「황금 티모시」. 유자가 한 입만… 접시는 어느새 3분의 1. 그때 과장님이. (계속)</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy1.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/og5TCGrH8-A</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/x0-yeftMbEQ</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -212,7 +212,7 @@
       <video:title>社員からのお土産 Part 2「課長が預かります」｜東京うさぎオフィス</video:title>
       <video:description>「これは課長が預かります」…のはずが、デスクでひとくち、もうひとくち。口の端に1本、残ってますよ課長。（つづく）</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy2.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/IXvaOKcRT60</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/JX2ylTOsU54</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -233,7 +233,7 @@
       <video:title>A souvenir from the new hire, Part 2: The Boss Will Hold Onto It｜Tokyo Usagi Office</video:title>
       <video:description>The boss &quot;confiscates&quot; the souvenir. At his desk: one bite, then another. Boss, there&#39;s a strand sticking out of your mouth. (to be continued)</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy2.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/IXvaOKcRT60</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/JX2ylTOsU54</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -254,7 +254,7 @@
       <video:title>新人帶來的伴手禮 Part 2｜Tokyo Usagi Office</video:title>
       <video:description>「這由課長保管」…結果在座位上一口、再一口。課長，嘴角還有一根喔。（待續）</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy2.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/IXvaOKcRT60</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/JX2ylTOsU54</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -275,7 +275,7 @@
       <video:title>신입이 사 온 기념품 Part 2｜도쿄 토끼 오피스</video:title>
       <video:description>「과장이 맡아둘게」… 그런데 자리에서 한 입, 또 한 입. 과장님, 입가에 한 가닥 남아 있어요. (계속)</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy2.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/IXvaOKcRT60</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/JX2ylTOsU54</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -296,7 +296,7 @@
       <video:title>社員からのお土産 Part 3「業務用」｜東京うさぎオフィス</video:title>
       <video:description>翌日、お土産の皿は空っぽ。…と思ったら、右から重たい「ドスッ、ドスッ」。課長、それ業務用ですよね。（おわり）</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy3.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/i1gjP9lV1nk</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/_hOUHVvJTeU</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -317,7 +317,7 @@
       <video:title>A souvenir from the new hire, Part 3: Bulk Size｜Tokyo Usagi Office</video:title>
       <video:description>Next day, the souvenir plate is empty. Then a heavy THUD, THUD from the right. Boss... is that the bulk size? (the end)</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy3.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/i1gjP9lV1nk</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/_hOUHVvJTeU</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -338,7 +338,7 @@
       <video:title>新人帶來的伴手禮 Part 3｜Tokyo Usagi Office</video:title>
       <video:description>隔天，伴手禮的盤子空了。…這時右邊傳來重重的「咚、咚」。課長，那是業務用的吧。（完）</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy3.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/i1gjP9lV1nk</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/_hOUHVvJTeU</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
@@ -359,7 +359,7 @@
       <video:title>신입이 사 온 기념품 Part 3｜도쿄 토끼 오피스</video:title>
       <video:description>다음 날, 기념품 접시는 텅. …그런데 오른쪽에서 묵직한 「쿵, 쿵」. 과장님, 그거 업소용이죠. (끝)</video:description>
       <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy3.mp4</video:content_loc>
-      <video:player_loc>https://www.youtube.com/embed/i1gjP9lV1nk</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/_hOUHVvJTeU</video:player_loc>
       <video:publication_date>2026-11-26T18:00:00+09:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
     </video:video>
