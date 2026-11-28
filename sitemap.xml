@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://usagi.coana.co.jp/</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -55,6 +55,15 @@
       <image:loc>https://usagi.coana.co.jp/img/game/yamanote.webp</image:loc>
     </image:image>
     <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</image:loc>
+    </image:image>
+    <image:image>
       <image:loc>https://ibato-byte.github.io/usagi-office-media/20261126_timothy1_cover.jpg</image:loc>
     </image:image>
     <image:image>
@@ -75,7 +84,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/?lang=en</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -88,7 +97,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/?lang=zh</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -101,7 +110,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/?lang=ko</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/"/>
@@ -111,6 +120,258 @@
     <xhtml:link rel="alternate" hreflang="zh-HK" href="https://usagi.coana.co.jp/?lang=zh"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/?lang=ko"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/"/>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/ep/lan3/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</video:thumbnail_loc>
+      <video:title>LANケーブル事件 Part 3「真犯人」｜東京うさぎオフィス</video:title>
+      <video:description>取り調べ開始。ケーブルは課長、備品は新人のクリ。では、ファイルをかじったのは…？</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/pzDBpI2irZM</video:player_loc>
+      <video:publication_date>2026-11-28T18:02:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/en/ep/lan3/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</video:thumbnail_loc>
+      <video:title>The LAN Cable Incident, Part 3: The Real Culprit｜Tokyo Usagi Office</video:title>
+      <video:description>The interrogation begins. The cable: the boss. The supplies: new hire Kuri. So who chewed the file…?</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/pzDBpI2irZM</video:player_loc>
+      <video:publication_date>2026-11-28T18:02:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/zh/ep/lan3/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</video:thumbnail_loc>
+      <video:title>網路線事件 Part 3「真兇」｜Tokyo Usagi Office</video:title>
+      <video:description>開始偵訊。網路線是課長，文具是新人栗子。那麼，咬了檔案的是…？</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/pzDBpI2irZM</video:player_loc>
+      <video:publication_date>2026-11-28T18:02:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/ko/ep/lan3/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan3/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3_cover.jpg</video:thumbnail_loc>
+      <video:title>랜선 사건 Part 3 「진범」｜도쿄 토끼 오피스</video:title>
+      <video:description>취조 시작. 케이블은 과장님, 비품은 신입 쿠리. 그럼 파일을 갉아먹은 건…?</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_3.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/pzDBpI2irZM</video:player_loc>
+      <video:publication_date>2026-11-28T18:02:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/ep/lan2/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</video:thumbnail_loc>
+      <video:title>LANケーブル事件 Part 2「上司がWi-Fiルーターに」｜東京うさぎオフィス</video:title>
+      <video:description>課長が動くと電波が切れる。お願いだから動かないで。やっと送れたと思ったら、取引先からメールが。（つづく）</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/SkAz0p_PIlE</video:player_loc>
+      <video:publication_date>2026-11-28T18:01:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/en/ep/lan2/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</video:thumbnail_loc>
+      <video:title>The LAN Cable Incident, Part 2: My Boss Became the Wi-Fi Router｜Tokyo Usagi Office</video:title>
+      <video:description>Every time the boss moves, the signal drops. Please don&#39;t move. It finally sends… then an email from the client. (to be continued)</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/SkAz0p_PIlE</video:player_loc>
+      <video:publication_date>2026-11-28T18:01:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/zh/ep/lan2/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</video:thumbnail_loc>
+      <video:title>網路線事件 Part 2「課長變成了Wi-Fi路由器」｜Tokyo Usagi Office</video:title>
+      <video:description>課長一動，訊號就斷。拜託不要動。好不容易傳出去了，客戶卻來了一封信。（待續）</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/SkAz0p_PIlE</video:player_loc>
+      <video:publication_date>2026-11-28T18:01:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/ko/ep/lan2/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan2/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan2/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2_cover.jpg</video:thumbnail_loc>
+      <video:title>랜선 사건 Part 2 「상사가 와이파이 공유기가 됐다」｜도쿄 토끼 오피스</video:title>
+      <video:description>과장님이 움직이면 신호가 끊긴다. 제발 움직이지 마세요. 겨우 보냈다 싶었는데 거래처에서 메일이. (계속)</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_2.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/SkAz0p_PIlE</video:player_loc>
+      <video:publication_date>2026-11-28T18:01:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/ep/lan1/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</video:thumbnail_loc>
+      <video:title>LANケーブル事件 Part 1「締切5分前にネットが落ちた！？」｜東京うさぎオフィス</video:title>
+      <video:description>送信ボタンを押した直後、ネットが切れた。ケーブルをたどった先には、もぐもぐのモチ課長。（つづく）</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/VtLGvnwNfvI</video:player_loc>
+      <video:publication_date>2026-11-28T18:00:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/en/ep/lan1/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</video:thumbnail_loc>
+      <video:title>The LAN Cable Incident, Part 1: The Wi-Fi Died 5 Minutes to Deadline?!｜Tokyo Usagi Office</video:title>
+      <video:description>Right after hitting send, the internet dies. Follow the cable… and there&#39;s Boss Mochi, munching. (to be continued)</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/VtLGvnwNfvI</video:player_loc>
+      <video:publication_date>2026-11-28T18:00:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/zh/ep/lan1/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</video:thumbnail_loc>
+      <video:title>網路線事件 Part 1「截止前5分鐘斷網了！？」｜Tokyo Usagi Office</video:title>
+      <video:description>剛按下傳送，網路就斷了。順著網路線找過去，是正在嚼嚼的麻糬課長。（待續）</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/VtLGvnwNfvI</video:player_loc>
+      <video:publication_date>2026-11-28T18:00:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://usagi.coana.co.jp/ko/ep/lan1/</loc>
+    <lastmod>2026-11-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://usagi.coana.co.jp/ko/ep/lan1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://usagi.coana.co.jp/ep/lan1/"/>
+    <image:image>
+      <image:loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</image:loc>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1_cover.jpg</video:thumbnail_loc>
+      <video:title>랜선 사건 Part 1 「마감 5분 전에 인터넷이 끊겼다!?」｜도쿄 토끼 오피스</video:title>
+      <video:description>전송 버튼을 누르자마자 인터넷이 끊겼다. 케이블을 따라가 보니 우물우물 중인 모찌 과장님. (계속)</video:description>
+      <video:content_loc>https://ibato-byte.github.io/usagi-office-media/20261128_lan_1.mp4</video:content_loc>
+      <video:player_loc>https://www.youtube.com/embed/VtLGvnwNfvI</video:player_loc>
+      <video:publication_date>2026-11-28T18:00:00+09:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/ep/timothy1/</loc>
@@ -618,7 +879,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/episodes/</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/episodes/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/episodes/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/episodes/"/>
@@ -627,7 +888,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/en/episodes/</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/episodes/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/episodes/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/episodes/"/>
@@ -636,7 +897,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/zh/episodes/</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/episodes/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/episodes/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/episodes/"/>
@@ -645,7 +906,7 @@
   </url>
   <url>
     <loc>https://usagi.coana.co.jp/ko/episodes/</loc>
-    <lastmod>2026-11-26</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://usagi.coana.co.jp/episodes/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://usagi.coana.co.jp/en/episodes/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://usagi.coana.co.jp/zh/episodes/"/>
